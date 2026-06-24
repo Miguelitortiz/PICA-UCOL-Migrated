@@ -1,0 +1,79 @@
+{
+  "slug": "sofia-elena-romero-moreno-45",
+  "title": "Profesor Asociado C",
+  "fullName": "Sofía Elena Romero Moreno",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Programación Estructurada",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 15
+      },
+      {
+        "name": "Álgebra Lineal",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 40
+      }
+    ]
+  },
+  "department": "Facultad de Contabilidad y Administración",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2020,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2011,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2003,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "sofia_elena_romero_moreno_45@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-45-0",
+        "year": 2025,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.05
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-45-1",
+        "year": 2025,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 2.2
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-45-2",
+        "year": 2023,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.9
+      }
+    ]
+  },
+  "id": 48,
+  "delegation_id": 1,
+  "career_ids": [
+    454,
+    436
+  ]
+}

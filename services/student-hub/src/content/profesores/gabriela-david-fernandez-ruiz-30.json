@@ -1,0 +1,99 @@
+{
+  "slug": "gabriela-david-fernandez-ruiz-30",
+  "title": "Profesor Asociado C",
+  "fullName": "Gabriela David Fernández Ruiz",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Redes de Computadoras",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 40
+      },
+      {
+        "name": "Bases de Datos",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 40
+      }
+    ]
+  },
+  "department": "Facultad de Teleinformática",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2016,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2015,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2019,
+        "degree": "Doctor en Ciencias",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2000,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "gabriela_david_fernandez_ruiz_30@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [
+      {
+        "role": "Autor",
+        "year": 2023,
+        "title": "Fundamentos y aplicaciones de Teoría de Autómatas",
+        "editorial": "Editorial Universitaria"
+      }
+    ],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-30-0",
+        "year": 2025,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.12
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-30-1",
+        "year": 2025,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.59
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-30-2",
+        "year": 2023,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 3.05
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-30-3",
+        "year": 2026,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 4",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 2.55
+      }
+    ]
+  },
+  "id": 33,
+  "delegation_id": 2,
+  "career_ids": [
+    420,
+    367
+  ]
+}

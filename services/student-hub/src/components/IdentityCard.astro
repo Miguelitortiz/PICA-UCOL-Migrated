@@ -1,0 +1,92 @@
+---
+interface Props {
+  fullName: string;
+  title: string;
+  department: string;
+  institutionalEmail: string;
+  admissionYear: number;
+  photoUrl?: string;
+}
+
+const {
+  fullName,
+  title,
+  department,
+  institutionalEmail,
+  admissionYear,
+  photoUrl
+} = Astro.props;
+
+// Calcular años de antigüedad
+const currentYear = new Date().getFullYear();
+const yearsOfService = currentYear - admissionYear;
+
+// Obtener iniciales para el placeholder de foto
+const initials = fullName
+  .split(' ')
+  .filter(word => word.length > 2 && !['del', 'de', 'las', 'los'].includes(word.toLowerCase()))
+  .slice(0, 2)
+  .map(word => word[0])
+  .join('')
+  .toUpperCase();
+---
+
+<div class="border-double-academic p-5 bg-white rounded-sm">
+  <!-- Foto de perfil (Mediana ~200x200px) -->
+  <div class="photo-frame mx-auto mb-4 rounded-sm w-48 h-48">
+    <div class="w-full h-full bg-bg-piedra border border-borde-gris/50 flex items-center justify-center overflow-hidden rounded-sm relative">
+      {photoUrl ? (
+        <img
+          src={photoUrl}
+          alt={`Fotografía de ${fullName}`}
+          loading="lazy"
+          width="200"
+          height="200"
+          class="w-full h-full object-cover filter grayscale contrast-110 sepia-[20%]"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <div class="hidden absolute inset-0 flex items-center justify-center font-display text-4xl font-bold text-text-marino/30 tracking-widest bg-bg-piedra select-none">
+          {initials}
+        </div>
+      ) : (
+        <div class="flex items-center justify-center font-display text-4xl font-bold text-text-marino/30 tracking-widest bg-bg-piedra w-full h-full select-none">
+          {initials}
+        </div>
+      )}
+    </div>
+  </div>
+
+  <!-- Identidad -->
+  <div class="text-center">
+    <h1 class="font-display text-2xl font-bold text-text-marino leading-tight mb-1 tracking-tight">
+      {fullName}
+    </h1>
+    <p class="font-section text-[10px] uppercase tracking-wider font-semibold text-acento-verde mb-3">
+      {title}
+    </p>
+  </div>
+
+  <hr class="academic-divider my-3" />
+
+  <!-- Detalles -->
+  <dl class="space-y-2.5 text-xs font-sans">
+    <div>
+      <dt class="text-[10px] uppercase tracking-wider text-text-marino/50 font-bold mb-0.5">Adscripción</dt>
+      <dd class="text-text-marino font-medium leading-normal">{department}</dd>
+    </div>
+    <div>
+      <dt class="text-[10px] uppercase tracking-wider text-text-marino/50 font-bold mb-0.5">Contacto</dt>
+      <dd>
+        <a href={`mailto:${institutionalEmail}`} class="link-academic font-semibold text-[11px]">
+          {institutionalEmail}
+        </a>
+      </dd>
+    </div>
+    <div>
+      <dt class="text-[10px] uppercase tracking-wider text-text-marino/50 font-bold mb-0.5">Año de Ingreso</dt>
+      <dd class="text-text-marino font-medium font-mono">
+        {admissionYear} <span class="font-sans text-[11px] text-text-marino/60 ml-1">({yearsOfService} años)</span>
+      </dd>
+    </div>
+  </dl>
+</div>

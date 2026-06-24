@@ -1,0 +1,100 @@
+---
+import InstitutionalLayout from "../../../layouts/InstitutionalLayout.astro";
+import {
+  cargarDelegacionPorSlug,
+  cargarFacultadesDeDelegacion,
+} from "../../../lib/cargarDatos.js";
+
+const { d_slug } = Astro.params;
+const delegation = cargarDelegacionPorSlug(d_slug);
+
+if (!delegation) {
+  return Astro.redirect("/404");
+}
+
+const facultades = cargarFacultadesDeDelegacion(delegation.id);
+---
+
+<InstitutionalLayout
+  title={`Delegación ${delegation.name} — Facultades`}
+  description={`Facultades y dependencias académicas adscritas a la delegación ${delegation.name} de la Universidad de Colima.`}
+>
+  <div class="max-w-4xl mx-auto space-y-6">
+    <!-- Migas de Pan (Breadcrumbs) -->
+    <div
+      class="text-xs font-mono text-text-marino/60 flex items-center gap-1.5 flex-wrap"
+    >
+      <a href="/" class="hover:text-acento-verde transition-colors">Inicio</a>
+      <span>/</span>
+      <a href="/buscar-grupo" class="hover:text-acento-verde transition-colors"
+        >Delegaciones</a
+      >
+      <span>/</span>
+      <span class="font-bold text-acento-verde">{delegation.name}</span>
+    </div>
+
+    <!-- Encabezado -->
+    <div class="space-y-2">
+      <span
+        class="font-section text-xs uppercase tracking-widest font-semibold text-acento-verde"
+        >Delegación Universitaria</span
+      >
+      <h1
+        class="font-display text-3xl font-bold tracking-tight text-text-marino"
+      >
+        {delegation.name}
+      </h1>
+      <p
+        class="font-sans text-sm text-text-marino/70 max-w-2xl leading-relaxed"
+      >
+        Selecciona una facultad o dependencia académica adscrita a esta
+        delegación para explorar sus programas educativos y grupos docentes.
+      </p>
+    </div>
+
+    <hr class="academic-divider-double" />
+
+    <!-- Listado de Facultades -->
+    <div class="space-y-4">
+      <h2
+        class="font-section text-xs uppercase tracking-wider font-semibold text-text-marino/50 mb-4 flex items-center gap-1.5"
+      >
+        Facultades y Dependencias
+      </h2>
+
+      {
+        facultades.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {facultades.map((fac) => (
+              <a
+                href={`/delegaciones/${d_slug}/facultades/${fac.slug}`}
+                class="border border-borde-gris p-5 bg-white rounded-sm hover:border-acento-verde transition-colors duration-150 flex flex-col justify-between group no-underline"
+              >
+                <div>
+                  <span class="font-section text-[9px] uppercase tracking-wider font-semibold text-text-marino/40 block mb-1">
+                    Facultad / Dependencia
+                  </span>
+                  <span class="font-display text-base font-bold text-text-marino group-hover:text-acento-verde transition-colors">
+                    {fac.name}
+                  </span>
+                  <span class="text-[10px] text-text-marino/50 font-sans block mt-2">
+                    {(fac.career_ids || []).length} programa
+                    {(fac.career_ids || []).length !== 1 ? "s" : ""} educativo
+                    {(fac.career_ids || []).length !== 1 ? "s" : ""}
+                  </span>
+                </div>
+                <span class="link-academic text-[11px] font-semibold mt-4 block">
+                  Ver programas acad&eacute;micos &rarr;
+                </span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="text-xs italic text-text-marino/60 font-sans py-4">
+            No se registran facultades en esta delegación en este momento.
+          </p>
+        )
+      }
+    </div>
+  </div>
+</InstitutionalLayout>

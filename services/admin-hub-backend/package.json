@@ -1,0 +1,21 @@
+{
+  "name": "eduvitae-admin-backend",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
+    "express": "^5.2.1",
+    "js-yaml": "^4.1.0",
+    "multer": "^2.2.0-pre.2",
+    "pg": "^8.12.0"
+  }
+}

@@ -1,0 +1,924 @@
+---
+import InstitutionalLayout from "../layouts/InstitutionalLayout.astro";
+import { cargarCarreras, cargarDelegaciones } from "../lib/cargarDatos.js";
+import pool from "../lib/db.js";
+
+const delegations = cargarDelegaciones();
+const careers = cargarCarreras();
+
+let allGroups = [];
+try {
+  const grpsRes = await pool.query(`
+    SELECT g.*, c.name as career_name
+    FROM class_groups g
+    LEFT JOIN careers c ON g.career_id = c.id
+    ORDER BY g.name ASC
+  `);
+  allGroups = grpsRes.rows.map(g => {
+    const career = careers.find(c => c.id === g.career_id);
+    return { ...g, careerName: career ? career.name : g.career_name || "Desconocida" };
+  });
+} catch (e) {
+  console.warn("No se pudieron cargar grupos:", e.message);
+}
+
+const student = Astro.locals.student;
+const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group");
+let activeGroup = null;
+let schedules = [];
+let examDates = [];
+let syllabusList = [];
+
+if (activeGroupSlug) {
+  try {
+    const gRes = await pool.query(`
+      SELECT g.*, p.full_name as tutor_name, p.email as tutor_email, p.slug as tutor_slug,
+             p.profile_data->'contactInfo'->>'phone' as tutor_phone,
+             p.profile_data->'contactInfo'->>'office' as tutor_office,
+             p.profile_data->'contactInfo'->>'officeHours' as tutor_office_hours
+      FROM class_groups g
+      LEFT JOIN professors p ON g.tutor_id = p.id
+      WHERE g.slug = $1
+    `, [activeGroupSlug]);
+
+    if (gRes.rows.length > 0) {
+      activeGroup = gRes.rows[0];
+      const career = careers.find(c => c.id === activeGroup.career_id);
+      activeGroup.careerName = career ? career.name : "Carrera Desconocida";
+
+      const sRes = await pool.query(`
+        SELECT s.*, p.full_name as professor_name, p.email as professor_email, p.slug as professor_slug,
+               p.profile_data->'contactInfo'->>'phone' as professor_phone,
+               p.profile_data->'contactInfo'->>'office' as professor_office,
+               p.profile_data->'contactInfo'->>'officeHours' as professor_office_hours,
+               p.profile_data->>'image' as professor_image
+        FROM schedules s
+        LEFT JOIN professors p ON s.professor_id = p.id
+        WHERE s.class_group_id = $1
+        ORDER BY s.day_of_week, s.start_time
+      `, [activeGroup.id]);
+      schedules = sRes.rows;
+
+      const eRes = await pool.query(`
+        SELECT * FROM exam_dates
+        WHERE class_group_id = $1
+        ORDER BY exam_date, exam_time
+      `, [activeGroup.id]);
+      examDates = eRes.rows;
+
+      const sylRes = await pool.query(`
+        SELECT * FROM subject_syllabus WHERE career_id = $1
+      `, [activeGroup.career_id]);
+      syllabusList = sylRes.rows;
+    }
+  } catch (e) {
+    console.error("Error cargando detalles del grupo:", e);
+  }
+}
+
+const timeSlots = [
+  { start: "07:00:00", end: "09:00:00", label: "07:00–09:00" },
+  { start: "09:00:00", end: "11:00:00", label: "09:00–11:00" },
+  { start: "11:00:00", end: "13:00:00", label: "11:00–13:00" },
+];
+
+const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+
+function findScheduleItem(day: string, timeStart: string) {
+  return schedules.find(s => s.day_of_week === day && s.start_time === timeStart);
+}
+
+function getSyllabusSlug(subjectName: string): string {
+  const s = syllabusList.find(s =>
+    s.subject_name?.toLowerCase().trim() === subjectName?.toLowerCase().trim()
+  );
+  return s?.slug || "#";
+}
+
+function getSyllabusDesc(subjectName: string): string {
+  const s = syllabusList.find(s =>
+    s.subject_name?.toLowerCase().trim() === subjectName?.toLowerCase().trim()
+  );
+  return s?.program_description || "Sin descripción disponible.";
+}
+---
+
+<InstitutionalLayout title="Horario del Estudiante">
+
+  <!-- ═══════════════════════════════════════════════════
+       ENCABEZADO ASIMÉTRICO
+       Swiss Design: el h1 domina. El selector es auxiliar.
+       Layout 2/3 — 1/3 en desktop.
+       ═══════════════════════════════════════════════════ -->
+  <div class="page-header">
+    <div class="page-header__title">
+      <span class="overline overline--primary">Panel Principal &mdash; Horario</span>
+      <h1 class="page-title">
+        Horario del<br />Estudiante
+      </h1>
+      {activeGroup && (
+        <p class="page-subtitle">
+          {activeGroup.name} &mdash; {activeGroup.careerName} &mdash; Turno {activeGroup.shift}
+        </p>
+      )}
+    </div>
+    <div class="page-header__selector">
+      <label for="group-selector" class="field-label">Grupo académico</label>
+      <select id="group-selector" class="input">
+        {allGroups.map(g => (
+          <option value={g.slug} selected={g.slug === activeGroupSlug}>
+            {g.name} — {g.careerName}
+          </option>
+        ))}
+      </select>
+    </div>
+  </div>
+
+  <hr class="rule" style="margin-bottom: 40px;" />
+
+  <!-- ═══════════════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+       Grid asimétrico: horario (amplio) + sidebar (estrecho)
+       ═══════════════════════════════════════════════════ -->
+  <div class="content-grid">
+
+    <!-- ─────────────────────────────────────
+         COLUMNA PRINCIPAL: TABLA DE HORARIO
+         Swiss table: solo reglas horizontales.
+         Sin bordes de celda. Sin fondos alternados.
+         La tipografía diferencia, no el color.
+         ───────────────────────────────────── -->
+    <section aria-label="Horario semanal" class="schedule-section">
+      <div class="section-head">
+        <span class="overline">Horario semanal</span>
+      </div>
+
+      <div class="table-wrapper scroll" role="region" aria-label="Tabla de horario, desplazable horizontalmente" tabindex="0">
+        <table class="schedule-table" role="grid" aria-label="Horario semanal de clases">
+          <thead>
+            <tr>
+              <th scope="col" class="schedule-table__time-header">Hora</th>
+              {daysOfWeek.map(day => (
+                <th scope="col" class="schedule-table__day-header">{day}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {timeSlots.map((slot) => (
+              <tr class="schedule-table__row">
+                <td class="schedule-table__time-cell">
+                  <span class="time-label">{slot.label}</span>
+                </td>
+                {daysOfWeek.map(day => {
+                  const item = findScheduleItem(day, slot.start);
+                  const syllabusSlug = item ? getSyllabusSlug(item.subject_name) : "#";
+                  const syllabusDesc = item ? getSyllabusDesc(item.subject_name) : "";
+                  return (
+                    <td class="schedule-table__cell">
+                      {item ? (
+                        <button
+                          class="class-entry class-card-btn"
+                          aria-label={`${item.subject_name}, ${item.professor_name}`}
+                          data-subject={item.subject_name}
+                          data-professor={item.professor_name}
+                          data-professor-email={item.professor_email}
+                          data-professor-slug={item.professor_slug}
+                          data-professor-phone={item.professor_phone || ""}
+                          data-professor-office={item.professor_office || ""}
+                          data-professor-hours={item.professor_office_hours || ""}
+                          data-professor-image={item.professor_image || ""}
+                          data-classroom={item.classroom_name || ""}
+                          data-is-lab={item.is_lab ? "Sí" : "No"}
+                          data-syllabus-slug={syllabusSlug}
+                          data-description={syllabusDesc}
+                          data-exams={JSON.stringify(examDates.filter(e => e.subject_name === item.subject_name))}
+                        >
+                          <span class="class-entry__subject">{item.subject_name}</span>
+                          {item.professor_name && (
+                            <span class="class-entry__professor">{item.professor_name}</span>
+                          )}
+                          {item.classroom_name && (
+                            <span class="class-entry__room">
+                              {item.classroom_name}
+                              {item.is_lab && <span class="class-entry__lab-tag">LAB</span>}
+                            </span>
+                          )}
+                        </button>
+                      ) : null}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────
+         SIDEBAR INFORMATIVO
+         Sin tarjetas, sin bordes contenedores.
+         Secciones separadas por regla + whitespace.
+         ───────────────────────────────────── -->
+    <aside class="sidebar" aria-label="Información del grupo">
+
+      <!-- Información del grupo -->
+      {activeGroup && (
+        <div class="sidebar-section">
+          <span class="overline">Tu grupo</span>
+          <div class="sidebar-data">
+            <div class="data-row">
+              <span class="field-label">Grupo</span>
+              <span class="field-value">{activeGroup.name}</span>
+            </div>
+            <div class="data-row">
+              <span class="field-label">Carrera</span>
+              <span class="field-value">{activeGroup.careerName}</span>
+            </div>
+            <div class="data-row">
+              <span class="field-label">Turno</span>
+              <span class="field-value">{activeGroup.shift}</span>
+            </div>
+            {activeGroup.semester && (
+              <div class="data-row">
+                <span class="field-label">Semestre</span>
+                <span class="field-value">{activeGroup.semester}°</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <!-- Tutor del grupo -->
+      {activeGroup?.tutor_name && (
+        <>
+          <hr class="rule" />
+          <div class="sidebar-section">
+            <span class="overline">Tutor</span>
+            <div class="sidebar-data">
+              <div class="data-row">
+                <span class="field-label">Docente</span>
+                <a href={`/profesores/${activeGroup.tutor_slug}`} class="field-value link">
+                  {activeGroup.tutor_name}
+                </a>
+              </div>
+              {activeGroup.tutor_email && (
+                <div class="data-row">
+                  <span class="field-label">Email</span>
+                  <a href={`mailto:${activeGroup.tutor_email}`} class="field-value link" style="font-size: 0.75rem; font-weight: 500;">
+                    {activeGroup.tutor_email}
+                  </a>
+                </div>
+              )}
+              {activeGroup.tutor_office && (
+                <div class="data-row">
+                  <span class="field-label">Cubículo</span>
+                  <span class="field-value">{activeGroup.tutor_office}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+      <!-- Próximos exámenes -->
+      <hr class="rule" />
+      <div class="sidebar-section">
+        <span class="overline">Próximos exámenes</span>
+        {examDates.length > 0 ? (
+          <div class="exam-list">
+            {examDates.slice(0, 4).map((exam) => {
+              const d = new Date(exam.exam_date);
+              const dateStr = d.toLocaleDateString("es-MX", { day: "numeric", month: "short" });
+              return (
+                <div class="exam-item">
+                  <div class="exam-item__name">{exam.exam_name}</div>
+                  <div class="exam-item__meta">
+                    <span class="exam-item__subject">{exam.subject_name}</span>
+                    <span class="exam-item__date">{dateStr} &mdash; {exam.exam_time?.substring(0, 5)}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p style="font-size: 0.75rem; color: var(--color-ink-3); margin-top: 8px;">
+            Sin exámenes programados.
+          </p>
+        )}
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MODAL DE CLASE
+       Swiss: sin decoración. Solo información organizada
+       con tipografía y espaciado. Una línea de división.
+       ═══════════════════════════════════════════════════ -->
+  <div
+    id="class-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-subject-name"
+    style="
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,26,0.6);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    "
+  >
+    <div
+      id="modal-panel"
+      style="
+        background: var(--color-surface);
+        width: 100%;
+        max-width: 680px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      "
+    >
+      <!-- Banda de color superior del modal -->
+      <div style="height: 3px; background-color: var(--color-secondary);"></div>
+
+      <!-- Header del modal -->
+      <div style="
+        padding: 24px 28px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+      ">
+        <div>
+          <span class="overline overline--secondary">Detalle de clase</span>
+          <h2
+            id="modal-subject-name"
+            style="
+              font-size: 1.5rem;
+              font-weight: 800;
+              letter-spacing: -0.03em;
+              color: var(--color-ink);
+              margin-top: 4px;
+              line-height: 1.15;
+            "
+          ></h2>
+          <a
+            id="modal-professor-link"
+            href="#"
+            class="link"
+            style="
+              font-size: 0.8125rem;
+              font-weight: 500;
+              margin-top: 4px;
+              display: inline-block;
+            "
+          ></a>
+        </div>
+        <button
+          id="btn-close-modal"
+          aria-label="Cerrar detalle"
+          style="
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--color-ink-3);
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+            flex-shrink: 0;
+          "
+        >×</button>
+      </div>
+
+      <hr class="rule" />
+
+      <!-- Cuerpo del modal -->
+      <div class="modal-body">
+
+        <!-- Columna izquierda: descripción y exámenes -->
+        <div class="modal-col">
+          <div class="modal-field">
+            <span class="field-label">Descripción de la materia</span>
+            <p
+              id="modal-subject-desc"
+              style="
+                font-size: 0.8125rem;
+                color: var(--color-ink-2);
+                line-height: 1.6;
+                margin-top: 4px;
+              "
+            ></p>
+          </div>
+
+          <hr class="rule" style="margin: 16px 0;" />
+
+          <div class="modal-field">
+            <span class="field-label">Evaluaciones programadas</span>
+            <div id="modal-exams-container" style="margin-top: 8px;"></div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <a
+              id="modal-syllabus-btn"
+              href="#"
+              class="btn btn--primary"
+              style="display: none; text-decoration: none; width: 100%;"
+            >Ver programa completo</a>
+          </div>
+        </div>
+
+        <!-- Divisor vertical -->
+        <div class="modal-divider"></div>
+
+        <!-- Columna derecha: aula y docente -->
+        <div class="modal-col">
+          <div class="modal-field">
+            <span class="field-label">Aula / Espacio</span>
+            <div style="
+              margin-top: 6px;
+              display: flex;
+              align-items: baseline;
+              justify-content: space-between;
+              gap: 8px;
+            ">
+              <span
+                id="modal-classroom"
+                style="
+                  font-family: var(--font-mono);
+                  font-size: 1.25rem;
+                  font-weight: 700;
+                  color: var(--color-ink);
+                "
+              ></span>
+              <span id="modal-lab-type" style="font-size: 0.75rem; color: var(--color-ink-3);"></span>
+            </div>
+            <a
+              id="modal-map-link"
+              href="#"
+              class="link"
+              style="font-size: 0.75rem; margin-top: 4px; display: inline-block;"
+            >Ver en mapa</a>
+          </div>
+
+          <hr class="rule" style="margin: 16px 0;" />
+
+          <div class="modal-field">
+            <span class="field-label">Docente responsable</span>
+            <div style="display: flex; gap: 16px; margin-top: 8px; align-items: flex-start;">
+              <!-- Foto del docente -->
+              <div style="width: 64px; height: 64px; border: 1px solid var(--color-rule-strong); overflow: hidden; flex-shrink: 0;">
+                <img id="modal-prof-img" src="" alt="Foto del docente" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.1); display: none;" />
+                <div id="modal-prof-img-placeholder" style="width: 100%; height: 100%; background: var(--color-muted); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--color-ink-3);">
+                  👨‍🏫
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                <div class="data-row">
+                  <span class="field-label">Email</span>
+                  <span id="modal-prof-email" style="font-size: 0.8125rem; color: var(--color-ink-2);"></span>
+                </div>
+                <div class="data-row">
+                  <span class="field-label">Teléfono</span>
+                  <span id="modal-prof-phone" style="font-size: 0.8125rem; color: var(--color-ink-2);"></span>
+                </div>
+                <div class="data-row">
+                  <span class="field-label">Cubículo</span>
+                  <span id="modal-prof-office" style="font-size: 0.8125rem; color: var(--color-ink-2);"></span>
+                </div>
+                <div class="data-row">
+                  <span class="field-label">Horario de atención</span>
+                  <span id="modal-prof-hours" style="font-size: 0.8125rem; color: var(--color-ink-2);"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // ── Cambio de grupo ──
+    const groupSel = document.getElementById("group-selector");
+    if (groupSel) {
+      groupSel.addEventListener("change", e => {
+        const slug = e.target.value;
+        localStorage.setItem("pica_selected_group", slug);
+        window.location.href = `/?group=${slug}`;
+      });
+      const saved = localStorage.getItem("pica_selected_group");
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("group") && saved && saved !== groupSel.value) {
+        window.location.href = `/?group=${saved}`;
+      }
+    }
+
+    // ── Modal ──
+    const modal    = document.getElementById("class-modal");
+    const btnClose = document.getElementById("btn-close-modal");
+
+    const mSubject   = document.getElementById("modal-subject-name");
+    const mProfLink  = document.getElementById("modal-professor-link");
+    const mDesc      = document.getElementById("modal-subject-desc");
+    const mClassroom = document.getElementById("modal-classroom");
+    const mLabType   = document.getElementById("modal-lab-type");
+    const mEmail     = document.getElementById("modal-prof-email");
+    const mPhone     = document.getElementById("modal-prof-phone");
+    const mOffice    = document.getElementById("modal-prof-office");
+    const mHours     = document.getElementById("modal-prof-hours");
+    const mImg       = document.getElementById("modal-prof-img");
+    const mImgPl     = document.getElementById("modal-prof-img-placeholder");
+    const mSyllabus  = document.getElementById("modal-syllabus-btn");
+    const mExams     = document.getElementById("modal-exams-container");
+    const mMapLink   = document.getElementById("modal-map-link");
+
+    document.querySelectorAll(".class-card-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const subject    = btn.getAttribute("data-subject") || "";
+        const professor  = btn.getAttribute("data-professor") || "";
+        const profEmail  = btn.getAttribute("data-professor-email") || "";
+        const profSlug   = btn.getAttribute("data-professor-slug") || "";
+        const profPhone  = btn.getAttribute("data-professor-phone") || "";
+        const profOffice = btn.getAttribute("data-professor-office") || "";
+        const profHours  = btn.getAttribute("data-professor-hours") || "";
+        const profImage  = btn.getAttribute("data-professor-image") || "";
+        const classroom  = btn.getAttribute("data-classroom") || "";
+        const isLab      = btn.getAttribute("data-is-lab") === "Sí";
+        const sylSlug    = btn.getAttribute("data-syllabus-slug") || "";
+        const desc       = btn.getAttribute("data-description") || "Sin descripción disponible.";
+        const exams      = JSON.parse(btn.getAttribute("data-exams") || "[]");
+
+        if (mSubject)   mSubject.textContent   = subject;
+        if (mProfLink)  { mProfLink.textContent = professor; mProfLink.href = profSlug ? `/profesores/${profSlug}` : "#"; }
+        if (mDesc)      mDesc.textContent      = desc;
+        if (mClassroom) mClassroom.textContent  = classroom;
+        if (mLabType)   mLabType.textContent    = isLab ? "Laboratorio" : "Aula teórica";
+        if (mEmail)     mEmail.textContent      = profEmail || "—";
+        if (mPhone)     mPhone.textContent      = profPhone || "—";
+        if (mOffice)    mOffice.textContent     = profOffice || "—";
+        if (mHours)     mHours.textContent      = profHours || "—";
+        if (mMapLink)   mMapLink.href           = `/mapa?highlight=${encodeURIComponent(classroom)}`;
+        
+        if (mImg && mImgPl) {
+          if (profImage) {
+            mImg.src = profImage;
+            mImg.style.display = "block";
+            mImgPl.style.display = "none";
+          } else {
+            mImg.style.display = "none";
+            mImgPl.style.display = "flex";
+          }
+        }
+
+        if (mSyllabus) {
+          if (sylSlug && sylSlug !== "#") {
+            mSyllabus.href = `/materias/${sylSlug}`;
+            mSyllabus.style.display = "flex";
+          } else {
+            mSyllabus.style.display = "none";
+          }
+        }
+
+        if (mExams) {
+          mExams.innerHTML = "";
+          if (exams && exams.length > 0) {
+            exams.forEach(ex => {
+              const d = new Date(ex.exam_date);
+              const dateStr = d.toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+              const row = document.createElement("div");
+              row.style.cssText = "display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--color-rule);";
+              row.innerHTML = `
+                <span style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--color-ink);">${ex.exam_name}</span>
+                <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--color-ink-3);">${dateStr} · ${ex.exam_time?.substring(0,5)}</span>
+              `;
+              mExams.appendChild(row);
+            });
+          } else {
+            mExams.innerHTML = `<p style="font-size:0.75rem; color:var(--color-ink-3); padding-top:4px;">Sin exámenes programados.</p>`;
+          }
+        }
+
+        if (modal) {
+          modal.style.display = "flex";
+          document.body.style.overflow = "hidden";
+        }
+      });
+    });
+
+    function closeModal() {
+      if (modal) { modal.style.display = "none"; document.body.style.overflow = ""; }
+    }
+
+    btnClose?.addEventListener("click", closeModal);
+    modal?.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+  </script>
+
+</InstitutionalLayout>
+
+<style>
+  /* ══════════════════════════════════════════════════
+     PAGE HEADER — asimétrico, tipografía dominante
+     ══════════════════════════════════════════════════ */
+  .page-header {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+    align-items: end;
+  }
+
+  @media (min-width: 768px) {
+    .page-header {
+      grid-template-columns: 2fr 1fr;
+      gap: 48px;
+    }
+  }
+
+  .page-title {
+    font-size: 2.5rem;       /* 40px — presencia editorial */
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    color: var(--color-ink);
+    margin-top: 8px;
+  }
+
+  @media (min-width: 768px) {
+    .page-title { font-size: 3rem; }    /* 48px en desktop */
+  }
+
+  .page-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-ink-3);
+    letter-spacing: 0.06em;
+    margin-top: 12px;
+    line-height: 1.4;
+  }
+
+  .page-header__selector {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* ══════════════════════════════════════════════════
+     CONTENT GRID — 2 columnas asimétrico
+     ══════════════════════════════════════════════════ */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  @media (min-width: 1024px) {
+    .content-grid {
+      grid-template-columns: 1fr 260px;
+      gap: 56px;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════
+     TABLA DE HORARIO — Swiss style
+     Solo reglas horizontales. Sin bordes de celda.
+     Sin fondos alternados. Tipografía como jerarquía.
+     ══════════════════════════════════════════════════ */
+  .section-head {
+    margin-bottom: 16px;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 520px;
+  }
+
+  /* Línea fuerte bajo el header de la tabla */
+  .schedule-table thead tr {
+    border-bottom: 2px solid var(--color-ink);
+  }
+
+  .schedule-table__time-header,
+  .schedule-table__day-header {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;       /* 9px */
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+    text-align: left;
+    padding: 0 12px 12px 0;
+    white-space: nowrap;
+  }
+
+  .schedule-table__time-header {
+    width: 96px;
+    padding-right: 16px;
+  }
+
+  /* Filas separadas solo por línea horizontal delgada */
+  .schedule-table__row {
+    border-bottom: 1px solid var(--color-rule);
+    transition: background-color 80ms;
+  }
+
+  .schedule-table__row:last-child {
+    border-bottom: none;
+  }
+
+  .schedule-table__row:hover {
+    background-color: var(--color-muted);
+  }
+
+  .schedule-table__time-cell {
+    padding: 16px 16px 16px 0;
+    vertical-align: top;
+  }
+
+  .time-label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    display: block;
+    padding-top: 2px;
+  }
+
+  .schedule-table__cell {
+    padding: 12px 12px 12px 0;
+    vertical-align: top;
+    min-width: 100px;
+  }
+
+  /* Entrada de clase — botón sin estilos de botón */
+  .class-entry {
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+    border-left: 2px solid transparent;
+    padding-left: 8px;
+    transition: border-color 120ms;
+  }
+
+  .class-entry:hover {
+    border-left-color: var(--color-secondary);
+  }
+
+  .class-entry:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .class-entry__subject {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    line-height: 1.2;
+    display: block;
+  }
+
+  .class-entry__professor {
+    font-size: 0.625rem;
+    font-weight: 400;
+    color: var(--color-ink-3);
+    display: block;
+    line-height: 1.3;
+  }
+
+  .class-entry__room {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .class-entry__lab-tag {
+    font-size: 0.4375rem;     /* 7px */
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--color-ink-3);
+    padding: 1px 3px;
+    color: var(--color-ink-3);
+  }
+
+  /* ══════════════════════════════════════════════════
+     SIDEBAR
+     ══════════════════════════════════════════════════ */
+  .sidebar-section {
+    padding: 20px 0;
+  }
+
+  .sidebar-section:first-child { padding-top: 0; }
+
+  .sidebar-data {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .data-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* ── EXÁMENES ── */
+  .exam-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .exam-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-rule);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .exam-item:last-child { border-bottom: none; }
+
+  .exam-item__name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .exam-item__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .exam-item__subject {
+    font-size: 0.625rem;
+    color: var(--color-ink-3);
+  }
+
+  .exam-item__date {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+  }
+
+  /* ══════════════════════════════════════════════════
+     MODAL
+     ══════════════════════════════════════════════════ */
+  .modal-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  @media (min-width: 560px) {
+    .modal-body {
+      grid-template-columns: 1fr 1px 1fr;
+    }
+  }
+
+  .modal-col {
+    padding: 24px 28px;
+  }
+
+  .modal-divider {
+    background-color: var(--color-rule);
+    width: 1px;
+  }
+
+  @media (max-width: 559px) {
+    .modal-divider { display: none; }
+    .modal-col:first-child { border-bottom: 1px solid var(--color-rule); }
+  }
+
+  .modal-field {
+    margin-bottom: 0;
+  }
+</style>

@@ -1,0 +1,172 @@
+---
+import '../styles/global.css';
+
+// Si el usuario ya está autenticado, redirigir al dashboard
+if (Astro.cookies.has('pica_session')) {
+  return Astro.redirect('/');
+}
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Iniciar Sesión | StudentHUB PICA-UCOL</title>
+  </head>
+  <body style="display: flex; min-height: 100vh; background-color: var(--color-bg); margin: 0; font-family: var(--font-sans);">
+    
+    <!-- Lado Izquierdo: Formulario -->
+    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px; max-width: 500px; margin: 0 auto;">
+      <div style="margin-bottom: 48px;">
+        <span class="overline overline--primary">Portal Académico</span>
+        <h1 style="font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; color: var(--color-ink); margin-top: 8px; line-height: 1;">
+          StudentHUB
+        </h1>
+        <p style="font-size: 0.875rem; color: var(--color-ink-2); margin-top: 16px; line-height: 1.5;">
+          Acceso centralizado al ecosistema digital de la Universidad de Colima. Por favor, identifícate con tus credenciales institucionales.
+        </p>
+      </div>
+
+      <form id="login-form" style="display: flex; flex-direction: column; gap: 24px;">
+        
+        <div id="error-message" style="display: none; padding: 12px; background: var(--color-ink); color: var(--color-surface); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
+          <!-- Mensaje de error -->
+        </div>
+
+        <div>
+          <label for="enrollment_id" class="field-label">Matrícula Estudiantil</label>
+          <input 
+            type="text" 
+            id="enrollment_id" 
+            name="enrollment_id" 
+            class="input" 
+            placeholder="Ej. 20180000"
+            required
+            style="width: 100%; box-sizing: border-box;"
+          />
+        </div>
+
+        <div>
+          <label for="password" class="field-label">Contraseña</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            class="input" 
+            placeholder="••••••••"
+            required
+            style="width: 100%; box-sizing: border-box;"
+          />
+        </div>
+
+        <button type="submit" class="btn btn--primary" style="margin-top: 8px; padding: 16px; font-size: 1rem; width: 100%;">
+          Acceder al Sistema
+        </button>
+      </form>
+
+      <div style="margin-top: 64px; border-top: 1px solid var(--color-rule); padding-top: 24px;">
+        <p style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3);">
+          &copy; 2026 Universidad de Colima. Dirección General de Educación Superior.<br/>
+          Estilo de diseño tipográfico inspirado en la escuela Suiza.
+        </p>
+      </div>
+    </div>
+
+    <!-- Lado Derecho: Imagen abstracta arquitectónica o color sólido (Desktop) -->
+    <div style="flex: 1; background: var(--color-ink); display: none; position: relative; overflow: hidden;" id="login-hero">
+      <div style="position: absolute; inset: 0; opacity: 0.2; background-image: radial-gradient(circle at 20% 50%, var(--color-surface) 0%, transparent 50%); mix-blend-mode: overlay;"></div>
+      <div style="position: absolute; bottom: 40px; right: 40px; text-align: right; color: var(--color-surface);">
+        <h2 style="font-size: 4rem; font-weight: 900; letter-spacing: -0.05em; line-height: 0.9; margin: 0;">PICA<br/>UCOL</h2>
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; opacity: 0.7; display: block; margin-top: 16px;">PLATAFORMA INTEGRAL</span>
+      </div>
+    </div>
+
+  </body>
+</html>
+
+<style>
+  @media (min-width: 1024px) {
+    #login-hero {
+      display: block !important;
+    }
+  }
+
+  .field-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-2);
+    margin-bottom: 8px;
+  }
+  
+  .input {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule-strong);
+    padding: 12px 16px;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--color-ink);
+    border-radius: 0;
+    transition: border-color 150ms;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: var(--color-ink);
+  }
+
+  .btn {
+    border: none;
+    font-family: var(--font-sans);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    cursor: pointer;
+    transition: opacity 150ms;
+    text-align: center;
+  }
+  
+  .btn--primary {
+    background-color: var(--color-ink);
+    color: var(--color-surface);
+  }
+  
+  .btn--primary:hover {
+    opacity: 0.85;
+  }
+</style>
+
+<script>
+  document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const errorMsg = document.getElementById('error-message');
+    
+    if (errorMsg) errorMsg.style.display = 'none';
+
+    try {
+      const res = await fetch('/auth/login', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        window.location.href = '/';
+      } else {
+        if (errorMsg) {
+          errorMsg.textContent = data.error || 'Error al iniciar sesión';
+          errorMsg.style.display = 'block';
+        }
+      }
+    } catch (err) {
+      if (errorMsg) {
+        errorMsg.textContent = 'Error de conexión';
+        errorMsg.style.display = 'block';
+      }
+    }
+  });
+</script>

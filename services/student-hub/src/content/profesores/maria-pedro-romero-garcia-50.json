@@ -1,0 +1,85 @@
+{
+  "slug": "maria-pedro-romero-garcia-50",
+  "title": "Profesor Investigador de Tiempo Completo",
+  "fullName": "María Pedro Romero García",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Cálculo Diferencial",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 36
+      },
+      {
+        "name": "Teoría de Autómatas",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 29
+      }
+    ]
+  },
+  "department": "Facultad de Contabilidad y Administración",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2021,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2011,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2018,
+        "degree": "Doctor en Ciencias",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2002,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "maria_pedro_romero_garcia_50@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-50-0",
+        "year": 2022,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.79
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-50-1",
+        "year": 2026,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 2.48
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-50-2",
+        "year": 2026,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.85
+      }
+    ]
+  },
+  "id": 53,
+  "delegation_id": 5,
+  "career_ids": [
+    477,
+    133
+  ]
+}

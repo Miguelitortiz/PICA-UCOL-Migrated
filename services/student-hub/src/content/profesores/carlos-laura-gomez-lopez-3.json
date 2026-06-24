@@ -1,0 +1,90 @@
+{
+  "slug": "carlos-laura-gomez-lopez-3",
+  "title": "Profesor de Asignatura",
+  "fullName": "Carlos Laura Gómez López",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Inteligencia Artificial",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 38
+      },
+      {
+        "name": "Ingeniería de Software",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 23
+      },
+      {
+        "name": "Ingeniería de Software",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 35
+      }
+    ]
+  },
+  "department": "Facultad de Contabilidad y Administración",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2007,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2012,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2013,
+        "degree": "Doctor en Ciencias",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2010,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "carlos_laura_gomez_lopez_3@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-3-0",
+        "year": 2021,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.44
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-3-1",
+        "year": 2020,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.2
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-3-2",
+        "year": 2020,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.1
+      }
+    ]
+  },
+  "id": 6,
+  "delegation_id": 3,
+  "career_ids": [
+    88
+  ]
+}

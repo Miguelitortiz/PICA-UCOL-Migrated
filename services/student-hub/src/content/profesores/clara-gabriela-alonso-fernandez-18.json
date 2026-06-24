@@ -1,0 +1,80 @@
+{
+  "slug": "clara-gabriela-alonso-fernandez-18",
+  "title": "Profesor de Asignatura",
+  "fullName": "Clara Gabriela Alonso Fernández",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Bases de Datos",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 39
+      }
+    ]
+  },
+  "department": "Facultad de Teleinformática",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2014,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2009,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2008,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "clara_gabriela_alonso_fernandez_18@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-18-0",
+        "year": 2021,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.65
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-18-1",
+        "year": 2026,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.48
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-18-2",
+        "year": 2025,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.71
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-18-3",
+        "year": 2020,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 4",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 2.75
+      }
+    ]
+  },
+  "id": 21,
+  "delegation_id": 2,
+  "career_ids": [
+    54,
+    420
+  ]
+}

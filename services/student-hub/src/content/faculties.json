@@ -1,0 +1,325 @@
+[
+  {
+    "id": 1,
+    "slug": "turismo-y-gastronomia",
+    "delegation_id": 1,
+    "name": "Facultad de Turismo y Gastronomía",
+    "portal_url": "https://portal.ucol.mx/etg/",
+    "career_ids": [
+      432,
+      110
+    ]
+  },
+  {
+    "id": 2,
+    "slug": "ciencias-marinas",
+    "delegation_id": 1,
+    "name": "Facultad de Ciencias Marinas",
+    "portal_url": "https://portal.ucol.mx/facimar/",
+    "career_ids": [
+      450
+    ]
+  },
+  {
+    "id": 3,
+    "slug": "contabilidad-manzanillo",
+    "delegation_id": 1,
+    "name": "Facultad de Contabilidad y Administración de Manzanillo",
+    "portal_url": "https://portal.ucol.mx/fcam/",
+    "career_ids": []
+  },
+  {
+    "id": 4,
+    "slug": "ingenieria-electromecanica",
+    "delegation_id": 1,
+    "name": "Facultad de Ingeniería Electromecánica",
+    "portal_url": "https://portal.ucol.mx/fie/",
+    "career_ids": [
+      454
+    ]
+  },
+  {
+    "id": 5,
+    "slug": "comercio-exterior",
+    "delegation_id": 1,
+    "name": "Facultad de Comercio Exterior",
+    "portal_url": "https://portal.ucol.mx/facomex/",
+    "career_ids": [
+      436,
+      437,
+      473
+    ]
+  },
+  {
+    "id": 6,
+    "slug": "contabilidad-tecoman",
+    "delegation_id": 2,
+    "name": "Facultad de Contabilidad y Administración de Tecomán",
+    "portal_url": "https://portal.ucol.mx/fcat/",
+    "career_ids": []
+  },
+  {
+    "id": 7,
+    "slug": "ciencias-biologicas-agropecuarias",
+    "delegation_id": 2,
+    "name": "Facultad de Ciencias Biológicas y Agropecuarias",
+    "portal_url": "https://portal.ucol.mx/fcba/",
+    "career_ids": [
+      420,
+      367
+    ]
+  },
+  {
+    "id": 8,
+    "slug": "medicina-veterinaria-zootecnia",
+    "delegation_id": 2,
+    "name": "Facultad de Medicina Veterinaria y Zootecnia",
+    "portal_url": "https://portal.ucol.mx/fmvz/",
+    "career_ids": [
+      54
+    ]
+  },
+  {
+    "id": 9,
+    "slug": "mercadotecnia",
+    "delegation_id": 3,
+    "name": "Escuela de Mercadotecnia",
+    "portal_url": "https://portal.ucol.mx/mercadotecnia/",
+    "career_ids": [
+      102,
+      397
+    ]
+  },
+  {
+    "id": 10,
+    "slug": "ciencias",
+    "delegation_id": 3,
+    "name": "Facultad de Ciencias",
+    "portal_url": "https://portal.ucol.mx/fc/",
+    "career_ids": [
+      57,
+      88,
+      350
+    ]
+  },
+  {
+    "id": 11,
+    "slug": "ciencias-de-la-educacion",
+    "delegation_id": 3,
+    "name": "Facultad de Ciencias de la Educación",
+    "portal_url": "https://portal.ucol.mx/fce/",
+    "career_ids": [
+      133,
+      134,
+      370
+    ]
+  },
+  {
+    "id": 12,
+    "slug": "telematica",
+    "delegation_id": 3,
+    "name": "Facultad de Telemática",
+    "portal_url": "https://portal.ucol.mx/telematica/",
+    "career_ids": [
+      191,
+      348
+    ]
+  },
+  {
+    "id": 13,
+    "slug": "trabajo-social",
+    "delegation_id": 3,
+    "name": "Facultad de Trabajo Social",
+    "portal_url": "https://portal.ucol.mx/trabajosocial/",
+    "career_ids": [
+      178
+    ]
+  },
+  {
+    "id": 14,
+    "slug": "ciencias-politicas-sociales",
+    "delegation_id": 3,
+    "name": "Facultad de Ciencias Políticas y Sociales",
+    "portal_url": "https://portal.ucol.mx/cpolitica/",
+    "career_ids": [
+      455,
+      461
+    ]
+  },
+  {
+    "id": 15,
+    "slug": "contabilidad-colima",
+    "delegation_id": 3,
+    "name": "Facultad de Contabilidad y Administración de Colima",
+    "portal_url": "https://portal.ucol.mx/fcac/",
+    "career_ids": [
+      118,
+      478,
+      476,
+      460
+    ]
+  },
+  {
+    "id": 16,
+    "slug": "derecho",
+    "delegation_id": 3,
+    "name": "Facultad de Derecho",
+    "portal_url": "https://portal.ucol.mx/fd/",
+    "career_ids": [
+      453
+    ]
+  },
+  {
+    "id": 17,
+    "slug": "enfermeria",
+    "delegation_id": 3,
+    "name": "Facultad de Enfermería",
+    "portal_url": "https://portal.ucol.mx/fenfermeria/",
+    "career_ids": [
+      470
+    ]
+  },
+  {
+    "id": 18,
+    "slug": "psicologia",
+    "delegation_id": 3,
+    "name": "Facultad de Psicología",
+    "portal_url": "https://portal.ucol.mx/fpsicologia/",
+    "career_ids": [
+      469
+    ]
+  },
+  {
+    "id": 19,
+    "slug": "letras-y-comunicacion",
+    "delegation_id": 3,
+    "name": "Facultad de Letras y Comunicación",
+    "portal_url": "https://portal.ucol.mx/flc/",
+    "career_ids": [
+      131,
+      451,
+      438
+    ]
+  },
+  {
+    "id": 20,
+    "slug": "medicina",
+    "delegation_id": 3,
+    "name": "Facultad de Medicina",
+    "portal_url": "https://portal.ucol.mx/fm/",
+    "career_ids": [
+      189,
+      190,
+      464
+    ]
+  },
+  {
+    "id": 21,
+    "slug": "bellas-artes",
+    "delegation_id": 3,
+    "name": "Instituto Universitario de Bellas Artes",
+    "portal_url": "https://portal.ucol.mx/iuba/",
+    "career_ids": [
+      206,
+      192,
+      369
+    ]
+  },
+  {
+    "id": 26,
+    "slug": "filosofia",
+    "delegation_id": 3,
+    "name": "Escuela de Filosofía",
+    "portal_url": "https://portal.ucol.mx/ef/",
+    "career_ids": [
+      174
+    ]
+  },
+  {
+    "id": 22,
+    "slug": "arquitectura-y-diseno",
+    "delegation_id": 4,
+    "name": "Facultad de Arquitectura y Diseño",
+    "portal_url": "https://portal.ucol.mx/fayd/",
+    "career_ids": [
+      427,
+      429,
+      428
+    ]
+  },
+  {
+    "id": 23,
+    "slug": "ciencias-quimicas",
+    "delegation_id": 4,
+    "name": "Facultad de Ciencias Químicas",
+    "portal_url": "https://portal.ucol.mx/fcq/",
+    "career_ids": [
+      125,
+      368,
+      17
+    ]
+  },
+  {
+    "id": 24,
+    "slug": "ingenieria-civil",
+    "delegation_id": 4,
+    "name": "Facultad de Ingeniería Civil",
+    "portal_url": "https://portal.ucol.mx/fic/",
+    "career_ids": [
+      153,
+      155
+    ]
+  },
+  {
+    "id": 25,
+    "slug": "ingenieria-mecanica-electrica",
+    "delegation_id": 4,
+    "name": "Facultad de Ingeniería Mecánica y Eléctrica",
+    "portal_url": "https://portal.ucol.mx/fime/",
+    "career_ids": [
+      371,
+      418,
+      99,
+      349
+    ]
+  },
+  {
+    "id": 27,
+    "slug": "pedagogia",
+    "delegation_id": 5,
+    "name": "Facultad de Pedagogía",
+    "portal_url": "https://portal.ucol.mx/fpedagogia/",
+    "career_ids": [
+      468
+    ]
+  },
+  {
+    "id": 28,
+    "slug": "economia",
+    "delegation_id": 5,
+    "name": "Facultad de Economía",
+    "portal_url": "https://portal.ucol.mx/feconomia/",
+    "career_ids": [
+      477,
+      467
+    ]
+  },
+  {
+    "id": 29,
+    "slug": "turismo",
+    "delegation_id": 5,
+    "name": "Facultad de Turismo",
+    "portal_url": "https://portal.ucol.mx/ft/",
+    "career_ids": []
+  },
+  {
+    "id": 30,
+    "slug": "lenguas-extranjeras",
+    "delegation_id": 5,
+    "name": "Facultad de Lenguas Extranjeras",
+    "portal_url": "https://portal.ucol.mx/fle/",
+    "career_ids": [
+      177
+    ]
+  }
+]

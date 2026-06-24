@@ -1,0 +1,910 @@
+{
+  "professorData": {
+    "fullName": "Fermín Marcelo Rubén Maciel Barboza",
+    "contactInfo": {
+      "fullName": "Fermín Marcelo Rubén Maciel Barboza",
+      "institutionalEmail": "fermin_maciel@ucol.mx",
+      "nativeLanguage": "Español",
+      "phone": "3123015883",
+      "additionalEmail": "marce_macielb@hotmail.com",
+      "homeAddress": "Villa de Alvarez, Mpio. Villa de Alvarez, Colima"
+    },
+    "laborData": {
+      "employeeNumber": 8341,
+      "currentAppointment": "Profesor investigador de tiempo completo",
+      "admissionDate": "2017-08-01",
+      "academicUnit": "Facultad de Ingeniería Mecánica y Eléctrica",
+      "academicBody": {
+        "code": "UCOL-CA-83",
+        "name": "FIME",
+        "consolidationLevel": "CAEC"
+      },
+      "workAddress": "Carretera Coquimatlán - Colima Km 9 Coquimatlán Coquimatlán, 28950",
+      "evaluationCode": "I.II.2"
+    }
+  },
+  "academicFormation": {
+    "degrees": [
+      {
+        "id": "deg_Doctorado_Centro de Investigación Científica y de Educación",
+        "level": "Doctorado",
+        "title": "ComunicaciÃ³n",
+        "institution": "Centro de Investigación Científica y de Educación",
+        "startDate": 2012,
+        "endDate": 2016,
+        "graduationDate": "2016-08-05",
+        "thesisTitle": null,
+        "professionalId": null,
+        "degreeStatus": "En trámite",
+        "area": "Ingeniería y tecnología",
+        "evaluationCode": "I.I.1"
+      }
+    ],
+    "certifications": [
+      {
+        "id": "cert_2025_Diplomado Agentes TI",
+        "title": "Diplomado Agentes TIC: Prospectiva de la IA para el trabajo digital",
+        "institution": "Universidad de Colima",
+        "profile": "Pedagógico",
+        "scope": "Institucional",
+        "startDate": "01 de septiembre",
+        "endDate": "15 de octubre de 2025",
+        "hours": 90,
+        "year": 2025,
+        "credits": 5.625,
+        "evaluationCode": "I.I.3"
+      }
+    ],
+    "others": []
+  },
+  "educationalMaterials": [
+    {
+      "id": "prod_2025_Material_did",
+      "authors": [
+        "Fermín Marcelo Rubén Maciel Barboza"
+      ],
+      "title": "Juegos de forma estratégica: dominancia, equilibrio de Nash y óptimo de Pa reto",
+      "year": 2025,
+      "purpose": "Investigación",
+      "evaluationCode": null,
+      "type": "Material Didáctico",
+      "resourceType": "Recurso digital",
+      "description": "Recurso Digital (REDI)",
+      "accessUrl": "https://redi.ucol.mx/recurso/688"
+    },
+    {
+      "id": "prod_2025_Material_did",
+      "authors": [
+        "Fermín Marcelo Rubén Maciel Barboza"
+      ],
+      "title": "Introducción a las VLANs en la capa de acceso en redes jerárquicas",
+      "year": 2025,
+      "purpose": "Investigación",
+      "evaluationCode": null,
+      "type": "Material Didáctico",
+      "resourceType": "Recurso digital",
+      "description": "Recurso Digital (REDI)",
+      "accessUrl": "https://redi.ucol.mx/recurso/601 Evaluar en: I.I.9"
+    },
+    {
+      "id": "prod_2025_Material_did",
+      "authors": [
+        "Fermín Marcelo Rubén Maciel Barboza"
+      ],
+      "title": "Dilema del prisionero: dominancia, equilibrio y optimalidad",
+      "year": 2025,
+      "purpose": "Investigación",
+      "evaluationCode": null,
+      "type": "Material Didáctico",
+      "resourceType": "Recurso digital",
+      "description": "Recurso Digital (REDI)",
+      "accessUrl": "https://redi.ucol.mx/recurso/689 Evaluar en: I.I.9"
+    },
+    {
+      "id": "prod_2025_Prácticas_ed",
+      "authors": [
+        "Fermín Marcelo Rubén Maciel Barboza"
+      ],
+      "title": "",
+      "year": 2025,
+      "purpose": "Investigación",
+      "evaluationCode": "I.I.10",
+      "type": "Práctica Innovadora",
+      "resourceType": "Recurso digital",
+      "description": "",
+      "accessUrl": null
+    }
+  ],
+  "scientificProduction": [
+    {
+      "id": "prod_0_Ponencias_y_",
+      "authors": [
+        "Fermín Marcelo Rubén Maciel Barboza"
+      ],
+      "title": "Una mirada didáctica a la IA explicable",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.3",
+      "type": "Ponencia/Conferencia",
+      "eventName": "Coloquio de Ingeniería y Tecnologías Emergentes CITE 2025 https://cite.ici-labs.com/#programa",
+      "presentationType": "Libro",
+      "modality": "Presencial",
+      "location": "Coquimatlán, México",
+      "country": "México",
+      "date": "2026-01-29",
+      "scope": "Nacional"
+    },
+    {
+      "id": "prod_2025_Artículo_cie",
+      "authors": [
+        "Sergio Daniel Rodriguez Suárez",
+        "Víktor Iván Rodríguez Abdalá, Salvador Ibarra Delgado, José Ricardo Gómez Rodríguez, Cristian Eduardo Boyain, Goytia Luna, Fermín Marcelo Rubén Maciel Barboza"
+      ],
+      "title": "Desarrollo de un prototipo de geolocalización y procesamiento estadístico en tiempo real para la detección de impactos y volcaduras en automóviles",
+      "year": 2025,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.8",
+      "type": "Artículo Científico",
+      "journalName": "Difu100cia",
+      "volume": 19,
+      "number": "1",
+      "startPage": 10,
+      "endPage": 17,
+      "issn": "2007-3585",
+      "isPeerReviewed": true,
+      "impactFactor": null,
+      "doiOrUrl": "http://difu100cia.uaz.edu.mx/index.php/difuciencia /article/view/385",
+      "countryOrLocation": "Zacatecas, Mx"
+    },
+    {
+      "id": "prod_2025_Artículo_cie",
+      "authors": [
+        "Juan P.Morales-Álvarez",
+        "Víktor I.Rodríguez-Abdalá, Francisco R.Castillo-Soria, Remberto Sandoval-Arechiga, Fermín M.R.Maciel-Barboza y Jaime Sanchez-Garcia"
+      ],
+      "title": "A novel metric to estimate energy consumption in LoRaWAN based on SF adjustments",
+      "year": 2025,
+      "purpose": "Investigación",
+      "evaluationCode": null,
+      "type": "Artículo Científico",
+      "journalName": "Telecommunication Systems (Springer Nature)",
+      "volume": 2025,
+      "number": "88",
+      "startPage": 1,
+      "endPage": 23,
+      "issn": "1572-9451",
+      "isPeerReviewed": true,
+      "impactFactor": 2.3,
+      "doiOrUrl": "https://doi.org/10.1007/s11235-025-01296-w",
+      "countryOrLocation": "Netherlands"
+    },
+    {
+      "id": "prod_2025_Libro",
+      "authors": [
+        "Nuvia Aracelly Beltrán Robayo",
+        "Andrés Israel Medina Robayo",
+        "Teresa Alexandra Samaniego Cobo",
+        "Charles Miguel Pérez Espinoza",
+        "Carlos Augusto Alvarado Ojedis",
+        "María Irene Vásquez Villacís",
+        "Ángel Alberto Arce Ramírez",
+        "Verónica Adriana Freire Avilés",
+        "Darwin Roberto Pow Chon Long Vásquez",
+        "Jaime Andrés Cadena Iturralde",
+        "Eduardo Alberto Jama Aveiga",
+        "Walter A. Mata López",
+        "José Luis Álvarez Flores",
+        "Hugo Francisco Álvarez Valencia",
+        "Roberto Carlos López Rodríguez",
+        "Fermín Marcelo Rubén Maciel Barbosa"
+      ],
+      "title": "Aplicaciones Inteligentes en la Ingeniería del Futuro",
+      "year": 2025,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.9",
+      "type": "Libro",
+      "role": "Coautor",
+      "editorial": "Hambatu Sapiens (HS)",
+      "isbn": "978-9942-7415-4-7",
+      "pages": 0,
+      "editionNumber": 1,
+      "circulation": "Print on Demanda (POD)",
+      "country": "Ecuador",
+      "ebookUrl": "https://www.editorialhs.org/aplicaciones-inteligentes-en-la-ingenieria-del-futuro Páginas: 90"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: Castillo-Soria",
+        "F.R., Cortez-González",
+        "J., Ramirez-Gutierrez",
+        "R., Maciel-Barboza",
+        "F.M. and Soriano-Equigua",
+        "L. (2017), Generalized Quadrature Spatial Modulation Scheme Using Antenna Grouping. ETRI Journal",
+        "39: 707-717. https://doi.org/10.4218/etrij.17.0117.0162"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: Castillo-Soria, F.R., Cortez-González, J., Ramirez-Gutierrez, R., Maciel-Barboza, F.M. and Soriano-Equigua, L. (2017), Gener"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: F. M. Maciel",
+        "J. Sanchez",
+        "L. Soriano",
+        "F. R. C. Soria and J. Flores",
+        "\"User Scheduling Algorithms in Multiuser Massive MIMO Systems Towards 5G",
+        "\" in IEEE Latin America Transactions",
+        "vol. 13",
+        "no. 12",
+        "pp. 3781-3787, Dec. 2015",
+        "doi: 10.1109/TLA.2015.7404908"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: F. M. Maciel, J. Sanchez, L. Soriano, F. R. C. Soria and J. Flores, \"User Scheduling Algorithms in Multiuser Massive MIMO Sy"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: T. A. Santillán-Mata",
+        "F. M. Maciel-Barboza",
+        "A. Concha-Sánchez",
+        "L. Soriano-Equigua and C. E. B. Goytia-Luna",
+        "\"Optimizing Robot Pathways for Energy Efficiency: Dijkstra and A* Approaches",
+        "\" 2024 IEEE URUCON, Montevideo, Uruguay",
+        "2024",
+        "pp. 1-5",
+        "doi: 10.1109/URUCON63440.2024.10850049"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: T. A. Santillán-Mata, F. M. Maciel-Barboza, A. Concha-Sánchez, L. Soriano-Equigua and C. E. B. Goytia-Luna, \"Optimizing Robo"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: GomezRomero-Borquez",
+        "J.",
+        "Del-Valle-Soto",
+        "C.",
+        "Del-Puerto-Flores",
+        "J.a.",
+        "Castillo-Soria",
+        "F.R.",
+        "Maciel-Barboza",
+        "F.M. Implications for Serious Game Design: Quantification of Cognitive Stimulation in Virtual Reality Puzzle Games through MSC and SpEn EEG Analysis. Electronics 2024",
+        "13",
+        "2017. https://doi.org/10.3390/electronics13112017"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: GomezRomero-Borquez, J.; Del-Valle-Soto, C.; Del-Puerto-Flores, J.A.; Castillo-Soria, F.R.; Maciel-Barboza, F.M. Implication"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: Simon, Jorge, Hernandez-Gonzalez",
+        "et. al., Evaluation of the Microwave Absorption Properties of Solid Dehydrated and Powdered Agricultural Waste at X-Band Frequencies, International Journal of Antennas and Propagation",
+        "2024",
+        "8847668",
+        "10 pages",
+        "2024. https://doi.org/10.1155/2024/8847668"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: Simon, Jorge, Hernandez-Gonzalez, et. al., Evaluation of the Microwave Absorption Properties of Solid Dehydrated and Powdere"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: C. A. Gutiérrez",
+        "M. Pätzold",
+        "N. M. Ortega",
+        "C. A. Azurdia-Meza and F. M. Maciel-Barboza",
+        "\"Doppler Shift Characterization of Wideband Mobile Radio Channels",
+        "\" in IEEE Transactions on Vehicular Technology",
+        "vol. 68",
+        "no. 12",
+        "pp. 12375-12380, Dec. 2019",
+        "doi: 10.1109/TVT.2019.2945936"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": null,
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: C. A. Gutiérrez, M. Pätzold, N. M. Ortega, C. A. Azurdia-Meza and F. M. Maciel-Barboza, \"Doppler Shift Characterization of W"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: A. Ochoa",
+        "F. M. Maciel",
+        "F. Estrada et. al. \"Sistema de Adquisición y Procesamiento de señales electrocardiográficas\", Sistemas Cibernética e Informática",
+        "vol. 7",
+        "no. 2",
+        "2010"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: A. Ochoa, F. M. Maciel, F. Estrada et. al. \"Sistema de Adquisición y Procesamiento de señales electrocardiográficas\", Sistem"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: F. R. Castillo-Soria",
+        "C. Gutierrez",
+        "F. M. Maciel-Barboza",
+        "V. I. Rodriguez Abdala",
+        "and J. Datta, Relay-assisted multiuser MIMO-DQSM system for correlated fading channels",
+        "ETRI Journal 46 (2024)",
+        "184–193. DOI 10.4218/etrij.2022-0391"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: F. R. Castillo-Soria, C. Gutierrez, F. M. Maciel-Barboza, V. I. Rodriguez Abdala, and J. Datta, Relay-assisted multiuser MIM"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: Chávez-Gudiño",
+        "Ma.",
+        "Concha-Sánchez",
+        "A.",
+        "Maciel-Barboza",
+        "FM.",
+        "Gadi",
+        "SK.",
+        "Thenozhi",
+        "S.",
+        "Jiménez Betancourt",
+        "R. (2023). Desarrollo y control de un helicóptero de laboratorio de 2 GDL y de bajo costo. Revista Iberoamericana de Automática e Informática industrial. 20(4):366-378. https://doi.org/10.4995/riai.2023.18942"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: Chávez-Gudiño, MA.; Concha-Sánchez, A.; Maciel-Barboza, FM.; Gadi, SK.; Thenozhi, S.; Jiménez Betancourt, R. (2023). Desarro"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: Castillo",
+        "V.H., Martínez-García",
+        "A.I., Soriano-Equigua",
+        "L. et al. An interaction framework for supporting the adoption of EHRS by physicians. Univ Access Inf Soc 18",
+        "399–412 (2019). https://doi.org/10.1007/s10209-018-0612-x"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: Castillo, V.H., Martínez-García, A.I., Soriano-Equigua, L. et al. An interaction framework for supporting the adoption of EH"
+    },
+    {
+      "id": "prod_0_Citas",
+      "authors": [
+        ". Referencia completa: Alvarez-Flores JL, Vera-Reveles G, Castillo-Soria FR",
+        "et al. Cylindrical cavity resonator for complex permittivity estimation at 1.2853 GHz: Coir and skins of rice",
+        "banana",
+        "lemon",
+        "watermelon",
+        "pineapple and papaya. International Journal of Applied Electromagnetics and Mechanics. 2023",
+        "73(3):213-223. doi:10.3233/JAE-230027"
+      ],
+      "title": "",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.10",
+      "type": "Citas",
+      "raw": "Producción: Citas. Obra citada: Artículo. Autor(es): . Referencia completa: Alvarez-Flores JL, Vera-Reveles G, Castillo-Soria FR, et al. Cylindrical cavity resonator for complex permittivity estimatio"
+    },
+    {
+      "id": "prod_0_Ponencias_y_",
+      "authors": [
+        "Fermín Maercelo Rubén Maciel Barboza"
+      ],
+      "title": "Modelando estrategias de ciberseguridad con teoría de juegos",
+      "year": 0,
+      "purpose": "Investigación",
+      "evaluationCode": "I.II.3",
+      "type": "Ponencia/Conferencia",
+      "eventName": "2do Foro de Ciberseguridad Vulcan Security Conference https://www.colima.tecnm.mx/noticia/view/1633",
+      "presentationType": "Libro",
+      "modality": "Presencial",
+      "location": "Villa de Alvarez",
+      "country": "México",
+      "date": "2025-03-26",
+      "scope": "Nacional"
+    },
+    {
+      "id": "prod_2025_Otro_product",
+      "authors": [
+        "Fermín Marcelo Rubén Maciel Barboza (Rondalla de la Universidad de Colima)"
+      ],
+      "title": "Concierto de la Rondalla UdC",
+      "year": 2025,
+      "purpose": "Difusión",
+      "evaluationCode": "I.II.5",
+      "type": "Otro producto",
+      "raw": "Producción: Otro producto. Autor(es): Fermín Marcelo Rubén Maciel Barboza (Rondalla de la Universidad de Colima). Título: Concierto de la Rondalla UdC. Descripción: intérprete colectivo en la Rondalla"
+    },
+    {
+      "id": "prod_2025_Otro_product",
+      "authors": [
+        "Fermín Marcelo Rubén Maciel Barboza (Rondalla de la Universidad de Colima)"
+      ],
+      "title": "Concierto Recuerdos de Amor",
+      "year": 2025,
+      "purpose": "Difusión",
+      "evaluationCode": "I.II.5",
+      "type": "Otro producto",
+      "raw": "Producción: Otro producto. Autor(es): Fermín Marcelo Rubén Maciel Barboza (Rondalla de la Universidad de Colima). Título: Concierto Recuerdos de Amor. Descripción: Presentación artística colectiva con"
+    }
+  ],
+  "humanResources": {
+    "teaching": [
+      {
+        "courseName": "Procesamiento digital de señales",
+        "faculty": "Facultad de Ingeniería",
+        "program": "Maestría en Ingeniería Aplicada",
+        "level": "Maestría",
+        "accredited": "Si",
+        "status": "Acreditado",
+        "accreditingBody": "PNPC",
+        "weeklyHours": 6,
+        "semester": "2A",
+        "students": "5",
+        "period": "Feb-Jul",
+        "year": "2025",
+        "evaluationCode": "I.I.7"
+      },
+      {
+        "courseName": "Industria 4.0",
+        "faculty": "Facultad de Ingeniería",
+        "program": "Maestría en Ingeniería Aplicada",
+        "level": "Maestría",
+        "accredited": "Si",
+        "status": "Acreditado",
+        "accreditingBody": "PNPC",
+        "weeklyHours": 2,
+        "semester": "2A",
+        "students": "5",
+        "period": "Feb-Jul",
+        "year": "2025",
+        "evaluationCode": "I.I.7"
+      },
+      {
+        "courseName": "Taller de PLC",
+        "faculty": "Facultad de Ingeniería",
+        "program": "Ingenieria en Mecatrónica",
+        "level": "Licenciatura",
+        "accredited": "No",
+        "status": "",
+        "accreditingBody": "",
+        "weeklyHours": 5,
+        "semester": "8A",
+        "students": "17",
+        "period": "Feb-Jul",
+        "year": "2025",
+        "evaluationCode": "I.I.7"
+      },
+      {
+        "courseName": "Introducción a las redes de",
+        "faculty": "Facultad de Ingeniería",
+        "program": "Ingenieria en Sistemas",
+        "accredited": "",
+        "status": "",
+        "accreditingBody": "",
+        "weeklyHours": 5,
+        "semester": "2C",
+        "students": "16",
+        "period": "Feb-Jul",
+        "year": "2025",
+        "evaluationCode": "I.I.7"
+      },
+      {
+        "courseName": "Fundamentos de Conmutación y",
+        "faculty": "Facultad de Ingeniería",
+        "program": "Ingenieria en Sistemas",
+        "accredited": "",
+        "status": "",
+        "accreditingBody": "",
+        "weeklyHours": 5,
+        "semester": "3C",
+        "students": "16",
+        "period": "Ago-Ene",
+        "year": "2025",
+        "evaluationCode": "I.I.7"
+      },
+      {
+        "courseName": "Teoría de Juegos",
+        "faculty": "Facultad de Ingeniería",
+        "program": "Ingenieria en Computación",
+        "level": "Licenciatura",
+        "accredited": "No",
+        "status": "",
+        "accreditingBody": "",
+        "weeklyHours": 5,
+        "semester": "7A",
+        "students": "19",
+        "period": "Ago-Ene",
+        "year": "2025",
+        "evaluationCode": "I.I.7"
+      },
+      {
+        "courseName": "Controladores Lógicos",
+        "faculty": "Facultad de Ingeniería",
+        "program": "Ingenieria en Sistemas",
+        "accredited": "",
+        "status": "",
+        "accreditingBody": "",
+        "weeklyHours": 5,
+        "semester": "7C",
+        "students": "8",
+        "period": "Ago-Ene",
+        "year": "2025",
+        "evaluationCode": "I.I.7"
+      },
+      {
+        "evaluationCode": "I.III.1"
+      },
+      {
+        "evaluationCode": "I.III.1",
+        "program": "Ingeniería en Sistemas",
+        "accredited": ""
+      }
+    ],
+    "theses": [
+      {
+        "studentName": "Sergio Daniel Rodríguez Suarez",
+        "thesisTitle": "Desarrollo de un nodo de rastreo y monitoreo para fines tácticos",
+        "academicLevel": "Maestria",
+        "program": "Maestría en Ingeniería para la Innovación",
+        "role": "Coasesor",
+        "endDate": "2025-10-01 2025-10-24",
+        "evaluationCode": "I.III.9"
+      },
+      {
+        "studentName": "Carlos Hugo Carrillo Cardona,",
+        "thesisTitle": "Algoritmos evolutivos y bioinspirados para la asignación inteligente de puntos de acceso en un entorno multiusuario",
+        "academicLevel": "Licenciatura",
+        "program": "Ing. en Sistemas Electrónicos y",
+        "role": "Asesor",
+        "endDate": "2025-07-04",
+        "evaluationCode": "I.III.6"
+      },
+      {
+        "studentName": "Brandon Aarón Amezcua García",
+        "thesisTitle": "Detección de drones mediante aprendizaje automático",
+        "academicLevel": "Licenciatura",
+        "program": "Ing. en Sistemas Electrónicos y",
+        "role": "Asesor",
+        "endDate": "2025-07-04",
+        "evaluationCode": "I.III.6"
+      },
+      {
+        "studentName": "Rubén Alonso Ramírez Plascencia",
+        "thesisTitle": "Sistema guía para personas invidentes dentro de su hogar",
+        "academicLevel": "Licenciatura",
+        "program": "Ing. en Sistemas Electrónicos y",
+        "role": "Asesor",
+        "endDate": "2025-07-04",
+        "evaluationCode": "I.III.6"
+      },
+      {
+        "studentName": "Yafte Ordaz Carreño",
+        "thesisTitle": "Implementación de Sistemas de Comunicación y Redes para el sector minero",
+        "academicLevel": "Licenciatura",
+        "program": "Ingeniería en Sistemas Electrónicos y",
+        "role": "Asesor",
+        "endDate": "2025-03-24 2025-03-27",
+        "evaluationCode": "I.III.11"
+      },
+      {
+        "studentName": "Carlos Hugo Carrillo Cardona",
+        "thesisTitle": "Facultad de Ingeniería Mecánica y Eléctrica",
+        "program": "Ingeniería en Sistemas Electrónicos y",
+        "role": "Práctica profesional",
+        "evaluationCode": "I.III.1"
+      },
+      {
+        "studentName": "Juan Carlos Rosas García",
+        "thesisTitle": "Consorcio Minero Benito Juárez Peña Colorada",
+        "program": "Ingenieria en Sistemas Electrónicos y",
+        "role": "Práctica profesional",
+        "evaluationCode": "I.III.1"
+      },
+      {
+        "studentName": "Grupo 9C",
+        "thesisTitle": "",
+        "program": "Ingenieria en Sistemas Electrónicos y Telecomunicaciones",
+        "role": "",
+        "evaluationCode": "I.III.3"
+      },
+      {
+        "studentName": "César Alejandro Tolentino Mendoza y Aitor Larios",
+        "thesisTitle": "Cuevas",
+        "program": "Ingeniería en Sistemas Electrónicos y Telecomunicaciones",
+        "role": "",
+        "evaluationCode": "I.III.3"
+      },
+      {
+        "evaluationCode": "I.I.13"
+      }
+    ]
+  },
+  "academicManagement": [
+    {
+      "managementType": "Colectiva",
+      "participationType": "Interno",
+      "participationLevel": "Participante",
+      "commission": "Comité organizador de eventos",
+      "scope": "Nacional",
+      "role": "Vocal del evento Coloquio de Ingeniería y Tecnologías Emergentes",
+      "function": "Organización y calendarización del evento, comunicación con los ponentes, puesta en marcha y preparación de los sistemas de audio y transmisión https://elobservatorio.com.mx/?p=33440",
+      "reportDate": "",
+      "approved": false,
+      "submittedTo": "",
+      "weeklyHours": 0,
+      "status": "",
+      "evaluationCode": "I.IV.11"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Interno",
+      "participationLevel": "Participante",
+      "commission": "Evaluador/dictaminador de un programa o convocatoria",
+      "scope": "Estatal/regional",
+      "role": "Dictaminador",
+      "function": "Dictaminador durante el proceso de validación de los Recursos Educativos Digitales en el repositorio institucional REDI, en el marco de la convocatoria 2025",
+      "reportDate": "",
+      "approved": false,
+      "submittedTo": "",
+      "weeklyHours": 0,
+      "status": "",
+      "evaluationCode": "I.IV.10"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Interno",
+      "participationLevel": "Participante",
+      "commission": "Consejo universitario",
+      "scope": "Estatal/regional",
+      "role": "Miembro del Concejo Universitario",
+      "function": "Miembro del Concejo Universitario en representación de la Facultad de Ingeniería Mecánica y Eléctrica",
+      "reportDate": "",
+      "approved": false,
+      "submittedTo": "",
+      "weeklyHours": 0,
+      "status": "",
+      "evaluationCode": "I.IV.1"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Interno",
+      "participationLevel": "Participante",
+      "commission": "Consejo técnico",
+      "scope": "Estatal/regional",
+      "role": "Responsable del programa de Seguimiento de Egresados",
+      "function": "",
+      "reportDate": "",
+      "approved": false,
+      "submittedTo": "",
+      "weeklyHours": 0,
+      "status": "",
+      "evaluationCode": "I.IV.1"
+    },
+    {
+      "managementType": "Individualizada",
+      "participationType": "Interno",
+      "participationLevel": "Responsable",
+      "commission": "Coordinador de programa educativo o Jefe de carrera",
+      "scope": "Estatal/regional",
+      "role": "Jefe de carrera de Ing. en Sistemas Electrónicos y Telecomunicaciones",
+      "function": "",
+      "reportDate": "",
+      "approved": false,
+      "submittedTo": "",
+      "weeklyHours": 0,
+      "status": "",
+      "evaluationCode": "I.IV.5"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Interno",
+      "participationLevel": "Responsable",
+      "commission": "Comité organizador de eventos",
+      "scope": "Internacional",
+      "role": "Presidente",
+      "function": "Organización del Seminario de Industria 4.0, que se llevó a cabo en modalidad Híbrida del 25 de marzo al 28 de mayo de 2025 cumpliendo con un alcance Internacional",
+      "reportDate": "",
+      "approved": false,
+      "submittedTo": "",
+      "weeklyHours": 0,
+      "status": "",
+      "evaluationCode": "I.IV.11"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Interno",
+      "participationLevel": "Responsable",
+      "commission": "Seguimiento de egresados",
+      "scope": "Nacional",
+      "role": "Responsable de Seguimiento de Egresados ISET",
+      "function": "Responsable de Seguimiento de egresados de Ing. en Sistemas Electrónicos y Telecomunicaciones (ISET)",
+      "reportDate": "",
+      "approved": false,
+      "submittedTo": "",
+      "weeklyHours": 0,
+      "status": "",
+      "evaluationCode": "I.IV.6"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Interno",
+      "participationLevel": "Participante",
+      "commission": "Academias o Colegio de Academias",
+      "scope": "Estatal/regional",
+      "role": "Secretario de academia ISET 3C",
+      "function": "Secretario de la academia de tercer semestre de la carrera Ing. en Sistemas Electrónicos y Telecomunicaciones",
+      "reportDate": "",
+      "approved": false,
+      "submittedTo": "",
+      "weeklyHours": 0,
+      "status": "",
+      "evaluationCode": "I.IV.4"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Interno",
+      "participationLevel": "Participante",
+      "commission": "Academias o Colegio de Academias",
+      "scope": "Estatal/regional",
+      "role": "Secretario de academia ISET 2C",
+      "function": "Secretario de la Academia de Segundo semestre de la carrera Ing. en Sistemas Electrónicos y Telecomunicaciones",
+      "reportDate": "",
+      "approved": false,
+      "submittedTo": "",
+      "weeklyHours": 0,
+      "status": "",
+      "evaluationCode": "I.IV.4"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Externo",
+      "participationLevel": "Participante",
+      "commission": "Comité editorial y Árbitro en revistas de investigación o libros",
+      "scope": "Internacional",
+      "role": "Revisor",
+      "function": "Revisión del artículo Machine Learning Assisted mm-Wave MIMO Antenna Design with High Isolation for 5G Applications MacielBarboza_ESDEPED26 Página 12/15",
+      "reportDate": "2025-06-26",
+      "approved": true,
+      "submittedTo": "Comité editorial de la revista IEEE Latin American Transactions",
+      "weeklyHours": 0,
+      "status": "Concluido",
+      "evaluationCode": "I.II.14"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Externo",
+      "participationLevel": "Participante",
+      "commission": "Comité editorial y Árbitro en revistas de investigación o libros",
+      "scope": "Internacional",
+      "role": "Revisor",
+      "function": "Revisión del artículo titulado IoT-Based Unsupervised Learning for Characterizing Laboratory Operational States to Improve Safety and Sustainability",
+      "reportDate": "2025-09-12",
+      "approved": true,
+      "submittedTo": "Comité Editorial Revista Sustainability",
+      "weeklyHours": 0,
+      "status": "Concluido",
+      "evaluationCode": "I.II.14"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Externo",
+      "participationLevel": "Participante",
+      "commission": "Comité editorial y Árbitro en revistas de investigación o libros",
+      "scope": "Internacional",
+      "role": "Revisor",
+      "function": "Revisión del artículo titulado A Circular Fitting Clutter Suppression Algorithm Based on ISAC for Low Altitude UAVs para la Revista Sensors",
+      "reportDate": "2025-10-04",
+      "approved": true,
+      "submittedTo": "Comité editorial de la Revista Sensors",
+      "weeklyHours": 0,
+      "status": "Concluido",
+      "evaluationCode": "I.II.14"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Externo",
+      "participationLevel": "Participante",
+      "commission": "Comité editorial y Árbitro en revistas de investigación o libros",
+      "scope": "Internacional",
+      "role": "Revisor",
+      "function": "Revisor del artículo titulado Serious game to promote Water-Energy-Land-Food-People (WELFP) nexus perception and pro-environmental social urban agriculture para la Revista Sustainability",
+      "reportDate": "2025-04-14",
+      "approved": true,
+      "submittedTo": "Revista Sustainability",
+      "weeklyHours": 0,
+      "status": "Concluido",
+      "evaluationCode": "I.II.14"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Externo",
+      "participationLevel": "Participante",
+      "commission": "Evaluador/dictaminador de un programa o convocatoria",
+      "scope": "Nacional",
+      "role": "Evaluador",
+      "function": "Evaluador en la convocatoria de reconocimiento a Profesores de Tiempo Completo con Perfil Deseable",
+      "reportDate": "2025-02-28",
+      "approved": true,
+      "submittedTo": "Secretaria de Educación Pública",
+      "weeklyHours": 0,
+      "status": "Concluido",
+      "evaluationCode": "I.IV.10"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Externo",
+      "participationLevel": "Participante",
+      "commission": "Comité editorial y Árbitro en revistas de investigación o libros",
+      "scope": "Internacional",
+      "role": "Revisor",
+      "function": "Revisión del artículo \" A User - Centric Smart Library System: IoT- Driven Environmental Monitoring and ML-Based Optimization with Future Fog - Cloud Architecture\"",
+      "reportDate": "2025-03-24",
+      "approved": true,
+      "submittedTo": "Comité Editorial de la Revista Applied Sciences",
+      "weeklyHours": 0,
+      "status": "Concluido",
+      "evaluationCode": "I.II.14"
+    },
+    {
+      "managementType": "Colectiva",
+      "participationType": "Externo",
+      "participationLevel": "Participante",
+      "commission": "Comité editorial y Árbitro en revistas de investigación o libros",
+      "scope": "Internacional",
+      "role": "Revisor",
+      "function": "Revisión del artículo \" Comprehensive Review of Edge Computing for Power Sytems: State of the Art, Architecture and Applications\" para la Revista Applied Sciences",
+      "reportDate": "2025-03-29",
+      "approved": true,
+      "submittedTo": "Comité Editorial de la revista Applied Science MDPI",
+      "weeklyHours": 0,
+      "status": "Concluido",
+      "evaluationCode": "I.II.14"
+    },
+    {
+      "evaluationCode": "I.I.1"
+    },
+    {
+      "evaluationCode": "I.II.1"
+    }
+  ]
+}

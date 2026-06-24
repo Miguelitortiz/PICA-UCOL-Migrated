@@ -1,0 +1,77 @@
+{
+  "slug": "isabel-pedro-perez-garcia-42",
+  "title": "Investigador Titular B",
+  "fullName": "Isabel Pedro Pérez García",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Teoría de Autómatas",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 31
+      },
+      {
+        "name": "Programación Estructurada",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 26
+      },
+      {
+        "name": "Ingeniería de Software",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 18
+      }
+    ]
+  },
+  "department": "Facultad de Ciencias Químicas",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2018,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2009,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2007,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "isabel_pedro_perez_garcia_42@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-42-0",
+        "year": 2022,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.74
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-42-1",
+        "year": 2026,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 2.62
+      }
+    ]
+  },
+  "id": 45,
+  "delegation_id": 5,
+  "career_ids": [
+    477
+  ]
+}

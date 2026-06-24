@@ -1,0 +1,91 @@
+{
+  "slug": "elena-patricia-munoz-gutierrez-39",
+  "title": "Profesor Investigador de Tiempo Completo",
+  "fullName": "Elena Patricia Muñoz Gutiérrez",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Redes de Computadoras",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 17
+      },
+      {
+        "name": "Redes de Computadoras",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 22
+      }
+    ]
+  },
+  "department": "Facultad de Ciencias de la Educación",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2005,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2006,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2023,
+        "degree": "Doctor en Ciencias",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2001,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "elena_patricia_munoz_gutierrez_39@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [
+      {
+        "role": "Coautor",
+        "year": 2022,
+        "title": "Fundamentos y aplicaciones de Teoría de Autómatas",
+        "editorial": "Editorial Universitaria"
+      }
+    ],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-39-0",
+        "year": 2024,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.23
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-39-1",
+        "year": 2023,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.76
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-39-2",
+        "year": 2020,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 2.01
+      }
+    ]
+  },
+  "id": 42,
+  "delegation_id": 5,
+  "career_ids": [
+    370
+  ]
+}

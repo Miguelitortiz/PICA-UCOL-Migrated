@@ -1,0 +1,136 @@
+---
+interface DegreeRaw {
+  degree: string;
+  institution: string;
+  year: number;
+}
+
+interface Props {
+  academicFormation: {
+    doctorados?: DegreeRaw[];
+    maestrias?: DegreeRaw[];
+    licenciatura?: DegreeRaw;
+  };
+}
+
+const { academicFormation } = Astro.props;
+
+interface TimelineNode {
+  label: string;      // Ej: "Dr." o "Mtro."
+  degreeShort: string; // Ej: "Tec. Educativa"
+  degreeFull: string;
+  institution: string;
+  year: number;
+}
+
+const nodes: TimelineNode[] = [];
+
+// Procesar Licenciatura
+if (academicFormation.licenciatura) {
+  const lic = academicFormation.licenciatura;
+  // Abreviar Ingeniería o Licenciatura
+  let short = lic.degree;
+  if (short.toLowerCase().startsWith('ingeniería en ')) {
+    short = short.substring(14);
+  } else if (short.toLowerCase().startsWith('licenciatura en ')) {
+    short = short.substring(16);
+  }
+  // Limitar longitud
+  if (short.length > 22) short = short.slice(0, 20) + '...';
+
+  nodes.push({
+    label: 'Lic.',
+    degreeShort: short,
+    degreeFull: lic.degree,
+    institution: lic.institution,
+    year: lic.year
+  });
+}
+
+// Procesar Maestrias
+if (academicFormation.maestrias) {
+  academicFormation.maestrias.forEach(mae => {
+    let short = mae.degree;
+    if (short.toLowerCase().startsWith('maestría en ')) {
+      short = short.substring(12);
+    }
+    if (short.length > 22) short = short.slice(0, 20) + '...';
+
+    nodes.push({
+      label: 'Mtro.',
+      degreeShort: short,
+      degreeFull: mae.degree,
+      institution: mae.institution,
+      year: mae.year
+    });
+  });
+}
+
+// Procesar Doctorados
+if (academicFormation.doctorados) {
+  academicFormation.doctorados.forEach(doc => {
+    let short = doc.degree;
+    if (short.toLowerCase().startsWith('doctorado en ')) {
+      short = short.substring(13);
+    } else if (short.toLowerCase().startsWith('doctor en ')) {
+      short = short.substring(10);
+    } else if (short.toLowerCase().startsWith('doctora en ')) {
+      short = short.substring(11);
+    }
+    if (short.length > 22) short = short.slice(0, 20) + '...';
+
+    nodes.push({
+      label: 'Dr.',
+      degreeShort: short,
+      degreeFull: doc.degree,
+      institution: doc.institution,
+      year: doc.year
+    });
+  });
+}
+
+// Ordenar cronológicamente (más antiguo a más reciente)
+nodes.sort((a, b) => a.year - b.year);
+---
+
+<div class="bg-white border border-borde-gris p-6 rounded-sm">
+  <h3 class="font-section text-xs uppercase tracking-wider font-semibold text-acento-verde mb-4 flex items-center">
+    <span class="text-acento-verde mr-2">§</span> Trayectoria de Formación
+  </h3>
+
+  <!-- Contenedor con scroll horizontal en móvil si excede ancho -->
+  <div class="overflow-x-auto pb-24 pt-2 scrollbar-none">
+    <div class="min-w-[600px] md:min-w-0 relative flex justify-between items-center w-full px-20 my-4">
+      
+      <!-- Línea horizontal de fondo -->
+      <div class="absolute top-[8px] left-[88px] right-[88px] h-[2px] bg-borde-gris/70 z-0"></div>
+
+      {nodes.map((node) => (
+        <div class="relative z-10 flex flex-col items-center group">
+          <!-- Nodo físico o punto -->
+          <div 
+            class="w-4 h-4 rounded-full bg-acento-verde border-[3px] border-white shadow-sm flex items-center justify-center relative cursor-help transition-transform duration-150 group-hover:scale-110"
+            title={`${node.degreeFull} por la ${node.institution}`}
+          >
+            <!-- Pulso sutil de hover -->
+            <span class="absolute -inset-1 rounded-full border border-acento-verde/30 opacity-0 group-hover:opacity-100 transition-opacity duration-150"></span>
+          </div>
+
+          <!-- Burbuja de texto (Estilo Vitrina) -->
+          <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-bg-piedra/90 border border-borde-gris px-2 py-1 rounded-sm w-36 text-center shadow-xs">
+            <span class="font-mono text-[9px] text-acento-verde font-bold block leading-none mb-1">
+              {node.label}
+            </span>
+            <span class="font-sans text-[10px] text-text-marino font-semibold block leading-tight truncate" title={node.degreeFull}>
+              {node.degreeShort}
+            </span>
+            <span class="font-mono text-[9px] text-text-marino/60 block mt-0.5 font-semibold">
+              {node.year}
+            </span>
+          </div>
+        </div>
+      ))}
+
+    </div>
+  </div>
+</div>

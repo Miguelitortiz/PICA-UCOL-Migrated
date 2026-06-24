@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  # 1. Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: pica-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: pica_db
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Servidor de API y extractor (admin-hub-backend)
+  admin-hub-backend:
+    build:
+      context: .
+      dockerfile: services/admin-hub-backend/Dockerfile
+    container_name: pica-admin-hub-backend
+    restart: always
+    environment:
+      DATABASE_URL: postgres://${DB_USER:-admin}:${DB_PASSWORD:-admin_pass}@postgres:5432/pica_db
+      ADMIN_USER: ${ADMIN_USER:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin_pass}
+      PORT: 6769
+      PYTHON_PATH: python3
+    volumes:
+      - temp_uploads:/app/temp_uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # 3. Interfaz Administrativa (admin-hub-frontend)
+  admin-hub-frontend:
+    build:
+      context: .
+      dockerfile: services/admin-hub-frontend/Dockerfile
+    container_name: pica-admin-hub-frontend
+    restart: always
+    depends_on:
+      - admin-hub-backend
+
+  # 4. StudentHUB Frontend (student-hub)
+  student-hub:
+    build:
+      context: .
+      dockerfile: services/student-hub/Dockerfile
+      args:
+        DATABASE_URL: postgres://${DB_USER:-admin}:${DB_PASSWORD:-admin_pass}@postgres:5432/pica_db
+    container_name: pica-student-hub
+    restart: always
+    environment:
+      DATABASE_URL: postgres://${DB_USER:-admin}:${DB_PASSWORD:-admin_pass}@postgres:5432/pica_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # 5. ProjectHUB Placeholder (project-hub)
+  project-hub:
+    build:
+      context: .
+      dockerfile: services/project-hub/Dockerfile
+    container_name: pica-project-hub
+    restart: always
+    depends_on:
+      - student-hub
+
+  # 6. Proxy de Entrada (Nginx Reverse Proxy)
+  proxy:
+    build:
+      context: ./services/proxy
+      dockerfile: Dockerfile
+    container_name: pica-proxy
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - proxy_cache:/var/cache/nginx
+    depends_on:
+      - student-hub
+      - admin-hub-frontend
+      - admin-hub-backend
+      - project-hub
+
+volumes:
+  postgres_data:
+    driver: local
+  temp_uploads:
+    driver: local
+  proxy_cache:
+    driver: local

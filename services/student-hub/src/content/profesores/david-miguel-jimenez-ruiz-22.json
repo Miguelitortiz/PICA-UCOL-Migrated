@@ -1,0 +1,78 @@
+{
+  "slug": "david-miguel-jimenez-ruiz-22",
+  "title": "Profesor de Asignatura",
+  "fullName": "David Miguel Jiménez Ruiz",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Teoría de Autómatas",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 38
+      },
+      {
+        "name": "Bases de Datos",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 38
+      },
+      {
+        "name": "Programación Estructurada",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 25
+      }
+    ]
+  },
+  "department": "Facultad de Contabilidad y Administración",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2012,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2011,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2003,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "david_miguel_jimenez_ruiz_22@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-22-0",
+        "year": 2020,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.98
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-22-1",
+        "year": 2022,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.72
+      }
+    ]
+  },
+  "id": 25,
+  "delegation_id": 5,
+  "career_ids": [
+    177,
+    133
+  ]
+}

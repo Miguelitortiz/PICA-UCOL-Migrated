@@ -1,0 +1,1063 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="AdminHUB - Control de Gestión Docente y Administrativa">
+  <div class="max-w-5xl mx-auto space-y-6">
+    
+    <!-- Simulador de Roles en la Cabecera -->
+    <div class="bg-white border border-border-sutil rounded-sm p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <span class="font-mono text-[9px] uppercase tracking-wider text-secondary font-bold">Consola de Control / AdminHUB</span>
+        <h1 class="font-display text-2xl font-bold text-text-primary">
+          Gestión del Claustro y Programas
+        </h1>
+        <p class="text-xs text-text-secondary">
+          Panel de administración académica y carga de programas de estudio de la Universidad de Colima.
+        </p>
+      </div>
+
+      <!-- Simulador de Roles Dropdown -->
+      <div class="w-full md:w-auto bg-bg-piedra/60 p-2.5 border border-border-sutil rounded-sm flex items-center gap-3">
+        <span class="font-mono text-[9px] uppercase tracking-wider font-bold text-text-secondary">Rol Activo:</span>
+        <select 
+          id="role-selector" 
+          class="text-xs font-sans bg-white border border-border-sutil rounded-sm p-1.5 text-text-primary focus:border-secondary outline-none font-bold cursor-pointer h-11 px-3"
+        >
+          <option value="docente">👨‍🏫 Docente (Edición CV, Syllabus, Labs)</option>
+          <option value="jefe_carrera">🎓 Jefe de Carrera (Administrativo - Carrera)</option>
+          <option value="coordinador_facultad">🏛️ Coordinador de Facultad (Administrativo - Facultad)</option>
+          <option value="admin_general">🛠️ Administrador General (Administrativo - Global)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 1. VISTAS DEL DOCENTE (Panel Docente) -->
+    <!-- ========================================== -->
+    <div id="panel-docente" class="space-y-6 role-panel">
+      <!-- Pestañas Docente -->
+      <div class="bg-white border border-border-sutil rounded-sm flex flex-col min-h-[500px]">
+        <!-- Encabezado de Pestañas -->
+        <div class="flex flex-wrap border-b border-border-sutil font-sans text-[10px] sm:text-xs uppercase tracking-wider font-bold bg-bg-piedra/30">
+          <button class="docente-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-primary text-primary cursor-pointer transition-suiza" data-tab="cv-editor">
+            Curriculum Vitae (PDF)
+          </button>
+          <button class="docente-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-transparent text-text-secondary cursor-pointer transition-suiza" data-tab="syllabus-editor">
+            Cargar Plan de Estudios (Syllabus)
+          </button>
+          <button class="docente-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-transparent text-text-secondary cursor-pointer transition-suiza" data-tab="lab-scheduler">
+            Asignación de Laboratorios
+          </button>
+        </div>
+
+        <!-- Contenido de Pestañas Docente -->
+        <div class="p-6 flex-grow">
+          
+          <!-- SUBTAB 1: CV EDITOR (PDF UPLOAD) -->
+          <div id="docente-tab-cv-editor" class="docente-tab-panel space-y-6">
+            <div id="upload-container" class="border-2 border-dashed border-border-sutil rounded-sm p-12 text-center hover:border-primary transition-suiza cursor-pointer bg-white">
+              <input type="file" id="pdf-input" accept=".pdf" class="hidden" />
+              <div class="space-y-4">
+                <div class="text-4xl text-primary">📁</div>
+                <div class="space-y-2">
+                  <p class="font-bold text-sm">Arrastra y suelta el PDF de tu currículum aquí</p>
+                  <p class="text-[10px] text-text-secondary font-mono">o haz clic para buscar el archivo en tu equipo</p>
+                </div>
+                <p class="text-[9px] text-text-secondary/70 max-w-md mx-auto leading-relaxed">
+                  * El PDF debe seguir el formato oficial de la Universidad de Colima (CV2026).
+                </p>
+              </div>
+            </div>
+
+            <!-- Loader -->
+            <div id="loading-container" class="hidden border border-border-sutil rounded-sm p-12 text-center bg-white space-y-6">
+              <div class="relative w-12 h-12 mx-auto flex items-center justify-center">
+                <div class="absolute inset-0 border-2 border-bg-piedra rounded-full"></div>
+                <div class="absolute inset-0 border-2 border-t-primary rounded-full animate-spin"></div>
+                <span class="font-mono text-[9px] text-primary font-bold">PDF</span>
+              </div>
+              <p class="font-mono text-xs text-text-secondary" id="loading-status">Ejecutando extractor curricular...</p>
+            </div>
+
+            <!-- Error -->
+            <div id="error-container" class="hidden border border-error/40 rounded-sm p-6 text-center bg-white space-y-4">
+              <div class="text-xs text-error font-bold">⚠️ Error de Extracción</div>
+              <p class="text-[10px] font-mono text-text-secondary" id="error-message"></p>
+              <button id="btn-error-retry" class="px-4 border border-border-sutil text-xs font-mono rounded-sm hover:bg-bg-piedra transition-suiza cursor-pointer h-11 flex items-center justify-center">
+                Intentar de nuevo
+              </button>
+            </div>
+
+            <!-- CV Form Editor Interactiva (Oculto por defecto) -->
+            <div id="cv-editor-form" class="hidden space-y-4">
+              <div class="p-4 border border-border-sutil rounded-sm bg-bg-piedra/20 flex justify-between items-center">
+                <div>
+                  <h3 id="cv-doc-name" class="font-bold text-sm text-text-primary">Docente</h3>
+                  <p class="text-[10px] text-text-secondary">Edita el CV recuperado del PDF y guárdalo en la base de datos.</p>
+                </div>
+                <button id="btn-save-cv" class="px-6 bg-primary text-white text-xs font-mono font-bold uppercase rounded-sm hover:bg-opacity-90 transition-suiza cursor-pointer h-11 flex items-center justify-center">
+                  Guardar Perfil (CV) en BD
+                </button>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div class="card-suiza bg-white space-y-3">
+                  <h4 class="font-bold text-xs text-primary uppercase">Datos Personales</h4>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Nombre Completo</label>
+                    <input type="text" id="cv-field-name" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11" />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Correo Institucional</label>
+                    <input type="email" id="cv-field-email" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11" />
+                  </div>
+                </div>
+
+                <div class="card-suiza bg-white space-y-3">
+                  <h4 class="font-bold text-xs text-primary uppercase">Adscripción</h4>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Unidad Académica (DES)</label>
+                    <input type="text" id="cv-field-unit" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11" />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Nombramiento</label>
+                    <input type="text" id="cv-field-appointment" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 2: SYLLABUS EDITOR -->
+          <div id="docente-tab-syllabus-editor" class="docente-tab-panel hidden space-y-6">
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Subir Programa de Estudio / Syllabus</h3>
+              
+              <form id="form-syllabus" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Materia o Asignatura</label>
+                    <input id="syl-subject" type="text" placeholder="Ej: Patrones de Diseño" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Carrera Destino</label>
+                    <select id="syl-career" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <!-- Cargado dinámicamente -->
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Descripción General de la Asignatura</label>
+                  <textarea id="syl-description" rows="4" placeholder="Escribe la descripción general de la materia y objetivos principales del programa..." class="w-full border border-border-sutil rounded-sm p-3 outline-none focus:border-secondary leading-relaxed" required></textarea>
+                </div>
+
+                <div class="divider-suizo"></div>
+
+                <!-- Criterios de Evaluación -->
+                <div class="space-y-3">
+                  <h4 class="font-bold text-xs text-primary uppercase">Criterios de Evaluación y Calificación (%)</h4>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div>
+                      <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Exámenes</label>
+                      <input id="crit-exams" type="text" placeholder="Ej: 50%" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" />
+                    </div>
+                    <div>
+                      <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Proyecto Integrador</label>
+                      <input id="crit-project" type="text" placeholder="Ej: 30%" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" />
+                    </div>
+                    <div>
+                      <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Tareas</label>
+                      <input id="crit-assignments" type="text" placeholder="Ej: 20%" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" />
+                    </div>
+                    <div>
+                      <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Quizzes / Otros</label>
+                      <input id="crit-quizzes" type="text" placeholder="Ej: 10%" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="divider-suizo"></div>
+
+                <!-- Bibliografía y Recursos -->
+                <div class="space-y-3">
+                  <h4 class="font-bold text-xs text-primary uppercase">Bibliografía y Recursos (Libro 1)</h4>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Título del Recurso</label>
+                      <input id="res-title-1" type="text" placeholder="Ej: Design Patterns: Elements..." class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11" />
+                    </div>
+                    <div>
+                      <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Autor</label>
+                      <input id="res-author-1" type="text" placeholder="Ej: Erich Gamma" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11" />
+                    </div>
+                    <div>
+                      <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Link de Consulta (Opcional)</label>
+                      <input id="res-link-1" type="text" placeholder="http://..." class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-4 flex justify-between items-center border-t border-bg-piedra">
+                  <span class="text-[10px] text-text-secondary font-mono">El plan se guardará con autoría de tu docente activo.</span>
+                  <button type="submit" class="px-6 bg-primary text-white text-xs font-mono font-bold uppercase rounded-sm hover:bg-opacity-90 transition-suiza cursor-pointer h-11 flex items-center justify-center">
+                    Guardar Plan de Estudios
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- SUBTAB 3: LAB SCHEDULER -->
+          <div id="docente-tab-lab-scheduler" class="docente-tab-panel hidden space-y-6">
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Asignación / Reserva de Laboratorio</h3>
+              <p class="text-xs text-text-secondary">
+                Como docente, registra en qué laboratorios impartes clases de tus materias para notificar a los alumnos e integrarlo en el croquis interactivo.
+              </p>
+
+              <form id="form-lab-schedule" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Seleccionar Laboratorio</label>
+                    <select id="lab-room" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <option value="Laboratorio de Cómputo 3">Laboratorio de Cómputo 3 (Edificio B)</option>
+                      <option value="Laboratorio de Telemática 1">Laboratorio de Telemática 1 (Edificio C)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Materia</label>
+                    <input id="lab-subject" type="text" placeholder="Ej: Desarrollo Web Integrativo" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Grupo Académico</label>
+                    <select id="lab-group" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <!-- Cargado dinámicamente -->
+                    </select>
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Día de la Semana</label>
+                    <select id="lab-day" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <option value="Lunes">Lunes</option>
+                      <option value="Martes">Martes</option>
+                      <option value="Miércoles">Miércoles</option>
+                      <option value="Jueves">Jueves</option>
+                      <option value="Viernes">Viernes</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Hora Inicio</label>
+                    <input id="lab-start" type="time" value="09:00" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Hora Fin</label>
+                    <input id="lab-end" type="time" value="11:00" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-bg-piedra flex justify-end">
+                  <button type="submit" class="px-6 bg-primary text-white text-xs font-mono font-bold uppercase rounded-sm hover:bg-opacity-90 transition-suiza cursor-pointer h-11 flex items-center justify-center">
+                    Reservar Laboratorio
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. VISTAS ADMINISTRATIVAS (Panel Admin) -->
+    <!-- ========================================== -->
+    <div id="panel-administrativo" class="space-y-6 role-panel hidden">
+      <div class="bg-white border border-border-sutil rounded-sm flex flex-col min-h-[500px]">
+        <!-- Encabezado de Pestañas Admin -->
+        <div class="flex flex-wrap border-b border-border-sutil font-sans text-[10px] sm:text-xs uppercase tracking-wider font-bold bg-bg-piedra/30">
+          <button class="admin-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-primary text-primary cursor-pointer transition-suiza" data-tab="schedules-mgr">
+            Gestión de Horarios
+          </button>
+          <button class="admin-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-transparent text-text-secondary cursor-pointer transition-suiza" data-tab="tutor-mgr">
+            Asignar Tutores
+          </button>
+          <button class="admin-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-transparent text-text-secondary cursor-pointer transition-suiza" data-tab="exams-mgr">
+            Programar Exámenes
+          </button>
+        </div>
+
+        <!-- Contenido de Pestañas Admin -->
+        <div class="p-6 flex-grow">
+          
+          <!-- SUBTAB 1: HORARIOS MANAGER -->
+          <div id="admin-tab-schedules-mgr" class="admin-tab-panel space-y-6">
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Crear Horario de Clase</h3>
+              
+              <form id="form-admin-schedule" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Grupo Escolar</label>
+                    <select id="sched-group" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <!-- Cargado dinámicamente -->
+                    </select>
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Materia</label>
+                    <input id="sched-subject" type="text" placeholder="Ej: Patrones de Diseño" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Docente Asignado</label>
+                    <select id="sched-professor" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <!-- Cargado dinámicamente -->
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Aula / Salón</label>
+                    <input id="sched-classroom" type="text" placeholder="Ej: Aula 401" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Día</label>
+                    <select id="sched-day" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <option value="Lunes">Lunes</option>
+                      <option value="Martes">Martes</option>
+                      <option value="Miércoles">Miércoles</option>
+                      <option value="Jueves">Jueves</option>
+                      <option value="Viernes">Viernes</option>
+                    </select>
+                  </div>
+                  <div class="flex items-center h-11 pt-2">
+                    <label class="flex items-center gap-2 font-mono text-[10px] uppercase font-bold text-text-secondary cursor-pointer min-h-[44px]">
+                      <input id="sched-islab" type="checkbox" class="w-4 h-4 rounded-sm border-border-sutil text-primary focus:ring-secondary" />
+                      ¿Es un Laboratorio?
+                    </label>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Hora Inicio</label>
+                    <input id="sched-start" type="time" value="07:00" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Hora Fin</label>
+                    <input id="sched-end" type="time" value="09:00" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-bg-piedra flex justify-end">
+                  <button type="submit" class="px-6 bg-primary text-white text-xs font-mono font-bold uppercase rounded-sm hover:bg-opacity-90 transition-suiza cursor-pointer h-11 flex items-center justify-center">
+                    Agregar Clase al Horario
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Listado de Horarios Existentes -->
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Clases Programadas en el Sistema</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="border-b border-border-sutil bg-bg-piedra">
+                      <th class="p-2 font-mono text-[9px] uppercase">Grupo</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Materia</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Profesor</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Aula</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Horario</th>
+                      <th class="p-2 font-mono text-[9px] uppercase text-right">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-schedules-list">
+                    <!-- Cargados dinámicamente -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 2: TUTORES MANAGER -->
+          <div id="admin-tab-tutor-mgr" class="admin-tab-panel hidden space-y-6">
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Asignar Tutor de Grupo</h3>
+              <p class="text-xs text-text-secondary">
+                Selecciona un grupo escolar y el docente que fungirá como tutor para brindar asesorías.
+              </p>
+
+              <form id="form-admin-tutor" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Grupo Académico</label>
+                    <select id="tutor-group" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <!-- Cargado dinámicamente -->
+                    </select>
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Profesor Tutor</label>
+                    <select id="tutor-professor" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <!-- Cargado dinámicamente -->
+                    </select>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-bg-piedra flex justify-end">
+                  <button type="submit" class="px-6 bg-primary text-white text-xs font-mono font-bold uppercase rounded-sm hover:bg-opacity-90 transition-suiza cursor-pointer h-11 flex items-center justify-center">
+                    Asignar Tutoría
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- SUBTAB 3: EXAMEN MANAGER -->
+          <div id="admin-tab-exams-mgr" class="admin-tab-panel hidden space-y-6">
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Programar Examen / Evaluación</h3>
+              
+              <form id="form-admin-exams" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Grupo</label>
+                    <select id="exam-group" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <!-- Cargado dinámicamente -->
+                    </select>
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Materia</label>
+                    <input id="exam-subject" type="text" placeholder="Ej: Desarrollo Web Integrativo" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Fase / Examen</label>
+                    <select id="exam-phase" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <option value="1° Parcial">1° Parcial</option>
+                      <option value="2° Parcial">2° Parcial</option>
+                      <option value="3° Parcial">3° Parcial</option>
+                      <option value="Ordinario">Examen Ordinario</option>
+                      <option value="Extraordinario">Examen Extraordinario</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Fecha</label>
+                    <input id="exam-date" type="date" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Hora</label>
+                    <input id="exam-time" type="time" value="09:00" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-bg-piedra flex justify-end">
+                  <button type="submit" class="px-6 bg-primary text-white text-xs font-mono font-bold uppercase rounded-sm hover:bg-opacity-90 transition-suiza cursor-pointer h-11 flex items-center justify-center">
+                    Programar Fecha de Examen
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Listado de Exámenes Existentes -->
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Exámenes Programados en el Sistema</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="border-b border-border-sutil bg-bg-piedra">
+                      <th class="p-2 font-mono text-[9px] uppercase">Grupo</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Materia</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Examen</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Fecha</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Hora</th>
+                      <th class="p-2 font-mono text-[9px] uppercase text-right">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-exams-list">
+                    <!-- Cargados dinámicamente -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // --- BASIC AUTH & FETCH HELPER ---
+    function getAuthHeader() {
+      let saved = localStorage.getItem('eduvitae_auth');
+      if (!saved) {
+        saved = btoa('admin:admin_pass');
+        localStorage.setItem('eduvitae_auth', saved);
+      }
+      return `Basic ${saved}`;
+    }
+
+    async function apiFetch(url: string, options: any = {}) {
+      options.headers = {
+        ...options.headers,
+        'Authorization': getAuthHeader()
+      };
+      let res = await fetch(url, options);
+      if (res.status === 401) {
+        const username = prompt('Ingrese el usuario de administración:');
+        const password = prompt('Ingrese la contraseña de administración:');
+        if (username && password) {
+          const creds = btoa(`${username}:${password}`);
+          localStorage.setItem('eduvitae_auth', creds);
+          options.headers['Authorization'] = `Basic ${creds}`;
+          res = await fetch(url, options);
+        }
+      }
+      return res;
+    }
+
+    // --- VARIABLES DE DATOS MAESTROS ---
+    let professorsList: any[] = [];
+    let groupsList: any[] = [];
+    let careersList: any[] = [];
+    let schedulesList: any[] = [];
+    let examsList: any[] = [];
+
+    // --- CARGAR DATOS GENERALES ---
+    async function loadAllAdminData() {
+      try {
+        const [profRes, grpRes, carRes, schedRes, examRes] = await Promise.all([
+          apiFetch('/api/professors'),
+          apiFetch('/api/groups'),
+          apiFetch('/api/reference/careers'),
+          apiFetch('/api/schedules'),
+          apiFetch('/api/exams')
+        ]);
+
+        if (profRes.ok) professorsList = await profRes.json();
+        if (grpRes.ok) groupsList = await grpRes.json();
+        if (carRes.ok) careersList = await carRes.json();
+        if (schedRes.ok) schedulesList = await schedRes.json();
+        if (examRes.ok) examsList = await examRes.json();
+
+        populateFormSelectors();
+        renderSchedulesTable();
+        renderExamsTable();
+      } catch (err) {
+        console.error('Error al precargar datos para administración:', err);
+      }
+    }
+
+    // --- POPULAR SELECTORES DE FORMULARIOS ---
+    function populateFormSelectors() {
+      // 1. Selector de Carreras (Syllabus)
+      const sylCareer = document.getElementById("syl-career") as HTMLSelectElement;
+      if (sylCareer) {
+        sylCareer.innerHTML = "";
+        careersList.forEach(c => {
+          const opt = document.createElement("option");
+          opt.value = String(c.id);
+          opt.textContent = `${c.name} (${c.slug})`;
+          sylCareer.appendChild(opt);
+        });
+      }
+
+      // 2. Selectores de Grupos
+      const grpSelectors = ["lab-group", "sched-group", "tutor-group", "exam-group"];
+      grpSelectors.forEach(id => {
+        const sel = document.getElementById(id) as HTMLSelectElement;
+        if (sel) {
+          sel.innerHTML = "";
+          groupsList.forEach(g => {
+            const opt = document.createElement("option");
+            opt.value = String(g.id);
+            const career = careersList.find(c => c.id === g.career_id);
+            opt.textContent = `${g.name} &mdash; ${career ? career.name : 'Carrera ' + g.career_id}`;
+            sel.appendChild(opt);
+          });
+        }
+      });
+
+      // 3. Selectores de Profesores
+      const profSelectors = ["sched-professor", "tutor-professor"];
+      profSelectors.forEach(id => {
+        const sel = document.getElementById(id) as HTMLSelectElement;
+        if (sel) {
+          sel.innerHTML = '<option value="">Sin docente / Tutor</option>';
+          professorsList.forEach(p => {
+            const opt = document.createElement("option");
+            opt.value = String(p.id);
+            opt.textContent = p.full_name;
+            sel.appendChild(opt);
+          });
+        }
+      });
+    }
+
+    // --- RENDER TABLA DE HORARIOS ---
+    function renderSchedulesTable() {
+      const tbody = document.getElementById("table-schedules-list");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      if (schedulesList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-text-secondary/60 italic">No hay clases programadas.</td></tr>`;
+        return;
+      }
+
+      schedulesList.forEach(s => {
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-bg-piedra hover:bg-bg-papel";
+        
+        tr.innerHTML = `
+          <td class="p-2 font-bold">${s.group_name || 'Grupo ' + s.class_group_id}</td>
+          <td class="p-2 font-medium">${s.subject_name} ${s.is_laboratory ? '🧪' : ''}</td>
+          <td class="p-2 text-text-secondary">${s.professor_name || 'No asignado'}</td>
+          <td class="p-2 font-mono font-bold text-[10px] text-secondary">${s.classroom_name}</td>
+          <td class="p-2 font-mono text-[10px] text-text-secondary">${s.day_of_week} ${s.start_time.substring(0,5)}-${s.end_time.substring(0,5)}</td>
+          <td class="p-2 text-right">
+            <button class="btn-delete-sched inline-flex items-center justify-center px-4 h-11 bg-error/10 hover:bg-error/20 text-error font-mono text-[10px] uppercase font-bold border border-error/20 rounded-[2px] transition-suiza cursor-pointer" data-id="${s.id}">
+              Eliminar
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Listeners borrar horario
+      document.querySelectorAll(".btn-delete-sched").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-id");
+          if (confirm("¿Estás seguro de que deseas eliminar esta clase de la grilla horaria?")) {
+            const res = await apiFetch(`/api/schedules/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+              alert("Horario eliminado correctamente.");
+              loadAllAdminData();
+            }
+          }
+        });
+      });
+    }
+
+    // --- RENDER TABLA DE EXÁMENES ---
+    function renderExamsTable() {
+      const tbody = document.getElementById("table-exams-list");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      if (examsList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-text-secondary/60 italic">No hay exámenes programados.</td></tr>`;
+        return;
+      }
+
+      examsList.forEach(e => {
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-bg-piedra hover:bg-bg-papel";
+        const dateStr = new Date(e.exam_date).toLocaleDateString('es-MX', {day: 'numeric', month: 'short', year: 'numeric'});
+        
+        tr.innerHTML = `
+          <td class="p-2 font-bold">${e.group_name || 'Grupo ' + e.class_group_id}</td>
+          <td class="p-2 font-medium">${e.subject_name}</td>
+          <td class="p-2"><span class="font-mono text-[9px] px-1.5 py-0.5 bg-secondary/5 border border-secondary/15 rounded-sm text-secondary font-bold">${e.exam_name}</span></td>
+          <td class="p-2 font-mono text-[10px] text-text-secondary">${dateStr}</td>
+          <td class="p-2 font-mono text-[10px] text-text-secondary">${e.exam_time.substring(0,5)}</td>
+          <td class="p-2 text-right">
+            <button class="btn-delete-exam inline-flex items-center justify-center px-4 h-11 bg-error/10 hover:bg-error/20 text-error font-mono text-[10px] uppercase font-bold border border-error/20 rounded-[2px] transition-suiza cursor-pointer" data-id="${e.id}">
+              Eliminar
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Listeners borrar examen
+      document.querySelectorAll(".btn-delete-exam").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-id");
+          if (confirm("¿Estás seguro de que deseas eliminar este examen del calendario escolar?")) {
+            const res = await apiFetch(`/api/exams/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+              alert("Examen eliminado correctamente.");
+              loadAllAdminData();
+            }
+          }
+        });
+      });
+    }
+
+    // --- SELECTOR DE ROL (SIMULADOR) ---
+    const roleSelector = document.getElementById("role-selector") as HTMLSelectElement;
+    const panelDocente = document.getElementById("panel-docente");
+    const panelAdmin = document.getElementById("panel-administrativo");
+
+    if (roleSelector) {
+      roleSelector.addEventListener("change", () => {
+        const role = roleSelector.value;
+        if (role === "docente") {
+          panelDocente?.classList.remove("hidden");
+          panelAdmin?.classList.add("hidden");
+        } else {
+          panelDocente?.classList.add("hidden");
+          panelAdmin?.classList.remove("hidden");
+        }
+      });
+    }
+
+    // --- NAVEGACIÓN SUBTABS ---
+    document.querySelectorAll(".docente-tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".docente-tab-btn").forEach(b => {
+          b.classList.remove("text-primary", "border-b-primary");
+          b.classList.add("border-transparent", "text-text-secondary");
+        });
+        btn.classList.add("text-primary", "border-b-primary");
+        btn.classList.remove("border-transparent", "text-text-secondary");
+
+        document.querySelectorAll(".docente-tab-panel").forEach(p => p.classList.add("hidden"));
+        const target = btn.getAttribute("data-tab");
+        const panel = document.getElementById(`docente-tab-${target}`);
+        if (panel) panel.classList.remove("hidden");
+      });
+    });
+
+    document.querySelectorAll(".admin-tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".admin-tab-btn").forEach(b => {
+          b.classList.remove("text-primary", "border-b-primary");
+          b.classList.add("border-transparent", "text-text-secondary");
+        });
+        btn.classList.add("text-primary", "border-b-primary");
+        btn.classList.remove("border-transparent", "text-text-secondary");
+
+        document.querySelectorAll(".admin-tab-panel").forEach(p => p.classList.add("hidden"));
+        const target = btn.getAttribute("data-tab");
+        const panel = document.getElementById(`admin-tab-${target}`);
+        if (panel) panel.classList.remove("hidden");
+      });
+    });
+
+    // --- FORM SUBMIT: SYLLABUS ---
+    const formSyllabus = document.getElementById("form-syllabus");
+    if (formSyllabus) {
+      formSyllabus.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const subject = (document.getElementById("syl-subject") as HTMLInputElement).value.trim();
+        const careerId = (document.getElementById("syl-career") as HTMLSelectElement).value;
+        const description = (document.getElementById("syl-description") as HTMLTextAreaElement).value.trim();
+        
+        const critExams = (document.getElementById("crit-exams") as HTMLInputElement).value.trim() || "0%";
+        const critProject = (document.getElementById("crit-project") as HTMLInputElement).value.trim() || "0%";
+        const critAssignments = (document.getElementById("crit-assignments") as HTMLInputElement).value.trim() || "0%";
+        const critQuizzes = (document.getElementById("crit-quizzes") as HTMLInputElement).value.trim() || "0%";
+
+        const resTitle = (document.getElementById("res-title-1") as HTMLInputElement).value.trim();
+        const resAuthor = (document.getElementById("res-author-1") as HTMLInputElement).value.trim();
+        const resLink = (document.getElementById("res-link-1") as HTMLInputElement).value.trim();
+
+        const evaluation_criteria = {
+          exams: critExams,
+          project: critProject,
+          assignments: critAssignments,
+          quizzes: critQuizzes
+        };
+
+        const resources = [];
+        if (resTitle) {
+          resources.push({
+            title: resTitle,
+            author: resAuthor || "",
+            link: resLink || "#"
+          });
+        }
+
+        const payload = {
+          subject_name: subject,
+          career_id: careerId,
+          program_description: description,
+          evaluation_criteria,
+          resources,
+          created_by: 1 // Docente activo simulado (Dr. Walter Mata id=1)
+        };
+
+        const res = await apiFetch('/api/syllabus', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          alert("¡Plan de estudios (Syllabus) guardado correctamente!");
+          formSyllabus.reset();
+        } else {
+          const err = await res.json();
+          alert("Error: " + err.error);
+        }
+      });
+    }
+
+    // --- FORM SUBMIT: LAB RESERVATION ---
+    const formLab = document.getElementById("form-lab-schedule");
+    if (formLab) {
+      formLab.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const room = (document.getElementById("lab-room") as HTMLSelectElement).value;
+        const subject = (document.getElementById("lab-subject") as HTMLInputElement).value.trim();
+        const groupId = (document.getElementById("lab-group") as HTMLSelectElement).value;
+        const day = (document.getElementById("lab-day") as HTMLSelectElement).value;
+        const start = (document.getElementById("lab-start") as HTMLInputElement).value + ":00";
+        const end = (document.getElementById("lab-end") as HTMLInputElement).value + ":00";
+
+        const payload = {
+          class_group_id: groupId,
+          subject_name: subject,
+          professor_id: 1, // Docente simulado (id=1)
+          classroom_name: room,
+          day_of_week: day,
+          start_time: start,
+          end_time: end,
+          is_laboratory: true
+        };
+
+        const res = await apiFetch('/api/schedules', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          alert("¡Reserva de laboratorio registrada en el horario escolar!");
+          formLab.reset();
+          loadAllAdminData();
+        } else {
+          const err = await res.json();
+          alert("Error: " + err.error);
+        }
+      });
+    }
+
+    // --- FORM SUBMIT: ADMIN SCHEDULE ---
+    const formAdminSched = document.getElementById("form-admin-schedule");
+    if (formAdminSched) {
+      formAdminSched.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const groupId = (document.getElementById("sched-group") as HTMLSelectElement).value;
+        const subject = (document.getElementById("sched-subject") as HTMLInputElement).value.trim();
+        const profId = (document.getElementById("sched-professor") as HTMLSelectElement).value;
+        const room = (document.getElementById("sched-classroom") as HTMLInputElement).value.trim();
+        const day = (document.getElementById("sched-day") as HTMLSelectElement).value;
+        const start = (document.getElementById("sched-start") as HTMLInputElement).value + ":00";
+        const end = (document.getElementById("sched-end") as HTMLInputElement).value + ":00";
+        const isLab = (document.getElementById("sched-islab") as HTMLInputElement).checked;
+
+        const payload = {
+          class_group_id: groupId,
+          subject_name: subject,
+          professor_id: profId || null,
+          classroom_name: room,
+          day_of_week: day,
+          start_time: start,
+          end_time: end,
+          is_laboratory: isLab
+        };
+
+        const res = await apiFetch('/api/schedules', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          alert("¡Clase programada y cargada con éxito!");
+          formAdminSched.reset();
+          loadAllAdminData();
+        } else {
+          const err = await res.json();
+          alert("Error: " + err.error);
+        }
+      });
+    }
+
+    // --- FORM SUBMIT: TUTOR ASSIGNMENT ---
+    const formAdminTutor = document.getElementById("form-admin-tutor");
+    if (formAdminTutor) {
+      formAdminTutor.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const groupId = (document.getElementById("tutor-group") as HTMLSelectElement).value;
+        const profId = (document.getElementById("tutor-professor") as HTMLSelectElement).value;
+
+        const payload = {
+          group_id: groupId,
+          tutor_id: profId || null
+        };
+
+        const res = await apiFetch('/api/groups/tutor', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          alert("¡Tutor de grupo asignado exitosamente!");
+          formAdminTutor.reset();
+          loadAllAdminData();
+        } else {
+          const err = await res.json();
+          alert("Error: " + err.error);
+        }
+      });
+    }
+
+    // --- FORM SUBMIT: EXAMS PROGRAMMING ---
+    const formAdminExams = document.getElementById("form-admin-exams");
+    if (formAdminExams) {
+      formAdminExams.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const groupId = (document.getElementById("exam-group") as HTMLSelectElement).value;
+        const subject = (document.getElementById("exam-subject") as HTMLInputElement).value.trim();
+        const phase = (document.getElementById("exam-phase") as HTMLSelectElement).value;
+        const date = (document.getElementById("exam-date") as HTMLInputElement).value;
+        const time = (document.getElementById("exam-time") as HTMLInputElement).value + ":00";
+
+        const payload = {
+          class_group_id: groupId,
+          subject_name: subject,
+          exam_name: phase,
+          exam_date: date,
+          exam_time: time
+        };
+
+        const res = await apiFetch('/api/exams', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          alert("¡Examen programado en el calendario estudiantil!");
+          formAdminExams.reset();
+          loadAllAdminData();
+        } else {
+          const err = await res.json();
+          alert("Error: " + err.error);
+        }
+      });
+    }
+
+    // --- PROCESAR CV DEL PDF (Original logic shortened for demo/safety) ---
+    const pdfInput = document.getElementById("pdf-input") as HTMLInputElement;
+    const uploadContainer = document.getElementById("upload-container");
+    const loadingContainer = document.getElementById("loading-container");
+    const errorContainer = document.getElementById("error-container");
+    const cvEditorForm = document.getElementById("cv-editor-form");
+    const cvDocName = document.getElementById("cv-doc-name");
+    const cvFieldName = document.getElementById("cv-field-name") as HTMLInputElement;
+    const cvFieldEmail = document.getElementById("cv-field-email") as HTMLInputElement;
+    const cvFieldUnit = document.getElementById("cv-field-unit") as HTMLInputElement;
+    const cvFieldAppointment = document.getElementById("cv-field-appointment") as HTMLInputElement;
+    const btnSaveCV = document.getElementById("btn-save-cv");
+    const btnErrorRetry = document.getElementById("btn-error-retry");
+
+    let currentCVData: any = null;
+
+    if (uploadContainer) {
+      uploadContainer.addEventListener("click", () => pdfInput?.click());
+    }
+
+    if (pdfInput) {
+      pdfInput.addEventListener("change", async () => {
+        const file = pdfInput.files?.[0];
+        if (!file) return;
+
+        uploadContainer?.classList.add("hidden");
+        loadingContainer?.classList.remove("hidden");
+
+        const formData = new FormData();
+        formData.append("pdf", file);
+
+        try {
+          const res = await apiFetch("/api/extract", {
+            method: "POST",
+            body: formData
+          });
+
+          if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || "Fallo en la extracción");
+          }
+
+          currentCVData = await res.json();
+          
+          loadingContainer?.classList.add("hidden");
+          cvEditorForm?.classList.remove("hidden");
+
+          if (cvDocName) cvDocName.textContent = currentCVData.professorData?.fullName || "Docente";
+          if (cvFieldName) cvFieldName.value = currentCVData.professorData?.fullName || "";
+          if (cvFieldEmail) cvFieldEmail.value = currentCVData.professorData?.contactInfo?.institutionalEmail || "";
+          if (cvFieldUnit) cvFieldUnit.value = currentCVData.professorData?.laborData?.academicUnit || "";
+          if (cvFieldAppointment) cvFieldAppointment.value = currentCVData.professorData?.laborData?.currentAppointment || "";
+
+        } catch (e: any) {
+          loadingContainer?.classList.add("hidden");
+          errorContainer?.classList.remove("hidden");
+          const errorMsg = document.getElementById("error-message");
+          if (errorMsg) errorMsg.textContent = e.message;
+        }
+      });
+    }
+
+    if (btnErrorRetry) {
+      btnErrorRetry.addEventListener("click", () => {
+        errorContainer?.classList.add("hidden");
+        uploadContainer?.classList.remove("hidden");
+        if (pdfInput) pdfInput.value = "";
+      });
+    }
+
+    if (btnSaveCV && cvFieldName && cvFieldEmail) {
+      btnSaveCV.addEventListener("click", async () => {
+        if (!currentCVData) return;
+
+        currentCVData.professorData.fullName = cvFieldName.value;
+        currentCVData.professorData.contactInfo.institutionalEmail = cvFieldEmail.value;
+        currentCVData.professorData.laborData.academicUnit = cvFieldUnit.value;
+        currentCVData.professorData.laborData.currentAppointment = cvFieldAppointment.value;
+
+        const payload = {
+          professorData: currentCVData,
+          delegation_id: 3, // Colima por defecto
+          faculty_id: 2, // FIME/Telemática
+          group_assignments: []
+        };
+
+        const res = await apiFetch("/api/professors", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          alert("¡Docente y curriculum guardados correctamente!");
+          cvEditorForm?.classList.add("hidden");
+          uploadContainer?.classList.remove("hidden");
+          loadAllAdminData();
+        } else {
+          const err = await res.json();
+          alert("Error: " + err.error);
+        }
+      });
+    }
+
+    // --- CARGAR DATOS AL INICIAR ---
+    loadAllAdminData();
+  </script>
+</Layout>

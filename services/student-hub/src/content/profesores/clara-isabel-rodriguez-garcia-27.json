@@ -1,0 +1,91 @@
+{
+  "slug": "clara-isabel-rodriguez-garcia-27",
+  "title": "Profesor Asociado C",
+  "fullName": "Clara Isabel Rodríguez García",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Ingeniería de Software",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 28
+      },
+      {
+        "name": "Física General",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 15
+      },
+      {
+        "name": "Álgebra Lineal",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 33
+      }
+    ]
+  },
+  "department": "Facultad de Teleinformática",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2000,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2008,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2022,
+        "degree": "Doctor en Ciencias",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2003,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "clara_isabel_rodriguez_garcia_27@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-27-0",
+        "year": 2022,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 3.48
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-27-1",
+        "year": 2023,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.15
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-27-2",
+        "year": 2024,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.96
+      }
+    ]
+  },
+  "id": 30,
+  "delegation_id": 1,
+  "career_ids": [
+    432,
+    432
+  ]
+}

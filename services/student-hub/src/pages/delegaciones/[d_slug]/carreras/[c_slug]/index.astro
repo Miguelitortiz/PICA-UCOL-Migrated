@@ -1,0 +1,87 @@
+---
+import InstitutionalLayout from '../../../../../layouts/InstitutionalLayout.astro';
+import { cargarDelegacionPorSlug, cargarCarreraPorSlug, cargarGruposDeCarrera, cargarFacultades } from '../../../../../lib/cargarDatos.js';
+
+const { d_slug, c_slug } = Astro.params;
+const delegation = cargarDelegacionPorSlug(d_slug);
+const career = cargarCarreraPorSlug(c_slug);
+
+if (!delegation || !career) {
+  return Astro.redirect('/404');
+}
+
+// Encontrar la facultad que contiene esta carrera (para el breadcrumb)
+const todasLasFacultades = cargarFacultades();
+const faculty = todasLasFacultades.find(f =>
+  (f.career_ids || []).includes(career.id)
+) || null;
+
+const groups = await cargarGruposDeCarrera(career.id);
+---
+
+<InstitutionalLayout 
+  title={`${career.name}`} 
+  description={`Grupos docentes del programa ${career.name} en la delegación ${delegation?.name}.`}
+>
+  <div class="max-w-4xl mx-auto space-y-6">
+    <!-- Migas de Pan (Breadcrumbs) -->
+    <div class="text-xs font-mono text-text-marino/60 flex items-center gap-1.5 flex-wrap">
+      <a href="/" class="hover:text-acento-verde transition-colors">Inicio</a>
+      <span>/</span>
+      <a href="/buscar-grupo" class="hover:text-acento-verde transition-colors">Delegaciones</a>
+      <span>/</span>
+      <a href={`/delegaciones/${d_slug}`} class="hover:text-acento-verde transition-colors">{delegation.name}</a>
+      {faculty && (
+        <>
+          <span>/</span>
+          <a href={`/delegaciones/${d_slug}/facultades/${faculty.slug}`} class="hover:text-acento-verde transition-colors">{faculty.name}</a>
+        </>
+      )}
+      <span>/</span>
+      <span class="font-bold text-acento-verde">{career.name}</span>
+    </div>
+
+    <!-- Encabezado -->
+    <div class="space-y-2">
+      <span class="font-section text-xs uppercase tracking-widest font-semibold text-acento-verde">Programa de Estudios</span>
+      <h1 class="font-display text-3xl font-bold tracking-tight text-text-marino">{career.name}</h1>
+      <p class="font-sans text-sm text-text-marino/70 max-w-2xl leading-relaxed">
+        Lista de grupos académicos activos. Selecciona un grupo para ver el cuerpo docente asignado a sus materias.
+      </p>
+    </div>
+
+    <hr class="academic-divider-double" />
+
+    <!-- Listado de Grupos -->
+    <div class="space-y-4">
+      <h2 class="font-section text-xs uppercase tracking-wider font-semibold text-text-marino/50 mb-4">Grupos Académicos</h2>
+      
+      {groups.length > 0 ? (
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {groups.map(grp => (
+            <a 
+              href={`/delegaciones/${d_slug}/carreras/${career.slug}/grupos/${grp.slug}`} 
+              class="border border-borde-gris p-5 bg-white rounded-sm hover:border-acento-verde transition-colors duration-150 flex flex-col justify-between group no-underline"
+            >
+              <div>
+                <span class="font-section text-[9px] uppercase tracking-wider font-semibold text-acento-verde block mb-1">Grupo</span>
+                <span class="font-display text-base font-bold text-text-marino group-hover:text-acento-verde transition-colors">{grp.name}</span>
+                <span class="text-[10px] text-text-marino/50 block font-mono mt-1">Período: {grp.academic_period || 'N/A'}</span>
+                <span class="text-[10px] text-text-marino/50 block font-mono">Turno: {grp.shift || 'N/A'}</span>
+              </div>
+              <span class="link-academic text-[11px] font-semibold mt-4 block">
+                Ver claustro del grupo &rarr;
+              </span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="border border-borde-gris/60 border-dashed rounded-sm p-8 text-center bg-white">
+          <p class="text-xs italic text-text-marino/60 font-sans">
+            No se registran grupos activos para este programa académico.
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+</InstitutionalLayout>

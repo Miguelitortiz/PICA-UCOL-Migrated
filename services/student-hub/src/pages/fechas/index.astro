@@ -1,0 +1,307 @@
+---
+import InstitutionalLayout from "../../layouts/InstitutionalLayout.astro";
+
+// Mock Data de Fechas de Evaluación, agrupado lógicamente
+const evaluationMonths = [
+  {
+    month: "OCTUBRE 2026",
+    exams: [
+      {
+        id: 1,
+        subject: "Programación Orientada a Objetos",
+        title: "Evaluación de 1er Parcial",
+        date: "2026-10-14T09:00:00",
+        professor: "Dr. Carlos Ruiz",
+        classroom: "Lab. Telemática 1",
+        weight: "30%",
+        type: "Examen Práctico",
+        status: "past"
+      },
+      {
+        id: 2,
+        subject: "Matemáticas Discretas",
+        title: "Evaluación de 1er Parcial",
+        date: "2026-10-18T10:00:00",
+        professor: "Mtra. Silvia Mendoza",
+        classroom: "Aula 401",
+        weight: "30%",
+        type: "Examen Escrito",
+        status: "past"
+      }
+    ]
+  },
+  {
+    month: "NOVIEMBRE 2026",
+    exams: [
+      {
+        id: 3,
+        subject: "Programación Orientada a Objetos",
+        title: "Evaluación de 2do Parcial",
+        date: "2026-11-20T09:00:00",
+        professor: "Dr. Carlos Ruiz",
+        classroom: "Lab. Telemática 1",
+        weight: "30%",
+        type: "Entrega de Proyecto",
+        status: "upcoming"
+      },
+      {
+        id: 4,
+        subject: "Matemáticas Discretas",
+        title: "Evaluación de 2do Parcial",
+        date: "2026-11-22T10:00:00",
+        professor: "Mtra. Silvia Mendoza",
+        classroom: "Aula 401",
+        weight: "30%",
+        type: "Examen Escrito",
+        status: "upcoming"
+      }
+    ]
+  },
+  {
+    month: "DICIEMBRE 2026 (ORDINARIOS)",
+    exams: [
+      {
+        id: 5,
+        subject: "Programación Orientada a Objetos",
+        title: "Examen Ordinario Global",
+        date: "2026-12-05T08:00:00",
+        professor: "Dr. Carlos Ruiz",
+        classroom: "Aula 402",
+        weight: "40%",
+        type: "Examen Teórico-Práctico",
+        status: "upcoming"
+      }
+    ]
+  }
+];
+---
+
+<InstitutionalLayout title="Calendario de Evaluaciones">
+
+  <div class="page-header">
+    <div class="page-header__content">
+      <span class="overline overline--primary">Calendario Académico</span>
+      <h1 class="page-title">Fechas de Evaluación</h1>
+      <p class="page-subtitle">Periodo Lectivo: Agosto - Diciembre 2026</p>
+    </div>
+  </div>
+
+  <hr class="rule rule--thick" style="margin-bottom: 48px;" />
+
+  <div class="evaluations-layout">
+    
+    <!-- Filtros Typográficos -->
+    <div class="filters">
+      <span class="overline" style="margin-bottom: 16px; display: block;">Vistas Rápidas</span>
+      <ul class="filter-list">
+        <li><a href="#" class="filter-link active">Vista Cronológica Completa</a></li>
+        <li><a href="#" class="filter-link">Solo Próximos Exámenes</a></li>
+        <li><a href="#" class="filter-link">Agrupar por Materia</a></li>
+      </ul>
+    </div>
+
+    <!-- Timeline Principal -->
+    <div class="timeline-container">
+      {evaluationMonths.map(group => (
+        <div class="month-group">
+          <h2 class="month-title">{group.month}</h2>
+          <hr class="rule" style="margin-bottom: 32px;" />
+
+          <div class="timeline">
+            {group.exams.map(ex => {
+              const d = new Date(ex.date);
+              const dateStr = d.toLocaleDateString("es-MX", { day: "2-digit", month: "short" }).toUpperCase();
+              const timeStr = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+              const isPast = ex.status === "past";
+
+              return (
+                <div class={`timeline__item ${isPast ? 'timeline__item--past' : ''}`}>
+                  
+                  <div class="timeline__date">
+                    <span class="date-big">{dateStr.split(' ')[0]}</span>
+                    <span class="date-month">{dateStr.split(' ')[1]}</span>
+                    <span class="date-time">{timeStr}</span>
+                  </div>
+                  
+                  <div class="timeline__marker"></div>
+                  
+                  <div class="timeline__body">
+                    <span class="overline">{ex.subject}</span>
+                    <h3 class="exam-title">{ex.title}</h3>
+                    
+                    <div class="exam-meta-grid">
+                      <div class="exam-meta-item">
+                        <span class="meta-label">Modalidad</span>
+                        <span class="meta-value">{ex.type} ({ex.weight})</span>
+                      </div>
+                      <div class="exam-meta-item">
+                        <span class="meta-label">Titular</span>
+                        <span class="meta-value">{ex.professor}</span>
+                      </div>
+                      <div class="exam-meta-item">
+                        <span class="meta-label">Ubicación</span>
+                        <span class="meta-value">{ex.classroom}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+
+</InstitutionalLayout>
+
+<style>
+  /* Header Page */
+  .page-header {
+    margin-bottom: 24px;
+  }
+  .page-title {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    color: var(--color-ink);
+    margin-top: 8px;
+  }
+  .page-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+    margin-top: 12px;
+  }
+
+  /* Layout Evaluaciones */
+  .evaluations-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding-bottom: 80px;
+  }
+  @media (min-width: 1024px) {
+    .evaluations-layout {
+      grid-template-columns: 240px 1fr;
+      gap: 80px;
+    }
+  }
+
+  /* Filtros */
+  .filter-list {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .filter-link {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-2);
+    text-decoration: none;
+    transition: color 120ms;
+  }
+  .filter-link:hover {
+    color: var(--color-ink);
+  }
+  .filter-link.active {
+    color: var(--color-primary);
+    font-weight: 800;
+  }
+
+  /* Timeline Agrupado */
+  .month-group {
+    margin-bottom: 64px;
+  }
+  .month-title {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+    margin-bottom: 12px;
+  }
+
+  .timeline {
+    display: flex; flex-direction: column;
+  }
+  .timeline__item {
+    display: grid;
+    grid-template-columns: 60px 24px 1fr;
+    gap: 24px;
+    padding-bottom: 48px;
+  }
+  @media (min-width: 640px) {
+    .timeline__item {
+      grid-template-columns: 80px 32px 1fr;
+      gap: 32px;
+    }
+  }
+
+  .timeline__date {
+    display: flex; flex-direction: column; align-items: flex-end; padding-top: 2px;
+  }
+  .date-big {
+    font-size: 2rem; font-weight: 900; line-height: 0.9; color: var(--color-ink); letter-spacing: -0.04em;
+  }
+  .date-month {
+    font-size: 0.75rem; font-weight: 800; color: var(--color-ink-2); margin-top: 4px; letter-spacing: 0.05em;
+  }
+  .date-time {
+    font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3); margin-top: 8px;
+  }
+
+  .timeline__marker {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background-color: var(--color-ink);
+    position: relative;
+    margin-top: 6px;
+    margin-left: 6px;
+    z-index: 2;
+  }
+  .timeline__marker::after {
+    content: '';
+    position: absolute;
+    top: 13px; left: 6px;
+    width: 1px; height: 300px;
+    background-color: var(--color-rule-strong);
+    z-index: 1;
+  }
+  .timeline__item:last-child .timeline__marker::after { display: none; }
+
+  .timeline__item--past .timeline__marker { background-color: var(--color-rule-strong); }
+  .timeline__item--past .date-big,
+  .timeline__item--past .exam-title,
+  .timeline__item--past .meta-value { color: var(--color-ink-2) !important; }
+
+  .timeline__body {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .exam-title {
+    font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; color: var(--color-ink); line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .exam-meta-grid {
+    display: grid; grid-template-columns: 1fr; gap: 16px;
+    padding: 16px; background-color: var(--color-muted); border-left: 2px solid var(--color-rule-strong);
+  }
+  @media (min-width: 640px) {
+    .exam-meta-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .exam-meta-item {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .meta-label {
+    font-family: var(--font-mono); font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--color-ink-3);
+  }
+  .meta-value {
+    font-size: 0.875rem; font-weight: 600; color: var(--color-ink);
+  }
+</style>

@@ -1,0 +1,338 @@
+---
+import InstitutionalLayout from "../layouts/InstitutionalLayout.astro";
+import pool from "../lib/db.js";
+
+const student = Astro.locals.student;
+const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group") || "4-b-191";
+
+// Obtener todas las clases programadas en la BD para vincularlas a los polígonos
+let schedules = [];
+try {
+  const query = `
+    SELECT s.*, cg.name as group_name, p.full_name as professor_name
+    FROM schedules s
+    JOIN class_groups cg ON s.class_group_id = cg.id
+    LEFT JOIN professors p ON s.professor_id = p.id
+    ORDER BY s.day_of_week, s.start_time
+  `;
+  const res = await pool.query(query);
+  schedules = res.rows;
+} catch (e) {
+  console.error("Error al cargar horarios para el mapa:", e);
+}
+
+const schedulesJson = JSON.stringify(schedules);
+---
+
+<InstitutionalLayout title="Mapa de Instalaciones">
+
+  <!-- ==========================================
+       1. ENCABEZADO ASIMÉTRICO (Diseño Suizo)
+       ========================================== -->
+  <div class="page-header">
+    <div class="page-header__content">
+      <span class="overline overline--primary">Instalaciones Físicas</span>
+      <h1 class="page-title">Mapa del Campus</h1>
+      <p class="page-subtitle">
+        Navegación espacial de aulas y laboratorios universitarios.
+      </p>
+    </div>
+  </div>
+
+  <hr class="rule rule--thick" style="margin-bottom: 48px;" />
+
+  <!-- ==========================================
+       2. CONTENEDOR PRINCIPAL: MAPA + PANEL
+       ========================================== -->
+  <div class="map-layout">
+    
+    <!-- COLUMNA 1: El Mapa Interactivo (Leaflet) -->
+    <div class="map-container-wrapper">
+      <div id="map" class="interactive-map"></div>
+      <p style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3); margin-top: 12px; text-align: right;">
+        * Cartografía base monocromática. Haz clic en los polígonos resaltados.
+      </p>
+    </div>
+
+    <!-- COLUMNA 2: Panel de Información Dinámica -->
+    <div class="info-panel-wrapper">
+      <div class="info-panel" id="space-details-panel">
+        <span class="overline" style="margin-bottom: 16px; display: block;">Detalle de Espacio</span>
+        
+        <!-- Estado Inicial (Vacío) -->
+        <div id="panel-empty-state" class="empty-state">
+          Selecciona un espacio en el mapa interactivo para consultar su programación y características.
+        </div>
+
+        <!-- Estado Activo -->
+        <div id="panel-content-state" style="display: none;">
+          <div>
+            <span id="panel-space-type" class="tag" style="margin-bottom: 8px;">Tipo</span>
+            <h2 id="panel-space-name" style="font-size: 2rem; font-weight: 800; color: var(--color-ink); line-height: 1.1; letter-spacing: -0.03em;">
+              Nombre Espacio
+            </h2>
+          </div>
+          
+          <hr class="rule" style="margin: 24px 0;" />
+
+          <div>
+            <span class="overline" style="margin-bottom: 12px; display: block; color: var(--color-primary);">Clases Programadas</span>
+            <div id="panel-classes-list" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- Se insertan por JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Inyección de Datos -->
+  <script is:inline define:vars={{ schedulesJson }}>
+    window.__SCHEDULES__ = JSON.parse(schedulesJson);
+  </script>
+
+  <!-- ==========================================
+       3. INTEGRACIÓN DE LEAFLET.JS
+       ========================================== -->
+  <!-- Estilos de Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- Script de Leaflet -->
+  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script is:inline>
+    (function initLeaflet() {
+      // 1. Inicializar Mapa (Centrado aproximado en la UCOL Telemática)
+      const map = L.map('map', {
+        zoomControl: false // Lo reposicionaremos
+      }).setView([19.2135, -103.804], 18);
+
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+      // 2. Capa Base Monocromática (CartoDB Positron) para adherirse al Swiss Design
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      }).addTo(map);
+
+      // Elementos del DOM para el panel
+      const emptyState = document.getElementById("panel-empty-state");
+      const contentState = document.getElementById("panel-content-state");
+      const pName = document.getElementById("panel-space-name");
+      const pType = document.getElementById("panel-space-type");
+      const pClassesList = document.getElementById("panel-classes-list");
+
+      // Función para renderizar detalles
+      function displaySpaceDetails(feature) {
+        if (emptyState) emptyState.style.display = "none";
+        if (contentState) contentState.style.display = "block";
+
+        const props = feature.properties || {};
+        const spaceName = props.name || (props.building ? "Edificio (" + props.building + ")" : "Espacio Universitario");
+        
+        if (pName) pName.textContent = spaceName;
+        if (pType) {
+          const typeStr = props.amenity || props.building || 'general';
+          pType.textContent = typeStr.charAt(0).toUpperCase() + typeStr.slice(1);
+          pType.className = 'tag tag--primary';
+        }
+
+        // Buscar clases programadas para este espacio
+        if (pClassesList) {
+          pClassesList.innerHTML = "";
+          const classes = window.__SCHEDULES__.filter(
+            s => s.classroom_name?.toLowerCase() === spaceName.toLowerCase() || 
+                 s.classroom?.toLowerCase() === spaceName.toLowerCase()
+          );
+
+          if (classes && classes.length > 0) {
+            classes.forEach(c => {
+              const row = document.createElement("div");
+              row.style.cssText = "padding-bottom: 12px; border-bottom: 1px solid var(--color-rule);";
+              row.innerHTML = 
+                '<strong style="display: block; font-size: 1rem; color: var(--color-ink); margin-bottom: 4px;">' + c.subject_name + '</strong>' +
+                '<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem; color: var(--color-ink-2);">' +
+                  '<span>Grupo: <strong style="color: var(--color-ink);">' + c.group_name + '</strong></span>' +
+                  '<span style="font-family: var(--font-mono);">' + c.day_of_week + ' ' + c.start_time.substring(0,5) + '-' + c.end_time.substring(0,5) + '</span>' +
+                '</div>' +
+                '<span style="display: block; font-size: 0.75rem; color: var(--color-ink-3); margin-top: 4px;">Docente: ' + (c.professor_name || "Sin asignar") + '</span>';
+              pClassesList.appendChild(row);
+            });
+          } else {
+            pClassesList.innerHTML = 
+              '<div style="padding: 16px; background: var(--color-muted); border: 1px dashed var(--color-rule-strong); margin-bottom: 12px;">' +
+                '<p style="font-size: 0.8125rem; color: var(--color-ink-2); margin-bottom: 8px;"><strong>Metadatos del Espacio:</strong></p>' +
+                '<ul style="list-style: none; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3);">' +
+                  Object.entries(props).filter(([k]) => !k.startsWith('@')).map(([k,v]) => '<li style="margin-bottom: 4px;"><strong>' + k + ':</strong> ' + v + '</li>').join('') +
+                '</ul>' +
+              '</div>' +
+              '<p style="font-size: 0.875rem; color: var(--color-ink-3); font-style: italic;">No hay clases programadas académicamente en este momento.</p>';
+          }
+        }
+      }
+
+      // 3. Estilos de los Polígonos GeoJSON (Swiss Style)
+      const baseStyle = {
+        color: "var(--color-ink)",       // Borde negro/oscuro
+        weight: 1,
+        fillColor: "var(--color-ink)",
+        fillOpacity: 0.05
+      };
+
+      const highlightStyle = {
+        color: "var(--color-primary)",   // Borde verde primario
+        weight: 2,
+        fillColor: "var(--color-primary)",
+        fillOpacity: 0.15
+      };
+
+      let geojsonLayer;
+
+      // 4. Cargar GeoJSON
+      fetch('/campus.geojson')
+        .then(res => res.json())
+        .then(data => {
+          geojsonLayer = L.geoJSON(data, {
+            style: baseStyle,
+            onEachFeature: (feature, layer) => {
+              // Tooltip básico al hover
+              if (feature.properties && feature.properties.name) {
+                layer.bindTooltip(feature.properties.name, {
+                  className: 'swiss-tooltip',
+                  direction: 'top'
+                });
+              }
+
+              // Eventos de interacción
+              layer.on({
+                mouseover: (e) => {
+                  const l = e.target;
+                  l.setStyle(highlightStyle);
+                  if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                    l.bringToFront();
+                  }
+                },
+                mouseout: (e) => {
+                  geojsonLayer.resetStyle(e.target);
+                },
+                click: (e) => {
+                  // Ajustar el mapa al polígono
+                  map.fitBounds(e.target.getBounds(), { padding: [50, 50] });
+                  displaySpaceDetails(feature);
+                }
+              });
+            }
+          }).addTo(map);
+
+          // Ajustar mapa a los datos iniciales
+          const bounds = geojsonLayer.getBounds();
+          if (bounds.isValid()) {
+            map.fitBounds(bounds);
+            
+            // Limitar el mapa estríctamente a esta zona (impedir drag fuera del campus)
+            map.setMaxBounds(bounds.pad(0.05));
+            // Prevenir zoom-out excesivo
+            map.setMinZoom(map.getBoundsZoom(bounds));
+          }
+
+          // Checar URL Params para auto-selección
+          const urlParams = new URLSearchParams(window.location.search);
+          const highlightName = urlParams.get('highlight');
+          
+          if (highlightName) {
+            geojsonLayer.eachLayer(layer => {
+              if (layer.feature.properties.name?.toLowerCase() === highlightName.toLowerCase()) {
+                map.fitBounds(layer.getBounds(), { maxZoom: 20 });
+                layer.fire('click');
+              }
+            });
+          }
+        })
+        .catch(err => console.error("Error cargando GeoJSON:", err));
+    })();
+  </script>
+
+</InstitutionalLayout>
+
+<style>
+  /* Page Header */
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .page-title {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    color: var(--color-ink);
+    margin-top: 8px;
+  }
+  .page-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+    margin-top: 12px;
+  }
+
+  /* Layout Mapa y Panel */
+  .map-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media (min-width: 1024px) {
+    .map-layout {
+      grid-template-columns: 2fr 1fr;
+      gap: 48px;
+    }
+  }
+
+  /* Contenedor del Mapa */
+  .interactive-map {
+    width: 100%;
+    height: 60vh;
+    min-height: 400px;
+    background-color: var(--color-muted); /* Gris claro de fondo mientras carga */
+    border: 1px solid var(--color-rule-strong);
+    z-index: 10; /* Evitar solapamientos con menús */
+  }
+
+  /* Panel de Información */
+  .info-panel {
+    border-top: 2px solid var(--color-ink);
+    padding-top: 20px;
+  }
+
+  .empty-state {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-ink-3);
+    line-height: 1.5;
+    font-style: italic;
+    padding: 32px 0;
+  }
+
+  /* Tooltip personalizado de Leaflet para igualar estilo suizo */
+  :global(.leaflet-tooltip.swiss-tooltip) {
+    background-color: var(--color-ink) !important;
+    color: var(--color-surface) !important;
+    border: none !important;
+    border-radius: 0 !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    padding: 4px 8px !important;
+    box-shadow: none !important;
+  }
+  :global(.leaflet-tooltip-top.swiss-tooltip::before) {
+    border-top-color: var(--color-ink) !important;
+  }
+</style>

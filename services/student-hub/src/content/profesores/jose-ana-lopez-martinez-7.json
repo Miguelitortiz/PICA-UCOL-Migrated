@@ -1,0 +1,91 @@
+{
+  "slug": "jose-ana-lopez-martinez-7",
+  "title": "Profesor Asociado C",
+  "fullName": "José Ana López Martínez",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Redes de Computadoras",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 40
+      },
+      {
+        "name": "Cálculo Diferencial",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 25
+      },
+      {
+        "name": "Inteligencia Artificial",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 32
+      }
+    ]
+  },
+  "department": "Facultad de Ciencias Químicas",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2018,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2012,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2011,
+        "degree": "Doctor en Ciencias",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2003,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "jose_ana_lopez_martinez_7@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-7-0",
+        "year": 2024,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.53
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-7-1",
+        "year": 2023,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.62
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-7-2",
+        "year": 2021,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.06
+      }
+    ]
+  },
+  "id": 10,
+  "delegation_id": 5,
+  "career_ids": [
+    177,
+    370
+  ]
+}

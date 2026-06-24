@@ -1,0 +1,87 @@
+---
+import InstitutionalLayout from '../../../../../../../layouts/InstitutionalLayout.astro';
+import { cargarDelegacionPorSlug, cargarCarreraPorSlug, cargarGrupoConProfesores } from '../../../../../../../lib/cargarDatos.js';
+
+const { d_slug, c_slug, g_slug } = Astro.params;
+const delegation = cargarDelegacionPorSlug(d_slug);
+const career = cargarCarreraPorSlug(c_slug);
+const group = await cargarGrupoConProfesores(g_slug);
+
+if (!delegation || !career || !group) {
+  return Astro.redirect('/404');
+}
+
+const professors = group.professors || [];
+---
+
+<InstitutionalLayout 
+  title={`Claustro de Docentes - ${group.name}`} 
+  description={`Lista de profesores asignados al grupo ${group.name} de la carrera ${career?.name}.`}
+>
+  <div class="max-w-4xl mx-auto space-y-6">
+    <!-- Migas de Pan (Breadcrumbs) -->
+    <div class="text-xs font-mono text-text-marino/60 flex items-center gap-1.5">
+      <a href="/" class="hover:text-acento-verde transition-colors">Inicio</a>
+      <span>/</span>
+      <a href="/buscar-grupo" class="hover:text-acento-verde transition-colors">Delegaciones</a>
+      <span>/</span>
+      <a href={`/delegaciones/${delegation?.slug}`} class="hover:text-acento-verde transition-colors">{delegation?.name}</a>
+      <span>/</span>
+      <a href={`/delegaciones/${delegation?.slug}/carreras/${career?.slug}`} class="hover:text-acento-verde transition-colors">{career?.name}</a>
+      <span>/</span>
+      <span class="font-bold text-acento-verde">{group.name}</span>
+    </div>
+
+    <!-- Encabezado -->
+    <div class="space-y-2">
+      <span class="font-section text-xs uppercase tracking-widest font-semibold text-acento-verde">Claustro del Grupo</span>
+      <h1 class="font-display text-3xl font-bold tracking-tight text-text-marino">Profesores del {group.name}</h1>
+      <p class="font-sans text-sm text-text-marino/70 max-w-2xl leading-relaxed">
+        Lista de profesores adscritos al grupo y las asignaturas específicas que imparten en el período {group.academic_period || 'vigente'}.
+      </p>
+    </div>
+
+    <hr class="academic-divider-double" />
+
+    <!-- Listado de Profesores -->
+    <div class="space-y-4">
+      <h2 class="font-section text-xs uppercase tracking-wider font-semibold text-text-marino/50 mb-4">Profesores Investigadores Asignados</h2>
+      
+      {professors.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {professors.map(prof => (
+            <div class="border border-borde-gris border-l-4 border-l-acento-verde p-5 bg-white rounded-sm flex flex-col justify-between hover:border-acento-verde/40 transition-colors duration-150">
+              <div class="space-y-3">
+                <div>
+                  <h3 class="font-display text-lg font-bold text-text-marino leading-tight">
+                    <a href={`/profesores/${prof.slug}`} class="text-text-marino hover:text-acento-verde no-underline transition-colors">
+                      {prof.fullName}
+                    </a>
+                  </h3>
+                  <span class="text-[10px] font-mono text-text-marino/50 block mt-0.5">{prof.email}</span>
+                </div>
+
+                <div class="bg-bg-piedra/40 p-3 border border-borde-gris/40 rounded-sm">
+                  <span class="font-section text-[8px] uppercase tracking-wider font-bold text-acento-verde block mb-1">Materia Impartida</span>
+                  <span class="text-xs font-medium text-text-marino">{prof.subject_taught || 'Asignación general'}</span>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-2 border-t border-borde-gris/40 flex justify-end">
+                <a href={`/profesores/${prof.slug}`} class="link-academic text-xs font-semibold">
+                  Ver perfil académico completo &rarr;
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="border border-borde-gris/60 border-dashed rounded-sm p-8 text-center bg-white">
+          <p class="text-xs italic text-text-marino/60 font-sans">
+            No se registran profesores asignados a este grupo actualmente.
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+</InstitutionalLayout>

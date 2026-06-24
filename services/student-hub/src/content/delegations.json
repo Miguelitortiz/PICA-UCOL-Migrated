@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "slug": "manzanillo",
+    "name": "Manzanillo"
+  },
+  {
+    "id": 2,
+    "slug": "tecoman",
+    "name": "Tecomán"
+  },
+  {
+    "id": 3,
+    "slug": "colima",
+    "name": "Colima"
+  },
+  {
+    "id": 4,
+    "slug": "coquimatlan",
+    "name": "Coquimatlán"
+  },
+  {
+    "id": 5,
+    "slug": "villa-de-alvarez",
+    "name": "Villa de Álvarez"
+  }
+]

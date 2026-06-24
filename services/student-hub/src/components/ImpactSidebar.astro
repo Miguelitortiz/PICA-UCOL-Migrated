@@ -1,0 +1,87 @@
+---
+interface Article {
+  impactFactor: number | null;
+}
+
+interface Thesis {}
+
+interface AcademicBody {
+  name: string;
+  level: string;
+}
+
+interface Props {
+  admissionYear: number;
+  articles: Article[];
+  theses: Thesis[];
+  academicBody?: AcademicBody;
+}
+
+const {
+  admissionYear,
+  articles = [],
+  theses = [],
+  academicBody
+} = Astro.props;
+
+const currentYear = new Date().getFullYear();
+const yearsOfService = currentYear - admissionYear;
+
+// Contar artículos JCR
+const jcrArticlesCount = articles.filter(art => art.impactFactor !== null).length;
+const totalArticlesCount = articles.length;
+const thesesCount = theses.length;
+---
+
+<div class="border border-borde-gris p-5 bg-bg-piedra/30 rounded-sm space-y-4">
+  <h3 class="font-section text-[10px] uppercase tracking-widest font-semibold text-acento-verde border-b border-borde-gris pb-1.5 mb-2">
+    Indicadores de Impacto
+  </h3>
+
+  <div class="grid grid-cols-1 gap-4">
+    <!-- Años de servicio -->
+    <div>
+      <div class="font-mono text-2xl font-bold text-text-marino">
+        {yearsOfService}
+      </div>
+      <div class="text-[9px] uppercase tracking-wider text-text-marino/70 font-sans mt-0.5 font-semibold">
+        Años de Servicio
+      </div>
+    </div>
+
+    <!-- Artículos JCR / Totales -->
+    <div>
+      <div class="font-mono text-2xl font-bold text-text-marino">
+        {jcrArticlesCount} <span class="text-xs font-normal text-text-marino/50">/ {totalArticlesCount}</span>
+      </div>
+      <div class="text-[9px] uppercase tracking-wider text-text-marino/70 font-sans mt-0.5 font-semibold">
+        Artículos JCR / Indexados
+      </div>
+    </div>
+
+    <!-- Tesis dirigidas -->
+    <div>
+      <div class="font-mono text-2xl font-bold text-text-marino">
+        {thesesCount}
+      </div>
+      <div class="text-[9px] uppercase tracking-wider text-text-marino/70 font-sans mt-0.5 font-semibold">
+        Tesis Asesoradas
+      </div>
+    </div>
+
+    <!-- Cuerpo Académico -->
+    {academicBody && (
+      <div class="border-t border-borde-gris pt-3 mt-1.5">
+        <div class="text-[9px] uppercase tracking-widest text-text-marino/50 font-bold mb-0.5">
+          Cuerpo Académico
+        </div>
+        <div class="font-section text-xs font-bold text-text-marino leading-snug">
+          {academicBody.name}
+        </div>
+        <div class="font-mono text-[10px] text-acento-verde mt-0.5 font-bold">
+          {academicBody.level}
+        </div>
+      </div>
+    )}
+  </div>
+</div>

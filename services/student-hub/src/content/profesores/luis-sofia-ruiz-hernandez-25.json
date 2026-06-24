@@ -1,0 +1,93 @@
+{
+  "slug": "luis-sofia-ruiz-hernandez-25",
+  "title": "Profesor Asociado C",
+  "fullName": "Luis Sofía Ruiz Hernández",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Cálculo Diferencial",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 26
+      }
+    ]
+  },
+  "department": "Facultad de Teleinformática",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2018,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2005,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2017,
+        "degree": "Doctor en Ciencias",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2010,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "luis_sofia_ruiz_hernandez_25@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [
+      {
+        "role": "Coautor",
+        "year": 2021,
+        "title": "Fundamentos y aplicaciones de Inteligencia Artificial",
+        "editorial": "Editorial Universitaria"
+      }
+    ],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-25-0",
+        "year": 2021,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.04
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-25-1",
+        "year": 2024,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.61
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-25-2",
+        "year": 2021,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 3.86
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-25-3",
+        "year": 2021,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 4",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.43
+      }
+    ]
+  },
+  "id": 28,
+  "delegation_id": 4,
+  "career_ids": [
+    99,
+    368
+  ]
+}

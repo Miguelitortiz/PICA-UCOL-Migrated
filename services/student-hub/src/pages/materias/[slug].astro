@@ -1,0 +1,196 @@
+---
+import InstitutionalLayout from "../../layouts/InstitutionalLayout.astro";
+import { cargarCarreras, cargarSyllabusPorSlug } from "../../lib/cargarDatos.js";
+
+const { slug } = Astro.params;
+
+// Cargar datos de la base de datos para este plan de estudios
+const syllabus = await cargarSyllabusPorSlug(slug);
+
+if (!syllabus) {
+  return Astro.redirect("/404");
+}
+
+const careers = cargarCarreras();
+const career = careers.find(c => c.id === syllabus.career_id);
+const careerName = career ? career.name : "Carrera Desconocida";
+
+// Formatear criterios de evaluación
+const criteria = syllabus.evaluation_criteria || {};
+const criteriaKeys = Object.keys(criteria);
+
+// Formatear recursos
+const resources = Array.isArray(syllabus.resources) ? syllabus.resources : [];
+
+// Profesor adscrito
+const professorProfile = syllabus.profile_data || {};
+const contactInfo = professorProfile.contactInfo || {};
+---
+
+<InstitutionalLayout title={`${syllabus.subject_name} - Plan de Estudios`}>
+  <div class="space-y-8">
+    
+    <!-- Migas de Pan / Navegación Secundaria -->
+    <div class="text-[10px] font-mono uppercase tracking-wider text-text-secondary flex items-center gap-2">
+      <a href="/materias" class="hover:text-primary transition-suiza no-underline">Materias</a>
+      <span>&gt;</span>
+      <span class="text-text-primary font-bold">{syllabus.subject_name}</span>
+    </div>
+
+    <!-- Encabezado de la Materia -->
+    <div class="card-suiza bg-white">
+      <span class="font-mono text-[9px] px-2 py-0.5 bg-bg-piedra border border-border-sutil text-text-secondary font-bold uppercase rounded-sm inline-block mb-2">
+        {careerName}
+      </span>
+      <h1 class="text-3xl font-bold tracking-tight text-text-primary leading-tight">
+        {syllabus.subject_name}
+      </h1>
+      <p class="text-xs text-text-secondary mt-1">
+        Programa de asignatura oficial de la Universidad de Colima. Modificado por última vez: {new Date(syllabus.updated_at).toLocaleDateString('es-MX')}
+      </p>
+    </div>
+
+    <!-- Contenido Detallado -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Detalle Académico (2/3 de la página) -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Descripción y Objetivos -->
+        <div class="card-suiza bg-white space-y-4">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-primary border-b border-border-sutil pb-2 mb-2 flex items-center gap-1.5">
+            <span>📚</span> Descripción del Programa
+          </h2>
+          <p class="text-xs text-text-primary leading-relaxed whitespace-pre-line">
+            {syllabus.program_description}
+          </p>
+        </div>
+
+        <!-- Criterios de Evaluación -->
+        <div class="card-suiza bg-white space-y-4">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-primary border-b border-border-sutil pb-2 mb-2 flex items-center gap-1.5">
+            <span>📊</span> Métodos de Evaluación y Calificación
+          </h2>
+          
+          {criteriaKeys.length > 0 ? (
+            <div class="space-y-4">
+              <p class="text-xs text-text-secondary">
+                Los criterios oficiales establecidos por el docente para calificar el desempeño del alumno durante el período escolar son:
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {criteriaKeys.map(key => {
+                  const labelMap: any = {
+                    exams: "Exámenes Teóricos",
+                    project: "Proyecto Integrador",
+                    assignments: "Tareas y Tareas Cortas",
+                    practicalExams: "Exámenes Prácticos",
+                    teamProject: "Proyecto en Equipo",
+                    portfolio: "Portafolio de Evidencias",
+                    quizzes: "Quizzes / Exámenes Rápidos",
+                    finalProject: "Proyecto Final"
+                  };
+                  const label = labelMap[key] || key.charAt(0).toUpperCase() + key.slice(1);
+                  const percentage = criteria[key];
+
+                  return (
+                    <div class="p-3 border border-border-sutil rounded-sm bg-bg-piedra/20">
+                      <span class="block text-xs font-bold text-text-primary">{label}</span>
+                      <span class="block text-2xl font-bold text-secondary mt-1 font-mono">{percentage}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <p class="text-xs text-text-secondary italic">No se han definido criterios detallados.</p>
+          )}
+        </div>
+
+        <!-- Recursos y Bibliografía -->
+        <div class="card-suiza bg-white space-y-4">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-primary border-b border-border-sutil pb-2 mb-2 flex items-center gap-1.5">
+            <span>🔖</span> Recursos Didácticos y Bibliografía
+          </h2>
+          
+          {resources.length > 0 ? (
+            <ul class="space-y-3 pl-0 list-none">
+              {resources.map(res => (
+                <li class="p-3 border border-border-sutil rounded-sm hover:border-secondary transition-suiza bg-white flex justify-between items-center gap-4">
+                  <div class="space-y-1">
+                    <span class="block text-xs font-bold text-text-primary leading-tight">{res.title}</span>
+                    {res.author && (
+                      <span class="block text-[10px] text-text-secondary font-mono">Autor: {res.author}</span>
+                    )}
+                  </div>
+                  {res.link && res.link !== "#" && (
+                    <a
+                      href={res.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="px-4 h-11 border border-border-sutil text-[10px] font-mono font-bold text-secondary rounded-sm hover:bg-bg-piedra transition-suiza no-underline flex items-center justify-center"
+                    >
+                      Enlace &nearrow;
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="text-xs text-text-secondary/60 italic">No se ha registrado bibliografía para este programa.</p>
+          )}
+        </div>
+
+      </div>
+
+      <!-- Tarjeta del Docente Titular (1/3 de la página) -->
+      <div class="space-y-6">
+        <div class="card-suiza bg-white space-y-4">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-primary border-b border-border-sutil pb-2 mb-2 flex items-center gap-1.5">
+            <span>👨‍🏫</span> Docente Titular
+          </h2>
+          
+          <div class="space-y-3">
+            <div>
+              <a 
+                href={`/profesores/${syllabus.creator_slug}`} 
+                class="font-bold text-secondary hover:text-primary transition-suiza text-base block hover:underline"
+              >
+                {syllabus.creator_name}
+              </a>
+              <span class="block text-[10px] text-text-secondary mt-1 font-mono">{syllabus.creatorEmail || "Sin email registrado"}</span>
+            </div>
+            
+            <div class="divider-suizo"></div>
+            
+            <div class="space-y-2 text-xs">
+              <div>
+                <span class="font-mono text-[9px] text-text-secondary uppercase block">Cubículo</span>
+                <span class="font-bold text-text-primary block mt-0.5">{contactInfo.office || "No asignado"}</span>
+              </div>
+              <div>
+                <span class="font-mono text-[9px] text-text-secondary uppercase block">Teléfono de Oficina</span>
+                <span class="font-bold text-text-primary block mt-0.5">{contactInfo.phone || "No asignado"}</span>
+              </div>
+              <div>
+                <span class="font-mono text-[9px] text-text-secondary uppercase block">Horario de Atención</span>
+                <div class="bg-bg-piedra p-2 border border-border-sutil rounded-sm font-sans mt-1 text-[11px] leading-relaxed text-text-secondary">
+                  {contactInfo.officeHours || "No especificado"}
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4">
+              <a 
+                href={`/profesores/${syllabus.creator_slug}`}
+                class="w-full text-center bg-primary text-white text-[10px] font-mono font-bold uppercase tracking-wider h-11 flex items-center justify-center rounded-sm hover:bg-opacity-90 transition-suiza no-underline"
+              >
+                Ver Perfil de Investigador &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</InstitutionalLayout>

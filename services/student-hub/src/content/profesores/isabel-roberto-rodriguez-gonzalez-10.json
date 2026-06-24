@@ -1,0 +1,91 @@
+{
+  "slug": "isabel-roberto-rodriguez-gonzalez-10",
+  "title": "Investigador Titular B",
+  "fullName": "Isabel Roberto Rodríguez González",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": [
+      {
+        "name": "Álgebra Lineal",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 30
+      },
+      {
+        "name": "Ingeniería de Software",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 23
+      },
+      {
+        "name": "Álgebra Lineal",
+        "level": "Licenciatura",
+        "period": "Feb-Jul 2026",
+        "students": 28
+      }
+    ]
+  },
+  "department": "Facultad de Contabilidad y Administración",
+  "academicBody": {
+    "name": "Cuerpo Académico de Investigación",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 1995,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2006,
+        "degree": "Maestría en Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2021,
+        "degree": "Doctor en Ciencias",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2008,
+      "degree": "Licenciatura Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "isabel_roberto_rodriguez_gonzalez_10@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-10-0",
+        "year": 2026,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 1",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 0.93
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-10-1",
+        "year": 2026,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 2",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.38
+      },
+      {
+        "doi": "https://doi.org/10.1007/mock-doi-10-2",
+        "year": 2022,
+        "title": "Investigación Aplicada sobre Tecnologías y Educación - Parte 3",
+        "journal": "Revista de Investigación Científica Ucol",
+        "impactFactor": 1.73
+      }
+    ]
+  },
+  "id": 13,
+  "delegation_id": 2,
+  "career_ids": [
+    420,
+    420
+  ]
+}

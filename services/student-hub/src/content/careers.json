@@ -1,0 +1,338 @@
+[
+  {
+    "id": 450,
+    "slug": "licenciatura-en-sustentabilidad-marina",
+    "delegation_id": 1,
+    "name": "Licenciatura en Sustentabilidad Marina"
+  },
+  {
+    "id": 454,
+    "slug": "ingenieria-oceanica",
+    "delegation_id": 1,
+    "name": "Ingeniería Oceánica"
+  },
+  {
+    "id": 432,
+    "slug": "licenciatura-en-gastronomia",
+    "delegation_id": 1,
+    "name": "Licenciatura en Gastronomía"
+  },
+  {
+    "id": 110,
+    "slug": "licenciatura-en-gestion-turistica",
+    "delegation_id": 1,
+    "name": "Licenciatura en Gestión Turística"
+  },
+  {
+    "id": 436,
+    "slug": "licenciatura-en-comercio-exterior",
+    "delegation_id": 1,
+    "name": "Licenciatura en Comercio Exterior"
+  },
+  {
+    "id": 437,
+    "slug": "licenciatura-en-aduanas",
+    "delegation_id": 1,
+    "name": "Licenciatura en Aduanas"
+  },
+  {
+    "id": 473,
+    "slug": "licenciatura-en-negocios-internacionales",
+    "delegation_id": 1,
+    "name": "Licenciatura en Negocios Internacionales"
+  },
+  {
+    "id": 54,
+    "slug": "medico-veterinario-zootecnista",
+    "delegation_id": 2,
+    "name": "Médico Veterinario Zootecnista"
+  },
+  {
+    "id": 420,
+    "slug": "ingeniero-agronomo",
+    "delegation_id": 2,
+    "name": "Ingeniero Agrónomo"
+  },
+  {
+    "id": 367,
+    "slug": "licenciatura-en-biologia",
+    "delegation_id": 2,
+    "name": "Licenciatura en Biología"
+  },
+  {
+    "id": 191,
+    "slug": "ingenieria-de-software",
+    "delegation_id": 3,
+    "name": "Ingeniería de Software"
+  },
+  {
+    "id": 348,
+    "slug": "ingenieria-en-tecnologias-de-internet",
+    "delegation_id": 3,
+    "name": "Ingeniería en Tecnologías de Internet"
+  },
+  {
+    "id": 453,
+    "slug": "licenciatura-en-derecho",
+    "delegation_id": 3,
+    "name": "Licenciatura en Derecho"
+  },
+  {
+    "id": 455,
+    "slug": "licenciatura-en-ciencia-politica-y-gestion-publica",
+    "delegation_id": 3,
+    "name": "Licenciatura en Ciencia Política y Gestión Pública"
+  },
+  {
+    "id": 461,
+    "slug": "licenciatura-en-relaciones-internacionales-y-agenda-global",
+    "delegation_id": 3,
+    "name": "Licenciatura en Relaciones Internacionales y Agenda Global"
+  },
+  {
+    "id": 131,
+    "slug": "licenciatura-en-comunicacion",
+    "delegation_id": 3,
+    "name": "Licenciatura en Comunicación"
+  },
+  {
+    "id": 451,
+    "slug": "licenciatura-en-lengua-y-literatura",
+    "delegation_id": 3,
+    "name": "Licenciatura en Lengua y Literatura"
+  },
+  {
+    "id": 438,
+    "slug": "licenciatura-en-periodismo-digital",
+    "delegation_id": 3,
+    "name": "Licenciatura en Periodismo Digital"
+  },
+  {
+    "id": 189,
+    "slug": "medico-cirujano-y-partero",
+    "delegation_id": 3,
+    "name": "Médico Cirujano y Partero"
+  },
+  {
+    "id": 470,
+    "slug": "licenciatura-en-enfermeria",
+    "delegation_id": 3,
+    "name": "Licenciatura en Enfermería"
+  },
+  {
+    "id": 190,
+    "slug": "licenciatura-en-nutricion",
+    "delegation_id": 3,
+    "name": "Licenciatura en Nutrición"
+  },
+  {
+    "id": 464,
+    "slug": "licenciatura-en-fisioterapia",
+    "delegation_id": 3,
+    "name": "Licenciatura en Fisioterapia"
+  },
+  {
+    "id": 469,
+    "slug": "licenciatura-en-psicologia",
+    "delegation_id": 3,
+    "name": "Licenciatura en Psicología"
+  },
+  {
+    "id": 118,
+    "slug": "contador-publico",
+    "delegation_id": 3,
+    "name": "Contador Público"
+  },
+  {
+    "id": 478,
+    "slug": "licenciatura-en-administracion",
+    "delegation_id": 3,
+    "name": "Licenciatura en Administración"
+  },
+  {
+    "id": 476,
+    "slug": "licenciatura-en-finanzas",
+    "delegation_id": 3,
+    "name": "Licenciatura en Finanzas"
+  },
+  {
+    "id": 460,
+    "slug": "licenciatura-en-negocios-digitales",
+    "delegation_id": 3,
+    "name": "Licenciatura en Negocios Digitales"
+  },
+  {
+    "id": 102,
+    "slug": "licenciatura-en-mercadotecnia",
+    "delegation_id": 3,
+    "name": "Licenciatura en Mercadotecnia"
+  },
+  {
+    "id": 397,
+    "slug": "licenciatura-en-publicidad-y-relaciones-publicas",
+    "delegation_id": 3,
+    "name": "Licenciatura en Publicidad y Relaciones Públicas"
+  },
+  {
+    "id": 206,
+    "slug": "licenciatura-en-artes-visuales",
+    "delegation_id": 3,
+    "name": "Licenciatura en Artes Visuales"
+  },
+  {
+    "id": 369,
+    "slug": "licenciatura-en-musica",
+    "delegation_id": 3,
+    "name": "Licenciatura en Música"
+  },
+  {
+    "id": 192,
+    "slug": "licenciatura-en-danza-escenica",
+    "delegation_id": 3,
+    "name": "Licenciatura en Danza Escénica"
+  },
+  {
+    "id": 57,
+    "slug": "licenciatura-en-matematicas",
+    "delegation_id": 3,
+    "name": "Licenciatura en Matemáticas"
+  },
+  {
+    "id": 88,
+    "slug": "licenciatura-en-fisica",
+    "delegation_id": 3,
+    "name": "Licenciatura en Física"
+  },
+  {
+    "id": 350,
+    "slug": "licenciatura-en-gestion-y-reduccion-del-riesgo-de-desastres",
+    "delegation_id": 3,
+    "name": "Licenciatura en Gestión y Reducción del Riesgo de Desastres"
+  },
+  {
+    "id": 178,
+    "slug": "docencia-en-trabajo-social",
+    "delegation_id": 3,
+    "name": "Licenciatura en Trabajo Social"
+  },
+  {
+    "id": 427,
+    "slug": "licenciatura-en-arquitectura",
+    "delegation_id": 4,
+    "name": "Licenciatura en Arquitectura"
+  },
+  {
+    "id": 429,
+    "slug": "licenciatura-en-diseno-grafico",
+    "delegation_id": 4,
+    "name": "Licenciatura en Diseño Gráfico"
+  },
+  {
+    "id": 428,
+    "slug": "licenciatura-en-diseno-industrial",
+    "delegation_id": 4,
+    "name": "Licenciatura en Diseño Industrial"
+  },
+  {
+    "id": 153,
+    "slug": "ingenieria-civil",
+    "delegation_id": 4,
+    "name": "Ingeniería Civil"
+  },
+  {
+    "id": 155,
+    "slug": "ingeniero-topografo-geomatico",
+    "delegation_id": 4,
+    "name": "Ingeniero Topógrafo Geomático"
+  },
+  {
+    "id": 371,
+    "slug": "ingeniero-mecanico-electricista",
+    "delegation_id": 4,
+    "name": "Ingeniero Mecánico Electricista"
+  },
+  {
+    "id": 418,
+    "slug": "ingenieria-en-mecatronica",
+    "delegation_id": 4,
+    "name": "Ingeniería en Mecatrónica"
+  },
+  {
+    "id": 99,
+    "slug": "ingenieria-en-sistemas-electronicos-y-telecomunicaciones",
+    "delegation_id": 4,
+    "name": "Ingeniería en Sistemas Electrónicos y Telecomunicaciones"
+  },
+  {
+    "id": 349,
+    "slug": "ingenieria-en-computacion-inteligente",
+    "delegation_id": 4,
+    "name": "Ingeniería en Computación Inteligente"
+  },
+  {
+    "id": 125,
+    "slug": "quimico-farmaceutico-biologo",
+    "delegation_id": 4,
+    "name": "Químico Farmacéutico Biólogo"
+  },
+  {
+    "id": 368,
+    "slug": "ingenieria-quimica-metalurgica",
+    "delegation_id": 4,
+    "name": "Ingeniería Química Metalúrgica"
+  },
+  {
+    "id": 17,
+    "slug": "ingeniero-quimico-en-alimentos",
+    "delegation_id": 4,
+    "name": "Ingeniero Químico en Alimentos"
+  },
+  {
+    "id": 468,
+    "slug": "licenciatura-en-pedagogia",
+    "delegation_id": 5,
+    "name": "Licenciatura en Pedagogía"
+  },
+  {
+    "id": 477,
+    "slug": "licenciatura-en-economia",
+    "delegation_id": 5,
+    "name": "Licenciatura en Economía"
+  },
+  {
+    "id": 467,
+    "slug": "licenciatura-en-gestion-de-negocios-globales",
+    "delegation_id": 5,
+    "name": "Licenciatura en Gestión de Negocios Globales (en inglés)"
+  },
+  {
+    "id": 174,
+    "slug": "licenciatura-en-filosofia",
+    "delegation_id": 5,
+    "name": "Licenciatura en Filosofía"
+  },
+  {
+    "id": 177,
+    "slug": "licenciatura-en-ensenanza-de-lenguas",
+    "delegation_id": 5,
+    "name": "Licenciatura en Enseñanza de Lenguas"
+  },
+  {
+    "id": 133,
+    "slug": "licenciatura-en-educacion-fisica-y-deporte",
+    "delegation_id": 5,
+    "name": "Licenciatura en Educación Física y Deporte"
+  },
+  {
+    "id": 134,
+    "slug": "licenciatura-en-ensenanza-de-las-matematicas",
+    "delegation_id": 5,
+    "name": "Licenciatura en Enseñanza de las Matemáticas"
+  },
+  {
+    "id": 370,
+    "slug": "licenciatura-en-educacion-especial",
+    "delegation_id": 5,
+    "name": "Licenciatura en Educación Especial"
+  }
+]

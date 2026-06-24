@@ -1,0 +1,121 @@
+---
+import InstitutionalLayout from "../../../../../layouts/InstitutionalLayout.astro";
+import {
+  cargarDelegacionPorSlug,
+  cargarFacultadPorSlug,
+  cargarCarrerasDeFacultad,
+} from "../../../../../lib/cargarDatos.js";
+
+const { d_slug, f_slug } = Astro.params;
+const delegation = cargarDelegacionPorSlug(d_slug);
+const faculty = cargarFacultadPorSlug(f_slug);
+
+if (!delegation || !faculty) {
+  return Astro.redirect("/404");
+}
+
+// Validar que la facultad pertenece a esta delegación
+if (faculty.delegation_id !== delegation.id) {
+  return Astro.redirect("/404");
+}
+
+const careers = cargarCarrerasDeFacultad(faculty);
+---
+
+<InstitutionalLayout
+  title={`${faculty.name} — Programas Educativos`}
+  description={`Programas educativos y carreras ofrecidas por ${faculty.name} en la delegación ${delegation.name} de la Universidad de Colima.`}
+>
+  <div class="max-w-4xl mx-auto space-y-6">
+    <!-- Migas de Pan (Breadcrumbs) -->
+    <div
+      class="text-xs font-mono text-text-marino/60 flex items-center gap-1.5 flex-wrap"
+    >
+      <a href="/" class="hover:text-acento-verde transition-colors">Inicio</a>
+      <span>/</span>
+      <a href="/buscar-grupo" class="hover:text-acento-verde transition-colors"
+        >Delegaciones</a
+      >
+      <span>/</span>
+      <a
+        href={`/delegaciones/${d_slug}`}
+        class="hover:text-acento-verde transition-colors">{delegation.name}</a
+      >
+      <span>/</span>
+      <span class="font-bold text-acento-verde">{faculty.name}</span>
+    </div>
+
+    <!-- Encabezado -->
+    <div class="space-y-2">
+      <span
+        class="font-section text-xs uppercase tracking-widest font-semibold text-acento-verde"
+        >Facultad / Dependencia</span
+      >
+      <h1
+        class="font-display text-3xl font-bold tracking-tight text-text-marino"
+      >
+        {faculty.name}
+      </h1>
+      <p
+        class="font-sans text-sm text-text-marino/70 max-w-2xl leading-relaxed"
+      >
+        Selecciona un programa educativo para ver sus grupos académicos y el
+        cuerpo docente asignado.
+      </p>
+      {
+        faculty.portal_url && (
+          <a
+            href={faculty.portal_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 text-[11px] font-section font-semibold text-acento-verde hover:underline mt-1"
+          >
+            Sitio oficial de la facultad &rarr;
+          </a>
+        )
+      }
+    </div>
+
+    <hr class="academic-divider-double" />
+
+    <!-- Listado de Carreras -->
+    <div class="space-y-4">
+      <h2
+        class="font-section text-xs uppercase tracking-wider font-semibold text-text-marino/50 mb-4 flex items-center gap-1.5"
+      >
+        Programas Educativos
+      </h2>
+
+      {
+        careers.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {careers.map((car) => (
+              <a
+                href={`/delegaciones/${d_slug}/carreras/${car.slug}`}
+                class="border border-borde-gris p-5 bg-white rounded-sm hover:border-acento-verde transition-colors duration-150 flex flex-col justify-between group no-underline"
+              >
+                <div>
+                  <span class="font-section text-[9px] uppercase tracking-wider font-semibold text-text-marino/40 block mb-1">
+                    Programa
+                  </span>
+                  <span class="font-display text-base font-bold text-text-marino group-hover:text-acento-verde transition-colors">
+                    {car.name}
+                  </span>
+                </div>
+                <span class="link-academic text-[11px] font-semibold mt-4 block">
+                  Ver grupos acad&eacute;micos &rarr;
+                </span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div class="border border-borde-gris/60 border-dashed rounded-sm p-8 text-center bg-white">
+            <p class="text-xs italic text-text-marino/60 font-sans">
+              No se registran programas educativos activos en esta facultad.
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</InstitutionalLayout>
