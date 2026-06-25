@@ -1,0 +1,66 @@
+{
+  "slug": "isabel-perez-alvarez-45",
+  "title": "Profesor de Asignatura",
+  "fullName": "Dr. Isabel Pérez Álvarez",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 145",
+    "office": "Edificio FIME PTC, Cubículo 45",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2004,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2003,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2008,
+        "degree": "Doctor en Ciencias de la Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 1999,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "isabel.pérez_45@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-45",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 45",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 93,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    371,
+    418,
+    418,
+    418,
+    418
+  ]
+}

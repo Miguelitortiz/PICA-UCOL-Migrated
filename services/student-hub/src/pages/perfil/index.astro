@@ -7,7 +7,8 @@ import { cargarCarreras } from "../../lib/cargarDatos.js";
 const student = Astro.locals.student;
 
 // Obtener el grupo activo
-const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group") || "4-b-191";
+const activeGroupSlug =
+  student?.class_group_slug || Astro.url.searchParams.get("group") || "4-b-191";
 const careers = cargarCarreras();
 
 let activeGroup = null;
@@ -18,19 +19,25 @@ let examDates = [];
 if (activeGroupSlug) {
   try {
     // 1. Detalles del grupo y carrera
-    const gRes = await pool.query(`
+    const gRes = await pool.query(
+      `
       SELECT g.*
       FROM class_groups g
       WHERE g.slug = $1
-    `, [activeGroupSlug]);
+    `,
+      [activeGroupSlug],
+    );
 
     if (gRes.rows.length > 0) {
       activeGroup = gRes.rows[0];
-      const career = careers.find(c => c.id === activeGroup.career_id);
-      activeGroup.careerName = career ? career.name : activeGroup.career_name || "Carrera Desconocida";
+      const career = careers.find((c) => c.id === activeGroup.career_id);
+      activeGroup.careerName = career
+        ? career.name
+        : activeGroup.career_name || "Carrera Desconocida";
 
       // 2. Extraer horarios para obtener materias y docentes
-      const sRes = await pool.query(`
+      const sRes = await pool.query(
+        `
         SELECT s.*, p.full_name as professor_name, p.email as professor_email, p.slug as professor_slug,
                p.profile_data->'contactInfo'->>'phone' as professor_phone,
                p.profile_data->'contactInfo'->>'office' as professor_office,
@@ -39,17 +46,19 @@ if (activeGroupSlug) {
         LEFT JOIN professors p ON s.professor_id = p.id
         WHERE s.class_group_id = $1
         ORDER BY s.subject_name, s.day_of_week
-      `, [activeGroup.id]);
+      `,
+        [activeGroup.id],
+      );
 
       const schedules = sRes.rows;
 
       // Agrupar Materias
       const subjectsMap = new Map();
-      schedules.forEach(s => {
+      schedules.forEach((s) => {
         if (!subjectsMap.has(s.subject_name)) {
           subjectsMap.set(s.subject_name, {
             name: s.subject_name,
-            professorName: s.professor_name || "Sin asignar"
+            professorName: s.professor_name || "Sin asignar",
           });
         }
       });
@@ -57,7 +66,7 @@ if (activeGroupSlug) {
 
       // Agrupar Profesores
       const profsMap = new Map();
-      schedules.forEach(s => {
+      schedules.forEach((s) => {
         if (s.professor_id && !profsMap.has(s.professor_id)) {
           profsMap.set(s.professor_id, {
             name: s.professor_name,
@@ -65,18 +74,21 @@ if (activeGroupSlug) {
             email: s.professor_email,
             phone: s.professor_phone,
             office: s.professor_office,
-            image: s.professor_image
+            image: s.professor_image,
           });
         }
       });
       uniqueProfessors = Array.from(profsMap.values());
 
       // 3. Obtener fechas de examen
-      const eRes = await pool.query(`
+      const eRes = await pool.query(
+        `
         SELECT * FROM exam_dates
         WHERE class_group_id = $1
         ORDER BY exam_date, exam_time
-      `, [activeGroup.id]);
+      `,
+        [activeGroup.id],
+      );
       examDates = eRes.rows;
     }
   } catch (e) {
@@ -86,7 +98,6 @@ if (activeGroupSlug) {
 ---
 
 <InstitutionalLayout title="Mi Perfil — Expediente Estudiantil">
-
   <!-- ==========================================
        1. ENCABEZADO ASIMÉTRICO (Diseño Suizo)
        ========================================== -->
@@ -114,7 +125,7 @@ if (activeGroupSlug) {
   <section class="profile-section">
     <div class="profile-section__sidebar">
       <span class="overline">Contexto</span>
-      <h2 class="section-title">Identidad<br/>Académica</h2>
+      <h2 class="section-title">Identidad<br />Académica</h2>
     </div>
     <div class="profile-section__content">
       <div class="metadata-grid">
@@ -127,8 +138,10 @@ if (activeGroupSlug) {
           <span class="field-value">{activeGroup?.name || "—"}</span>
         </div>
         <div class="metadata-item">
-          <span class="field-label">Periodo Lectivo</span>
-          <span class="field-value" style="font-family: var(--font-mono);">2026-I</span>
+          <span class="field-label">Periodo </span>
+          <span class="field-value" style="font-family: var(--font-mono);"
+            >2026-I</span
+          >
         </div>
       </div>
     </div>
@@ -142,30 +155,36 @@ if (activeGroupSlug) {
   <section class="profile-section">
     <div class="profile-section__sidebar">
       <span class="overline">Carga</span>
-      <h2 class="section-title">Materias<br/>Matriculadas</h2>
-      <a href="/materias" class="link" style="font-size: 0.75rem; margin-top: 12px; display: inline-block;">
+      <h2 class="section-title">Materias<br />Matriculadas</h2>
+      <a
+        href="/materias"
+        class="link"
+        style="font-size: 0.75rem; margin-top: 12px; display: inline-block;"
+      >
         Ver detalles en panel →
       </a>
     </div>
     <div class="profile-section__content">
-      {uniqueSubjects.length > 0 ? (
-        <ul class="clean-list">
-          {uniqueSubjects.map(sub => (
-            <li class="clean-list__item">
-              <div>
-                <strong style="display: block; font-size: 1.125rem; font-weight: 700; color: var(--color-ink); margin-bottom: 4px;">
-                  {sub.name}
-                </strong>
-                <span style="font-size: 0.8125rem; color: var(--color-ink-2);">
-                  Titular: {sub.professorName}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p class="empty-text">No se ha registrado carga académica.</p>
-      )}
+      {
+        uniqueSubjects.length > 0 ? (
+          <ul class="clean-list">
+            {uniqueSubjects.map((sub) => (
+              <li class="clean-list__item">
+                <div>
+                  <strong style="display: block; font-size: 1.125rem; font-weight: 700; color: var(--color-ink); margin-bottom: 4px;">
+                    {sub.name}
+                  </strong>
+                  <span style="font-size: 0.8125rem; color: var(--color-ink-2);">
+                    Titular: {sub.professorName}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty-text">No se ha registrado carga académica.</p>
+        )
+      }
     </div>
   </section>
 
@@ -177,33 +196,46 @@ if (activeGroupSlug) {
   <section class="profile-section">
     <div class="profile-section__sidebar">
       <span class="overline">Docentes</span>
-      <h2 class="section-title">Plantilla<br/>Asignada</h2>
+      <h2 class="section-title">Plantilla<br />Asignada</h2>
     </div>
     <div class="profile-section__content">
-      {uniqueProfessors.length > 0 ? (
-        <div class="professors-grid">
-          {uniqueProfessors.map(prof => (
-            <div class="prof-card">
-              <div class="prof-card__img-container">
-                {prof.image ? (
-                  <img src={prof.image} alt={prof.name} class="prof-card__img" />
-                ) : (
-                  <div class="prof-card__img-placeholder">👨‍🏫</div>
-                )}
+      {
+        uniqueProfessors.length > 0 ? (
+          <div class="professors-grid">
+            {uniqueProfessors.map((prof) => (
+              <div class="prof-card">
+                <div class="prof-card__img-container">
+                  {prof.image ? (
+                    <img
+                      src={prof.image}
+                      alt={prof.name}
+                      class="prof-card__img"
+                    />
+                  ) : (
+                    <div class="prof-card__img-placeholder">👨‍🏫</div>
+                  )}
+                </div>
+                <div class="prof-card__info">
+                  <a
+                    href={prof.slug ? `/profesores/${prof.slug}` : "#"}
+                    class="prof-card__name"
+                  >
+                    {prof.name}
+                  </a>
+                  <span class="prof-card__meta">
+                    {prof.email || "Sin email registrado"}
+                  </span>
+                  <span class="prof-card__meta">
+                    Cubículo: {prof.office || "—"}
+                  </span>
+                </div>
               </div>
-              <div class="prof-card__info">
-                <a href={prof.slug ? `/profesores/${prof.slug}` : "#"} class="prof-card__name">
-                  {prof.name}
-                </a>
-                <span class="prof-card__meta">{prof.email || "Sin email registrado"}</span>
-                <span class="prof-card__meta">Cubículo: {prof.office || "—"}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p class="empty-text">No hay docentes registrados.</p>
-      )}
+            ))}
+          </div>
+        ) : (
+          <p class="empty-text">No hay docentes registrados.</p>
+        )
+      }
     </div>
   </section>
 
@@ -215,51 +247,65 @@ if (activeGroupSlug) {
   <section class="profile-section">
     <div class="profile-section__sidebar">
       <span class="overline">Calendario</span>
-      <h2 class="section-title">Próximas<br/>Evaluaciones</h2>
+      <h2 class="section-title">Próximas<br />Evaluaciones</h2>
     </div>
     <div class="profile-section__content">
-      {examDates.length > 0 ? (
-        <div class="timeline">
-          {examDates.map((ex, index) => {
-            const d = new Date(ex.exam_date);
-            const dateStr = d.toLocaleDateString("es-MX", { day: "numeric", month: "long" });
-            const isPast = d < new Date();
-            
-            return (
-              <div class={`timeline__item ${isPast ? 'timeline__item--past' : ''}`}>
-                <div class="timeline__date">
-                  <span style="font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700;">{dateStr}</span>
-                  <span style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3); margin-top: 2px;">
-                    {ex.exam_time ? ex.exam_time.substring(0,5) : ""}
-                  </span>
-                </div>
-                <div class="timeline__marker"></div>
-                <div class="timeline__body">
-                  <span class="overline" style="margin-bottom: 4px; display: block;">
-                    {ex.subject_name}
-                  </span>
-                  <strong style="font-size: 1rem; color: var(--color-ink); display: block;">
-                    {ex.exam_name}
-                  </strong>
-                  {ex.classroom && (
-                    <span style="font-size: 0.75rem; color: var(--color-ink-2); display: block; margin-top: 4px;">
-                      Aula: {ex.classroom}
+      {
+        examDates.length > 0 ? (
+          <div class="timeline">
+            {examDates.map((ex, index) => {
+              const d = new Date(ex.exam_date);
+              const dateStr = d.toLocaleDateString("es-MX", {
+                day: "numeric",
+                month: "long",
+              });
+              const isPast = d < new Date();
+
+              return (
+                <div
+                  class={`timeline__item ${isPast ? "timeline__item--past" : ""}`}
+                >
+                  <div class="timeline__date">
+                    <span style="font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700;">
+                      {dateStr}
                     </span>
-                  )}
+                    <span style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3); margin-top: 2px;">
+                      {ex.exam_time ? ex.exam_time.substring(0, 5) : ""}
+                    </span>
+                  </div>
+                  <div class="timeline__marker" />
+                  <div class="timeline__body">
+                    <span
+                      class="overline"
+                      style="margin-bottom: 4px; display: block;"
+                    >
+                      {ex.subject_name}
+                    </span>
+                    <strong style="font-size: 1rem; color: var(--color-ink); display: block;">
+                      {ex.exam_name}
+                    </strong>
+                    {ex.classroom && (
+                      <span style="font-size: 0.75rem; color: var(--color-ink-2); display: block; margin-top: 4px;">
+                        Aula: {ex.classroom}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <p class="empty-text">No hay evaluaciones programadas por el momento.</p>
-      )}
+              );
+            })}
+          </div>
+        ) : (
+          <p class="empty-text">
+            No hay evaluaciones programadas por el momento.
+          </p>
+        )
+      }
     </div>
   </section>
 
   <script>
     // Configuración básica del botón de cierre de sesión
-    document.querySelector('.btn-logout')?.addEventListener('click', () => {
+    document.querySelector(".btn-logout")?.addEventListener("click", () => {
       // Simulación de cierre de sesión
       localStorage.removeItem("pica_selected_group");
       window.location.href = "/";
@@ -287,7 +333,7 @@ if (activeGroupSlug) {
     font-size: 3rem;
     font-weight: 900;
     letter-spacing: -0.04em;
-    line-height: 1.0;
+    line-height: 1;
     color: var(--color-ink);
     margin-top: 8px;
   }
@@ -346,7 +392,9 @@ if (activeGroupSlug) {
     gap: 24px;
   }
   @media (min-width: 640px) {
-    .metadata-grid { grid-template-columns: repeat(2, 1fr); }
+    .metadata-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   .metadata-item {
@@ -363,14 +411,19 @@ if (activeGroupSlug) {
   /* Lista limpia (Materias) */
   .clean-list {
     list-style: none;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
   }
   .clean-list__item {
     padding: 16px 0;
     border-bottom: 1px solid var(--color-rule);
   }
-  .clean-list__item:first-child { padding-top: 0; }
-  .clean-list__item:last-child { border-bottom: none; }
+  .clean-list__item:first-child {
+    padding-top: 0;
+  }
+  .clean-list__item:last-child {
+    border-bottom: none;
+  }
 
   /* Grid de Profesores */
   .professors-grid {
@@ -379,9 +432,11 @@ if (activeGroupSlug) {
     gap: 24px;
   }
   @media (min-width: 640px) {
-    .professors-grid { grid-template-columns: repeat(2, 1fr); }
+    .professors-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
-  
+
   .prof-card {
     display: flex;
     gap: 16px;
@@ -394,29 +449,45 @@ if (activeGroupSlug) {
     flex-shrink: 0;
   }
   .prof-card__img {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     filter: grayscale(100%) contrast(1.1);
   }
   .prof-card__img-placeholder {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     background: var(--color-muted);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem; color: var(--color-ink-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--color-ink-3);
   }
   .prof-card__info {
-    display: flex; flex-direction: column; gap: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
   .prof-card__name {
-    font-size: 1rem; font-weight: 700; color: var(--color-ink);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-ink);
     text-decoration: none;
   }
-  .prof-card__name:hover { text-decoration: underline; color: var(--color-primary); }
-  .prof-card__meta { font-size: 0.75rem; color: var(--color-ink-2); }
+  .prof-card__name:hover {
+    text-decoration: underline;
+    color: var(--color-primary);
+  }
+  .prof-card__meta {
+    font-size: 0.75rem;
+    color: var(--color-ink-2);
+  }
 
   /* Línea de tiempo (Timeline) */
   .timeline {
-    display: flex; flex-direction: column;
+    display: flex;
+    flex-direction: column;
   }
   .timeline__item {
     display: grid;
@@ -425,10 +496,14 @@ if (activeGroupSlug) {
     padding-bottom: 32px;
   }
   .timeline__date {
-    display: flex; flex-direction: column; text-align: right; padding-top: 2px;
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    padding-top: 2px;
   }
   .timeline__marker {
-    width: 11px; height: 11px;
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
     background-color: var(--color-ink);
     position: relative;
@@ -436,17 +511,27 @@ if (activeGroupSlug) {
     margin-left: 6px;
   }
   .timeline__marker::after {
-    content: '';
+    content: "";
     position: absolute;
-    top: 11px; left: 5px;
-    width: 1px; height: 200px; /* Suficiente para conectar con el siguiente */
+    top: 11px;
+    left: 5px;
+    width: 1px;
+    height: 200px; /* Suficiente para conectar con el siguiente */
     background-color: var(--color-rule-strong);
   }
-  .timeline__item:last-child .timeline__marker::after { display: none; }
-  
-  .timeline__item--past .timeline__marker { background-color: var(--color-rule-strong); }
-  .timeline__item--past .timeline__body strong { color: var(--color-ink-2); }
-  .timeline__item--past .timeline__date span { color: var(--color-ink-3); }
+  .timeline__item:last-child .timeline__marker::after {
+    display: none;
+  }
+
+  .timeline__item--past .timeline__marker {
+    background-color: var(--color-rule-strong);
+  }
+  .timeline__item--past .timeline__body strong {
+    color: var(--color-ink-2);
+  }
+  .timeline__item--past .timeline__date span {
+    color: var(--color-ink-3);
+  }
 
   .empty-text {
     font-size: 0.875rem;

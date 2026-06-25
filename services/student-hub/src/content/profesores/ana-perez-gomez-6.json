@@ -1,0 +1,63 @@
+{
+  "slug": "ana-perez-gomez-6",
+  "title": "Profesor de Asignatura",
+  "fullName": "Dr. Ana Pérez Gómez",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 106",
+    "office": "Edificio FIME PTC, Cubículo 6",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2020,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2019,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2024,
+        "degree": "Doctor en Ciencias de la Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2015,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "ana.pérez_6@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-6",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 6",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 54,
+  "delegation_id": 4,
+  "career_ids": [
+    371,
+    371,
+    99
+  ]
+}

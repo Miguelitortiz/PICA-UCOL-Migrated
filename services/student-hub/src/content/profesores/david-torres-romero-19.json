@@ -1,0 +1,60 @@
+{
+  "slug": "david-torres-romero-19",
+  "title": "Profesor Investigador de Tiempo Completo (PTC)",
+  "fullName": "Mtro. David Torres Romero",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 119",
+    "office": "Edificio FIME PTC, Cubículo 19",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2018,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2017,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2013,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "david.torres_19@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-19",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 19",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 67,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    349,
+    418,
+    418,
+    418,
+    99
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "slug": "elena-gonzalez-vargas-16",
+  "title": "Profesor Investigador de Tiempo Completo (PTC)",
+  "fullName": "Mtra. Elena González Vargas",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 116",
+    "office": "Edificio FIME PTC, Cubículo 16",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2007,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2006,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2002,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "elena.gonzález_16@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-16",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 16",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 64,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    349,
+    418,
+    418,
+    418
+  ]
+}

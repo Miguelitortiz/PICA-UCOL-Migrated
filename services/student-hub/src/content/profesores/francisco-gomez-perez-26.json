@@ -1,0 +1,57 @@
+{
+  "slug": "francisco-gomez-perez-26",
+  "title": "Profesor Investigador de Tiempo Completo (PTC)",
+  "fullName": "Mtra. Francisco Gómez Pérez",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 126",
+    "office": "Edificio FIME PTC, Cubículo 26",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2000,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 1999,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 1995,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "francisco.gómez_26@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-26",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 26",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 74,
+  "delegation_id": 4,
+  "career_ids": [
+    371,
+    371,
+    371
+  ]
+}

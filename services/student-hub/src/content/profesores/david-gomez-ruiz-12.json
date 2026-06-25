@@ -1,0 +1,66 @@
+{
+  "slug": "david-gomez-ruiz-12",
+  "title": "Profesor Investigador de Tiempo Completo (PTC)",
+  "fullName": "Dr. David Gómez Ruiz",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 112",
+    "office": "Edificio FIME PTC, Cubículo 12",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2004,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2003,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2008,
+        "degree": "Doctor en Ciencias de la Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 1999,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "david.gómez_12@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-12",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 12",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 60,
+  "delegation_id": 4,
+  "career_ids": [
+    371,
+    371,
+    418,
+    418,
+    99,
+    99
+  ]
+}

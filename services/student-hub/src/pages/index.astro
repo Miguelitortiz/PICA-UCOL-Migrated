@@ -1,78 +1,81 @@
 ---
+import LoginPanel from "../components/LoginPanel.astro";
 import InstitutionalLayout from "../layouts/InstitutionalLayout.astro";
 import { cargarCarreras, cargarDelegaciones } from "../lib/cargarDatos.js";
 import pool from "../lib/db.js";
 
+const student = Astro.locals.student;
 const delegations = cargarDelegaciones();
 const careers = cargarCarreras();
 
 let allGroups = [];
-try {
-  const grpsRes = await pool.query(`
-    SELECT g.*, c.name as career_name
-    FROM class_groups g
-    LEFT JOIN careers c ON g.career_id = c.id
-    ORDER BY g.name ASC
-  `);
-  allGroups = grpsRes.rows.map(g => {
-    const career = careers.find(c => c.id === g.career_id);
-    return { ...g, careerName: career ? career.name : g.career_name || "Desconocida" };
-  });
-} catch (e) {
-  console.warn("No se pudieron cargar grupos:", e.message);
-}
-
-const student = Astro.locals.student;
 const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group");
 let activeGroup = null;
 let schedules = [];
 let examDates = [];
 let syllabusList = [];
 
-if (activeGroupSlug) {
+if (student) {
   try {
-    const gRes = await pool.query(`
-      SELECT g.*, p.full_name as tutor_name, p.email as tutor_email, p.slug as tutor_slug,
-             p.profile_data->'contactInfo'->>'phone' as tutor_phone,
-             p.profile_data->'contactInfo'->>'office' as tutor_office,
-             p.profile_data->'contactInfo'->>'officeHours' as tutor_office_hours
+    const grpsRes = await pool.query(`
+      SELECT g.*, c.name as career_name
       FROM class_groups g
-      LEFT JOIN professors p ON g.tutor_id = p.id
-      WHERE g.slug = $1
-    `, [activeGroupSlug]);
-
-    if (gRes.rows.length > 0) {
-      activeGroup = gRes.rows[0];
-      const career = careers.find(c => c.id === activeGroup.career_id);
-      activeGroup.careerName = career ? career.name : "Carrera Desconocida";
-
-      const sRes = await pool.query(`
-        SELECT s.*, p.full_name as professor_name, p.email as professor_email, p.slug as professor_slug,
-               p.profile_data->'contactInfo'->>'phone' as professor_phone,
-               p.profile_data->'contactInfo'->>'office' as professor_office,
-               p.profile_data->'contactInfo'->>'officeHours' as professor_office_hours,
-               p.profile_data->>'image' as professor_image
-        FROM schedules s
-        LEFT JOIN professors p ON s.professor_id = p.id
-        WHERE s.class_group_id = $1
-        ORDER BY s.day_of_week, s.start_time
-      `, [activeGroup.id]);
-      schedules = sRes.rows;
-
-      const eRes = await pool.query(`
-        SELECT * FROM exam_dates
-        WHERE class_group_id = $1
-        ORDER BY exam_date, exam_time
-      `, [activeGroup.id]);
-      examDates = eRes.rows;
-
-      const sylRes = await pool.query(`
-        SELECT * FROM subject_syllabus WHERE career_id = $1
-      `, [activeGroup.career_id]);
-      syllabusList = sylRes.rows;
-    }
+      LEFT JOIN careers c ON g.career_id = c.id
+      ORDER BY g.name ASC
+    `);
+    allGroups = grpsRes.rows.map(g => {
+      const career = careers.find(c => c.id === g.career_id);
+      return { ...g, careerName: career ? career.name : g.career_name || "Desconocida" };
+    });
   } catch (e) {
-    console.error("Error cargando detalles del grupo:", e);
+    console.warn("No se pudieron cargar grupos:", e.message);
+  }
+
+  if (activeGroupSlug) {
+    try {
+      const gRes = await pool.query(`
+        SELECT g.*, p.full_name as tutor_name, p.email as tutor_email, p.slug as tutor_slug,
+               p.profile_data->'contactInfo'->>'phone' as tutor_phone,
+               p.profile_data->'contactInfo'->>'office' as tutor_office,
+               p.profile_data->'contactInfo'->>'officeHours' as tutor_office_hours
+        FROM class_groups g
+        LEFT JOIN professors p ON g.tutor_id = p.id
+        WHERE g.slug = $1
+      `, [activeGroupSlug]);
+
+      if (gRes.rows.length > 0) {
+        activeGroup = gRes.rows[0];
+        const career = careers.find(c => c.id === activeGroup.career_id);
+        activeGroup.careerName = career ? career.name : "Carrera Desconocida";
+
+        const sRes = await pool.query(`
+          SELECT s.*, p.full_name as professor_name, p.email as professor_email, p.slug as professor_slug,
+                 p.profile_data->'contactInfo'->>'phone' as professor_phone,
+                 p.profile_data->'contactInfo'->>'office' as professor_office,
+                 p.profile_data->'contactInfo'->>'officeHours' as professor_office_hours,
+                 p.profile_data->>'image' as professor_image
+          FROM schedules s
+          LEFT JOIN professors p ON s.professor_id = p.id
+          WHERE s.class_group_id = $1
+          ORDER BY s.day_of_week, s.start_time
+        `, [activeGroup.id]);
+        schedules = sRes.rows;
+
+        const eRes = await pool.query(`
+          SELECT * FROM exam_dates
+          WHERE class_group_id = $1
+          ORDER BY exam_date, exam_time
+        `, [activeGroup.id]);
+        examDates = eRes.rows;
+
+        const sylRes = await pool.query(`
+          SELECT * FROM subject_syllabus WHERE career_id = $1
+        `, [activeGroup.career_id]);
+        syllabusList = sylRes.rows;
+      }
+    } catch (e) {
+      console.error("Error cargando detalles del grupo:", e);
+    }
   }
 }
 
@@ -103,6 +106,9 @@ function getSyllabusDesc(subjectName: string): string {
 }
 ---
 
+{!student ? (
+  <LoginPanel />
+) : (
 <InstitutionalLayout title="Horario del Estudiante">
 
   <!-- ═══════════════════════════════════════════════════
@@ -122,16 +128,7 @@ function getSyllabusDesc(subjectName: string): string {
         </p>
       )}
     </div>
-    <div class="page-header__selector">
-      <label for="group-selector" class="field-label">Grupo académico</label>
-      <select id="group-selector" class="input">
-        {allGroups.map(g => (
-          <option value={g.slug} selected={g.slug === activeGroupSlug}>
-            {g.name} — {g.careerName}
-          </option>
-        ))}
-      </select>
-    </div>
+
   </div>
 
   <hr class="rule" style="margin-bottom: 40px;" />
@@ -141,6 +138,76 @@ function getSyllabusDesc(subjectName: string): string {
        Grid asimétrico: horario (amplio) + sidebar (estrecho)
        ═══════════════════════════════════════════════════ -->
   <div class="content-grid">
+
+    <!-- ─────────────────────────────────────
+         SIDEBAR INFORMATIVO
+         Sin tarjetas, sin bordes contenedores.
+         Secciones separadas por regla + whitespace.
+         ───────────────────────────────────── -->
+    <aside class="sidebar" aria-label="Información del grupo">
+
+      <!-- Información del grupo -->
+      {activeGroup && (
+        <div class="sidebar-section">
+          <span class="overline">Tu grupo</span>
+          <div class="sidebar-data">
+            <div class="data-row">
+              <span class="field-label">Grupo</span>
+              <span class="field-value">{activeGroup.name}</span>
+            </div>
+            <div class="data-row">
+              <span class="field-label">Carrera</span>
+              <span class="field-value">{activeGroup.careerName}</span>
+            </div>
+            <div class="data-row">
+              <span class="field-label">Turno</span>
+              <span class="field-value">{activeGroup.shift}</span>
+            </div>
+            {activeGroup.semester && (
+              <div class="data-row">
+                <span class="field-label">Semestre</span>
+                <span class="field-value">{activeGroup.semester}°</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <!-- Tutor del grupo -->
+      {activeGroup?.tutor_name && (
+        <>
+          <hr class="rule" />
+          <div class="sidebar-section">
+            <span class="overline">Tutor</span>
+            <div class="sidebar-data">
+              <div class="data-row">
+                <span class="field-label">Docente</span>
+                <a href={`/profesores/${activeGroup.tutor_slug}`} class="field-value link">
+                  {activeGroup.tutor_name}
+                </a>
+              </div>
+              {activeGroup.tutor_email && (
+                <div class="data-row">
+                  <span class="field-label">Email</span>
+                  <a href={`mailto:${activeGroup.tutor_email}`} class="field-value link" style="font-size: 0.75rem; font-weight: 500;">
+                    {activeGroup.tutor_email}
+                  </a>
+                </div>
+              )}
+              {activeGroup.tutor_office && (
+                <div class="data-row">
+                  <span class="field-label">Cubículo</span>
+                  <span class="field-value">{activeGroup.tutor_office}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+
+
+    </aside>
 
     <!-- ─────────────────────────────────────
          COLUMNA PRINCIPAL: TABLA DE HORARIO
@@ -214,101 +281,6 @@ function getSyllabusDesc(subjectName: string): string {
         </table>
       </div>
     </section>
-
-    <!-- ─────────────────────────────────────
-         SIDEBAR INFORMATIVO
-         Sin tarjetas, sin bordes contenedores.
-         Secciones separadas por regla + whitespace.
-         ───────────────────────────────────── -->
-    <aside class="sidebar" aria-label="Información del grupo">
-
-      <!-- Información del grupo -->
-      {activeGroup && (
-        <div class="sidebar-section">
-          <span class="overline">Tu grupo</span>
-          <div class="sidebar-data">
-            <div class="data-row">
-              <span class="field-label">Grupo</span>
-              <span class="field-value">{activeGroup.name}</span>
-            </div>
-            <div class="data-row">
-              <span class="field-label">Carrera</span>
-              <span class="field-value">{activeGroup.careerName}</span>
-            </div>
-            <div class="data-row">
-              <span class="field-label">Turno</span>
-              <span class="field-value">{activeGroup.shift}</span>
-            </div>
-            {activeGroup.semester && (
-              <div class="data-row">
-                <span class="field-label">Semestre</span>
-                <span class="field-value">{activeGroup.semester}°</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      <!-- Tutor del grupo -->
-      {activeGroup?.tutor_name && (
-        <>
-          <hr class="rule" />
-          <div class="sidebar-section">
-            <span class="overline">Tutor</span>
-            <div class="sidebar-data">
-              <div class="data-row">
-                <span class="field-label">Docente</span>
-                <a href={`/profesores/${activeGroup.tutor_slug}`} class="field-value link">
-                  {activeGroup.tutor_name}
-                </a>
-              </div>
-              {activeGroup.tutor_email && (
-                <div class="data-row">
-                  <span class="field-label">Email</span>
-                  <a href={`mailto:${activeGroup.tutor_email}`} class="field-value link" style="font-size: 0.75rem; font-weight: 500;">
-                    {activeGroup.tutor_email}
-                  </a>
-                </div>
-              )}
-              {activeGroup.tutor_office && (
-                <div class="data-row">
-                  <span class="field-label">Cubículo</span>
-                  <span class="field-value">{activeGroup.tutor_office}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-
-      <!-- Próximos exámenes -->
-      <hr class="rule" />
-      <div class="sidebar-section">
-        <span class="overline">Próximos exámenes</span>
-        {examDates.length > 0 ? (
-          <div class="exam-list">
-            {examDates.slice(0, 4).map((exam) => {
-              const d = new Date(exam.exam_date);
-              const dateStr = d.toLocaleDateString("es-MX", { day: "numeric", month: "short" });
-              return (
-                <div class="exam-item">
-                  <div class="exam-item__name">{exam.exam_name}</div>
-                  <div class="exam-item__meta">
-                    <span class="exam-item__subject">{exam.subject_name}</span>
-                    <span class="exam-item__date">{dateStr} &mdash; {exam.exam_time?.substring(0, 5)}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p style="font-size: 0.75rem; color: var(--color-ink-3); margin-top: 8px;">
-            Sin exámenes programados.
-          </p>
-        )}
-      </div>
-
-    </aside>
   </div>
 
   <!-- ═══════════════════════════════════════════════════
@@ -503,21 +475,6 @@ function getSyllabusDesc(subjectName: string): string {
   </div>
 
   <script type="module">
-    // ── Cambio de grupo ──
-    const groupSel = document.getElementById("group-selector");
-    if (groupSel) {
-      groupSel.addEventListener("change", e => {
-        const slug = e.target.value;
-        localStorage.setItem("pica_selected_group", slug);
-        window.location.href = `/?group=${slug}`;
-      });
-      const saved = localStorage.getItem("pica_selected_group");
-      const params = new URLSearchParams(window.location.search);
-      if (!params.has("group") && saved && saved !== groupSel.value) {
-        window.location.href = `/?group=${saved}`;
-      }
-    }
-
     // ── Modal ──
     const modal    = document.getElementById("class-modal");
     const btnClose = document.getElementById("btn-close-modal");
@@ -619,7 +576,8 @@ function getSyllabusDesc(subjectName: string): string {
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
   </script>
 
-</InstitutionalLayout>
+  </InstitutionalLayout>
+)}
 
 <style>
   /* ══════════════════════════════════════════════════
@@ -679,7 +637,7 @@ function getSyllabusDesc(subjectName: string): string {
 
   @media (min-width: 1024px) {
     .content-grid {
-      grid-template-columns: 1fr 260px;
+      grid-template-columns: 260px 1fr;
       gap: 56px;
     }
   }

@@ -33,54 +33,46 @@ const totalArticlesCount = articles.length;
 const thesesCount = theses.length;
 ---
 
-<div class="border border-borde-gris p-5 bg-bg-piedra/30 rounded-sm space-y-4">
-  <h3 class="font-section text-[10px] uppercase tracking-widest font-semibold text-acento-verde border-b border-borde-gris pb-1.5 mb-2">
+<div class="space-y-6 py-2">
+  <span class="overline overline--primary border-b border-rule pb-2 w-full block">
     Indicadores de Impacto
-  </h3>
+  </span>
 
-  <div class="grid grid-cols-1 gap-4">
+  <div class="space-y-4">
     <!-- Años de servicio -->
     <div>
-      <div class="font-mono text-2xl font-bold text-text-marino">
+      <div class="text-3xl font-black text-ink font-mono tracking-tighter">
         {yearsOfService}
       </div>
-      <div class="text-[9px] uppercase tracking-wider text-text-marino/70 font-sans mt-0.5 font-semibold">
-        Años de Servicio
-      </div>
+      <span class="field-label mt-1">Años de Servicio</span>
     </div>
 
     <!-- Artículos JCR / Totales -->
     <div>
-      <div class="font-mono text-2xl font-bold text-text-marino">
-        {jcrArticlesCount} <span class="text-xs font-normal text-text-marino/50">/ {totalArticlesCount}</span>
+      <div class="text-3xl font-black text-ink font-mono tracking-tighter">
+        {jcrArticlesCount}<span class="text-base font-normal text-ink-3"> / {totalArticlesCount}</span>
       </div>
-      <div class="text-[9px] uppercase tracking-wider text-text-marino/70 font-sans mt-0.5 font-semibold">
-        Artículos JCR / Indexados
-      </div>
+      <span class="field-label mt-1">Artículos JCR / Indexados</span>
     </div>
 
     <!-- Tesis dirigidas -->
     <div>
-      <div class="font-mono text-2xl font-bold text-text-marino">
+      <div class="text-3xl font-black text-ink font-mono tracking-tighter">
         {thesesCount}
       </div>
-      <div class="text-[9px] uppercase tracking-wider text-text-marino/70 font-sans mt-0.5 font-semibold">
-        Tesis Asesoradas
-      </div>
+      <span class="field-label mt-1">Tesis Asesoradas</span>
     </div>
 
     <!-- Cuerpo Académico -->
     {academicBody && (
-      <div class="border-t border-borde-gris pt-3 mt-1.5">
-        <div class="text-[9px] uppercase tracking-widest text-text-marino/50 font-bold mb-0.5">
-          Cuerpo Académico
-        </div>
-        <div class="font-section text-xs font-bold text-text-marino leading-snug">
+      <div class="border-t border-rule pt-4 mt-2">
+        <span class="field-label">Cuerpo Académico</span>
+        <div class="field-value text-sm mt-1">
           {academicBody.name}
         </div>
-        <div class="font-mono text-[10px] text-acento-verde mt-0.5 font-bold">
+        <span class="tag tag--primary mt-2">
           {academicBody.level}
-        </div>
+        </span>
       </div>
     )}
   </div>

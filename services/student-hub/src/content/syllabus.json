@@ -1,1 +1,1889 @@
-[]
+[
+  {
+    "id": 116,
+    "slug": "matematicas-basicas-99",
+    "subject_name": "Matemáticas Básicas",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Matemáticas Básicas dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 90,
+    "created_at": "2026-06-25T05:15:13.942Z",
+    "updated_at": "2026-06-25T05:15:13.942Z",
+    "creator_name": "Dra. Fernando Sánchez Moreno"
+  },
+  {
+    "id": 117,
+    "slug": "fisica-de-mecanica-99",
+    "subject_name": "Física de Mecánica",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Física de Mecánica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 82,
+    "created_at": "2026-06-25T05:15:13.943Z",
+    "updated_at": "2026-06-25T05:15:13.943Z",
+    "creator_name": "Mtro. Ana Moreno Torres"
+  },
+  {
+    "id": 118,
+    "slug": "introduccion-a-la-electronica-y-telecom-99",
+    "subject_name": "Introducción a la Electrónica y Telecom",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Introducción a la Electrónica y Telecom dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 74,
+    "created_at": "2026-06-25T05:15:13.943Z",
+    "updated_at": "2026-06-25T05:15:13.943Z",
+    "creator_name": "Mtra. Francisco Gómez Pérez"
+  },
+  {
+    "id": 119,
+    "slug": "programacion-en-c-99",
+    "subject_name": "Programación en C",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Programación en C dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 86,
+    "created_at": "2026-06-25T05:15:13.943Z",
+    "updated_at": "2026-06-25T05:15:13.943Z",
+    "creator_name": "Mtra. David Gutiérrez Navarro"
+  },
+  {
+    "id": 120,
+    "slug": "quimica-basica-99",
+    "subject_name": "Química Básica",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Química Básica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 66,
+    "created_at": "2026-06-25T05:15:13.944Z",
+    "updated_at": "2026-06-25T05:15:13.944Z",
+    "creator_name": "Dr. Elena Sánchez Pérez"
+  },
+  {
+    "id": 121,
+    "slug": "ingles-i-99",
+    "subject_name": "Inglés I",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Inglés I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 63,
+    "created_at": "2026-06-25T05:15:13.944Z",
+    "updated_at": "2026-06-25T05:15:13.944Z",
+    "creator_name": "Dra. Carlos Pérez Pérez"
+  },
+  {
+    "id": 122,
+    "slug": "calculo-de-varias-variables-99",
+    "subject_name": "Cálculo de Varias Variables",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Cálculo de Varias Variables dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 80,
+    "created_at": "2026-06-25T05:15:13.945Z",
+    "updated_at": "2026-06-25T05:15:13.945Z",
+    "creator_name": "Mtra. Miguel Díaz Gómez"
+  },
+  {
+    "id": 123,
+    "slug": "teoria-de-circuitos-i-99",
+    "subject_name": "Teoría de Circuitos I",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Teoría de Circuitos I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 67,
+    "created_at": "2026-06-25T05:15:13.945Z",
+    "updated_at": "2026-06-25T05:15:13.945Z",
+    "creator_name": "Mtro. David Torres Romero"
+  },
+  {
+    "id": 124,
+    "slug": "electronica-de-diodos-y-transistores-99",
+    "subject_name": "Electrónica de Diodos y Transistores",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Electrónica de Diodos y Transistores dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 65,
+    "created_at": "2026-06-25T05:15:13.945Z",
+    "updated_at": "2026-06-25T05:15:13.945Z",
+    "creator_name": "Mtro. Ana Pérez Ruiz"
+  },
+  {
+    "id": 125,
+    "slug": "matematicas-especiales-99",
+    "subject_name": "Matemáticas Especiales",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Matemáticas Especiales dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 92,
+    "created_at": "2026-06-25T05:15:13.946Z",
+    "updated_at": "2026-06-25T05:15:13.946Z",
+    "creator_name": "Mtro. David Torres Sánchez"
+  },
+  {
+    "id": 126,
+    "slug": "teoria-electromagnetica-99",
+    "subject_name": "Teoría Electromagnética",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Teoría Electromagnética dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 56,
+    "created_at": "2026-06-25T05:15:13.946Z",
+    "updated_at": "2026-06-25T05:15:13.946Z",
+    "creator_name": "Mtra. Fernando Alonso López"
+  },
+  {
+    "id": 127,
+    "slug": "ingles-iii-99",
+    "subject_name": "Inglés III",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Inglés III dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 72,
+    "created_at": "2026-06-25T05:15:13.946Z",
+    "updated_at": "2026-06-25T05:15:13.946Z",
+    "creator_name": "Dra. Jorge Muñoz Álvarez"
+  },
+  {
+    "id": 128,
+    "slug": "electronica-analogica-avanzada-99",
+    "subject_name": "Electrónica Analógica Avanzada",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Electrónica Analógica Avanzada dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 87,
+    "created_at": "2026-06-25T05:15:13.947Z",
+    "updated_at": "2026-06-25T05:15:13.947Z",
+    "creator_name": "Dr. José Ruiz Hernández"
+  },
+  {
+    "id": 129,
+    "slug": "sistemas-de-comunicacion-analogica-99",
+    "subject_name": "Sistemas de Comunicación Analógica",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Sistemas de Comunicación Analógica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 66,
+    "created_at": "2026-06-25T05:15:13.947Z",
+    "updated_at": "2026-06-25T05:15:13.947Z",
+    "creator_name": "Dr. Elena Sánchez Pérez"
+  },
+  {
+    "id": 130,
+    "slug": "microcontroladores-99",
+    "subject_name": "Microcontroladores",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Microcontroladores dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 60,
+    "created_at": "2026-06-25T05:15:13.947Z",
+    "updated_at": "2026-06-25T05:15:13.947Z",
+    "creator_name": "Dr. David Gómez Ruiz"
+  },
+  {
+    "id": 131,
+    "slug": "lineas-de-transmision-y-antenas-99",
+    "subject_name": "Líneas de Transmisión y Antenas",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Líneas de Transmisión y Antenas dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 74,
+    "created_at": "2026-06-25T05:15:13.948Z",
+    "updated_at": "2026-06-25T05:15:13.948Z",
+    "creator_name": "Mtra. Francisco Gómez Pérez"
+  },
+  {
+    "id": 132,
+    "slug": "procesamiento-digital-de-senales-99",
+    "subject_name": "Procesamiento Digital de Señales",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Procesamiento Digital de Señales dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 55,
+    "created_at": "2026-06-25T05:15:13.948Z",
+    "updated_at": "2026-06-25T05:15:13.948Z",
+    "creator_name": "Mtro. José Gutiérrez Torres"
+  },
+  {
+    "id": 133,
+    "slug": "redes-de-datos-99",
+    "subject_name": "Redes de Datos",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Redes de Datos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 92,
+    "created_at": "2026-06-25T05:15:13.948Z",
+    "updated_at": "2026-06-25T05:15:13.948Z",
+    "creator_name": "Mtro. David Torres Sánchez"
+  },
+  {
+    "id": 134,
+    "slug": "sistemas-de-comunicacion-digital-99",
+    "subject_name": "Sistemas de Comunicación Digital",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Sistemas de Comunicación Digital dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 87,
+    "created_at": "2026-06-25T05:15:13.949Z",
+    "updated_at": "2026-06-25T05:15:13.949Z",
+    "creator_name": "Dr. José Ruiz Hernández"
+  },
+  {
+    "id": 135,
+    "slug": "comunicaciones-por-satelite-99",
+    "subject_name": "Comunicaciones por Satélite",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Comunicaciones por Satélite dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 75,
+    "created_at": "2026-06-25T05:15:13.949Z",
+    "updated_at": "2026-06-25T05:15:13.949Z",
+    "creator_name": "Dr. Miguel Gutiérrez Torres"
+  },
+  {
+    "id": 136,
+    "slug": "instrumentacion-electronica-99",
+    "subject_name": "Instrumentación Electrónica",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Instrumentación Electrónica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 53,
+    "created_at": "2026-06-25T05:15:13.949Z",
+    "updated_at": "2026-06-25T05:15:13.949Z",
+    "creator_name": "Mtro. Miguel Sánchez Ruiz"
+  },
+  {
+    "id": 137,
+    "slug": "redes-de-nueva-generacion-99",
+    "subject_name": "Redes de Nueva Generación",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Redes de Nueva Generación dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 89,
+    "created_at": "2026-06-25T05:15:13.949Z",
+    "updated_at": "2026-06-25T05:15:13.949Z",
+    "creator_name": "Mtra. Roberto López Romero"
+  },
+  {
+    "id": 138,
+    "slug": "electronica-de-potencia-99",
+    "subject_name": "Electrónica de Potencia",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Electrónica de Potencia dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 83,
+    "created_at": "2026-06-25T05:15:13.950Z",
+    "updated_at": "2026-06-25T05:15:13.950Z",
+    "creator_name": "Mtro. Fernando Moreno Ruiz"
+  },
+  {
+    "id": 139,
+    "slug": "administracion-de-proyectos-99",
+    "subject_name": "Administración de Proyectos",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Administración de Proyectos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 85,
+    "created_at": "2026-06-25T05:15:13.950Z",
+    "updated_at": "2026-06-25T05:15:13.950Z",
+    "creator_name": "Mtro. Fernando López Muñoz"
+  },
+  {
+    "id": 140,
+    "slug": "comunicaciones-opticas-99",
+    "subject_name": "Comunicaciones Ópticas",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Comunicaciones Ópticas dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 65,
+    "created_at": "2026-06-25T05:15:13.950Z",
+    "updated_at": "2026-06-25T05:15:13.950Z",
+    "creator_name": "Mtro. Ana Pérez Ruiz"
+  },
+  {
+    "id": 141,
+    "slug": "telefonia-movil-99",
+    "subject_name": "Telefonía Móvil",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Telefonía Móvil dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 86,
+    "created_at": "2026-06-25T05:15:13.951Z",
+    "updated_at": "2026-06-25T05:15:13.951Z",
+    "creator_name": "Mtra. David Gutiérrez Navarro"
+  },
+  {
+    "id": 142,
+    "slug": "proyecto-de-telecomunicaciones-99",
+    "subject_name": "Proyecto de Telecomunicaciones",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Proyecto de Telecomunicaciones dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 92,
+    "created_at": "2026-06-25T05:15:13.951Z",
+    "updated_at": "2026-06-25T05:15:13.951Z",
+    "creator_name": "Mtro. David Torres Sánchez"
+  },
+  {
+    "id": 143,
+    "slug": "regulacion-y-politicas-de-telecom-99",
+    "subject_name": "Regulación y Políticas de Telecom",
+    "career_id": 99,
+    "program_description": "Programa académico oficial para la materia de Regulación y Políticas de Telecom dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 92,
+    "created_at": "2026-06-25T05:15:13.951Z",
+    "updated_at": "2026-06-25T05:15:13.951Z",
+    "creator_name": "Mtro. David Torres Sánchez"
+  },
+  {
+    "id": 144,
+    "slug": "precalculo-349",
+    "subject_name": "Precálculo",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Precálculo dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 77,
+    "created_at": "2026-06-25T05:15:13.952Z",
+    "updated_at": "2026-06-25T05:15:13.952Z",
+    "creator_name": "Mtra. Gabriela Hernández Gómez"
+  },
+  {
+    "id": 145,
+    "slug": "matematicas-discretas-349",
+    "subject_name": "Matemáticas Discretas",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Matemáticas Discretas dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 59,
+    "created_at": "2026-06-25T05:15:13.952Z",
+    "updated_at": "2026-06-25T05:15:13.952Z",
+    "creator_name": "Mtro. Roberto Martínez López"
+  },
+  {
+    "id": 146,
+    "slug": "fundamentos-de-programacion-349",
+    "subject_name": "Fundamentos de Programación",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Fundamentos de Programación dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 88,
+    "created_at": "2026-06-25T05:15:13.952Z",
+    "updated_at": "2026-06-25T05:15:13.952Z",
+    "creator_name": "Mtra. Lucía Díaz Sánchez"
+  },
+  {
+    "id": 147,
+    "slug": "fisica-general-349",
+    "subject_name": "Física General",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Física General dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 88,
+    "created_at": "2026-06-25T05:15:13.953Z",
+    "updated_at": "2026-06-25T05:15:13.953Z",
+    "creator_name": "Mtra. Lucía Díaz Sánchez"
+  },
+  {
+    "id": 148,
+    "slug": "epistemologia-computacional-349",
+    "subject_name": "Epistemología Computacional",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Epistemología Computacional dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 69,
+    "created_at": "2026-06-25T05:15:13.953Z",
+    "updated_at": "2026-06-25T05:15:13.953Z",
+    "creator_name": "Dra. Isabel Rodríguez Alonso"
+  },
+  {
+    "id": 149,
+    "slug": "ingles-i-349",
+    "subject_name": "Inglés I",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Inglés I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 89,
+    "created_at": "2026-06-25T05:15:13.953Z",
+    "updated_at": "2026-06-25T05:15:13.953Z",
+    "creator_name": "Mtra. Roberto López Romero"
+  },
+  {
+    "id": 150,
+    "slug": "estructuras-de-datos-349",
+    "subject_name": "Estructuras de Datos",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Estructuras de Datos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 59,
+    "created_at": "2026-06-25T05:15:13.953Z",
+    "updated_at": "2026-06-25T05:15:13.953Z",
+    "creator_name": "Mtro. Roberto Martínez López"
+  },
+  {
+    "id": 151,
+    "slug": "calculo-integral-349",
+    "subject_name": "Cálculo Integral",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Cálculo Integral dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 58,
+    "created_at": "2026-06-25T05:15:13.954Z",
+    "updated_at": "2026-06-25T05:15:13.954Z",
+    "creator_name": "Mtro. María Sánchez Sánchez"
+  },
+  {
+    "id": 152,
+    "slug": "algebra-lineal-y-vectorial-349",
+    "subject_name": "Álgebra Lineal y Vectorial",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Álgebra Lineal y Vectorial dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 50,
+    "created_at": "2026-06-25T05:15:13.954Z",
+    "updated_at": "2026-06-25T05:15:13.954Z",
+    "creator_name": "Mtra. Carlos Navarro López"
+  },
+  {
+    "id": 153,
+    "slug": "programacion-orientada-a-objetos-349",
+    "subject_name": "Programación Orientada a Objetos",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Programación Orientada a Objetos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 52,
+    "created_at": "2026-06-25T05:15:13.954Z",
+    "updated_at": "2026-06-25T05:15:13.954Z",
+    "creator_name": "Mtra. Carlos Gómez Álvarez"
+  },
+  {
+    "id": 154,
+    "slug": "circuitos-electricos-y-electronicos-349",
+    "subject_name": "Circuitos Eléctricos y Electrónicos",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Circuitos Eléctricos y Electrónicos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 49,
+    "created_at": "2026-06-25T05:15:13.955Z",
+    "updated_at": "2026-06-25T05:15:13.955Z",
+    "creator_name": "Mtra. Sofía Vargas Torres"
+  },
+  {
+    "id": 155,
+    "slug": "ingles-iii-349",
+    "subject_name": "Inglés III",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Inglés III dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 91,
+    "created_at": "2026-06-25T05:15:13.955Z",
+    "updated_at": "2026-06-25T05:15:13.955Z",
+    "creator_name": "Mtra. Roberto Pérez Gutiérrez"
+  },
+  {
+    "id": 156,
+    "slug": "bases-de-datos-349",
+    "subject_name": "Bases de Datos",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Bases de Datos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 62,
+    "created_at": "2026-06-25T05:15:13.956Z",
+    "updated_at": "2026-06-25T05:15:13.956Z",
+    "creator_name": "Mtro. José Moreno Navarro"
+  },
+  {
+    "id": 157,
+    "slug": "inteligencia-artificial-i-349",
+    "subject_name": "Inteligencia Artificial I",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Inteligencia Artificial I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 68,
+    "created_at": "2026-06-25T05:15:13.957Z",
+    "updated_at": "2026-06-25T05:15:13.957Z",
+    "creator_name": "Mtra. Roberto Hernández Romero"
+  },
+  {
+    "id": 158,
+    "slug": "analisis-y-diseno-de-algoritmos-349",
+    "subject_name": "Análisis y Diseño de Algoritmos",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Análisis y Diseño de Algoritmos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 90,
+    "created_at": "2026-06-25T05:15:13.958Z",
+    "updated_at": "2026-06-25T05:15:13.958Z",
+    "creator_name": "Dra. Fernando Sánchez Moreno"
+  },
+  {
+    "id": 159,
+    "slug": "redes-de-computadoras-i-349",
+    "subject_name": "Redes de Computadoras I",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Redes de Computadoras I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 90,
+    "created_at": "2026-06-25T05:15:13.958Z",
+    "updated_at": "2026-06-25T05:15:13.958Z",
+    "creator_name": "Dra. Fernando Sánchez Moreno"
+  },
+  {
+    "id": 160,
+    "slug": "sistemas-operativos-modernos-349",
+    "subject_name": "Sistemas Operativos Modernos",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Sistemas Operativos Modernos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 77,
+    "created_at": "2026-06-25T05:15:13.958Z",
+    "updated_at": "2026-06-25T05:15:13.958Z",
+    "creator_name": "Mtra. Gabriela Hernández Gómez"
+  },
+  {
+    "id": 161,
+    "slug": "ingenieria-de-software-i-349",
+    "subject_name": "Ingeniería de Software I",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Ingeniería de Software I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 68,
+    "created_at": "2026-06-25T05:15:13.959Z",
+    "updated_at": "2026-06-25T05:15:13.959Z",
+    "creator_name": "Mtra. Roberto Hernández Romero"
+  },
+  {
+    "id": 162,
+    "slug": "aprendizaje-de-maquina-machine-learning-349",
+    "subject_name": "Aprendizaje de Máquina (Machine Learning)",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Aprendizaje de Máquina (Machine Learning) dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 69,
+    "created_at": "2026-06-25T05:15:13.959Z",
+    "updated_at": "2026-06-25T05:15:13.959Z",
+    "creator_name": "Dra. Isabel Rodríguez Alonso"
+  },
+  {
+    "id": 163,
+    "slug": "mineria-de-datos-349",
+    "subject_name": "Minería de Datos",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Minería de Datos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 50,
+    "created_at": "2026-06-25T05:15:13.959Z",
+    "updated_at": "2026-06-25T05:15:13.959Z",
+    "creator_name": "Mtra. Carlos Navarro López"
+  },
+  {
+    "id": 164,
+    "slug": "vision-por-computadora-349",
+    "subject_name": "Visión por Computadora",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Visión por Computadora dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 87,
+    "created_at": "2026-06-25T05:15:13.960Z",
+    "updated_at": "2026-06-25T05:15:13.960Z",
+    "creator_name": "Dr. José Ruiz Hernández"
+  },
+  {
+    "id": 165,
+    "slug": "computo-en-la-nube-349",
+    "subject_name": "Cómputo en la Nube",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Cómputo en la Nube dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 80,
+    "created_at": "2026-06-25T05:15:13.960Z",
+    "updated_at": "2026-06-25T05:15:13.960Z",
+    "creator_name": "Mtra. Miguel Díaz Gómez"
+  },
+  {
+    "id": 166,
+    "slug": "proyecto-integrador-i-349",
+    "subject_name": "Proyecto Integrador I",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Proyecto Integrador I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 89,
+    "created_at": "2026-06-25T05:15:13.961Z",
+    "updated_at": "2026-06-25T05:15:13.961Z",
+    "creator_name": "Mtra. Roberto López Romero"
+  },
+  {
+    "id": 167,
+    "slug": "etica-profesional-y-sociedad-349",
+    "subject_name": "Ética Profesional y Sociedad",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Ética Profesional y Sociedad dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 53,
+    "created_at": "2026-06-25T05:15:13.961Z",
+    "updated_at": "2026-06-25T05:15:13.961Z",
+    "creator_name": "Mtro. Miguel Sánchez Ruiz"
+  },
+  {
+    "id": 168,
+    "slug": "estancia-profesional-349",
+    "subject_name": "Estancia Profesional",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Estancia Profesional dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 88,
+    "created_at": "2026-06-25T05:15:13.961Z",
+    "updated_at": "2026-06-25T05:15:13.961Z",
+    "creator_name": "Mtra. Lucía Díaz Sánchez"
+  },
+  {
+    "id": 169,
+    "slug": "proyecto-de-titulacion-349",
+    "subject_name": "Proyecto de Titulación",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Proyecto de Titulación dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 83,
+    "created_at": "2026-06-25T05:15:13.962Z",
+    "updated_at": "2026-06-25T05:15:13.962Z",
+    "creator_name": "Mtro. Fernando Moreno Ruiz"
+  },
+  {
+    "id": 170,
+    "slug": "temas-selectos-de-inteligencia-artificial-349",
+    "subject_name": "Temas Selectos de Inteligencia Artificial",
+    "career_id": 349,
+    "program_description": "Programa académico oficial para la materia de Temas Selectos de Inteligencia Artificial dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 50,
+    "created_at": "2026-06-25T05:15:13.962Z",
+    "updated_at": "2026-06-25T05:15:13.962Z",
+    "creator_name": "Mtra. Carlos Navarro López"
+  },
+  {
+    "id": 171,
+    "slug": "algebra-y-trigonometria-371",
+    "subject_name": "Álgebra y Trigonometría",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Álgebra y Trigonometría dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 61,
+    "created_at": "2026-06-25T05:15:13.962Z",
+    "updated_at": "2026-06-25T05:15:13.962Z",
+    "creator_name": "Mtra. Ana García Moreno"
+  },
+  {
+    "id": 172,
+    "slug": "quimica-general-371",
+    "subject_name": "Química General",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Química General dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 80,
+    "created_at": "2026-06-25T05:15:13.963Z",
+    "updated_at": "2026-06-25T05:15:13.963Z",
+    "creator_name": "Mtra. Miguel Díaz Gómez"
+  },
+  {
+    "id": 173,
+    "slug": "introduccion-a-la-ime-371",
+    "subject_name": "Introducción a la IME",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Introducción a la IME dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 60,
+    "created_at": "2026-06-25T05:15:13.963Z",
+    "updated_at": "2026-06-25T05:15:13.963Z",
+    "creator_name": "Dr. David Gómez Ruiz"
+  },
+  {
+    "id": 174,
+    "slug": "dibujo-para-ingenieria-371",
+    "subject_name": "Dibujo para Ingeniería",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Dibujo para Ingeniería dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 52,
+    "created_at": "2026-06-25T05:15:13.963Z",
+    "updated_at": "2026-06-25T05:15:13.963Z",
+    "creator_name": "Mtra. Carlos Gómez Álvarez"
+  },
+  {
+    "id": 175,
+    "slug": "fisica-i-mecanica-371",
+    "subject_name": "Física I (Mecánica)",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Física I (Mecánica) dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 57,
+    "created_at": "2026-06-25T05:15:13.963Z",
+    "updated_at": "2026-06-25T05:15:13.963Z",
+    "creator_name": "Dra. David Pérez López"
+  },
+  {
+    "id": 176,
+    "slug": "ingles-i-371",
+    "subject_name": "Inglés I",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Inglés I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 63,
+    "created_at": "2026-06-25T05:15:13.964Z",
+    "updated_at": "2026-06-25T05:15:13.964Z",
+    "creator_name": "Dra. Carlos Pérez Pérez"
+  },
+  {
+    "id": 177,
+    "slug": "calculo-vectorial-371",
+    "subject_name": "Cálculo Vectorial",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Cálculo Vectorial dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 55,
+    "created_at": "2026-06-25T05:15:13.964Z",
+    "updated_at": "2026-06-25T05:15:13.964Z",
+    "creator_name": "Mtro. José Gutiérrez Torres"
+  },
+  {
+    "id": 178,
+    "slug": "termodinamica-clasica-371",
+    "subject_name": "Termodinámica Clásica",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Termodinámica Clásica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 81,
+    "created_at": "2026-06-25T05:15:13.965Z",
+    "updated_at": "2026-06-25T05:15:13.965Z",
+    "creator_name": "Dr. Francisco Martínez Gutiérrez"
+  },
+  {
+    "id": 179,
+    "slug": "estatica-371",
+    "subject_name": "Estática",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Estática dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 68,
+    "created_at": "2026-06-25T05:15:13.965Z",
+    "updated_at": "2026-06-25T05:15:13.965Z",
+    "creator_name": "Mtra. Roberto Hernández Romero"
+  },
+  {
+    "id": 180,
+    "slug": "circuitos-electricos-i-371",
+    "subject_name": "Circuitos Eléctricos I",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Circuitos Eléctricos I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 84,
+    "created_at": "2026-06-25T05:15:13.965Z",
+    "updated_at": "2026-06-25T05:15:13.965Z",
+    "creator_name": "Dr. David Hernández Moreno"
+  },
+  {
+    "id": 181,
+    "slug": "ciencia-de-materiales-371",
+    "subject_name": "Ciencia de Materiales",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Ciencia de Materiales dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 78,
+    "created_at": "2026-06-25T05:15:13.966Z",
+    "updated_at": "2026-06-25T05:15:13.966Z",
+    "creator_name": "Dra. Ana Pérez López"
+  },
+  {
+    "id": 182,
+    "slug": "ingles-iii-371",
+    "subject_name": "Inglés III",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Inglés III dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 80,
+    "created_at": "2026-06-25T05:15:13.966Z",
+    "updated_at": "2026-06-25T05:15:13.966Z",
+    "creator_name": "Mtra. Miguel Díaz Gómez"
+  },
+  {
+    "id": 183,
+    "slug": "dinamica-de-fluidos-371",
+    "subject_name": "Dinámica de Fluidos",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Dinámica de Fluidos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 89,
+    "created_at": "2026-06-25T05:15:13.966Z",
+    "updated_at": "2026-06-25T05:15:13.966Z",
+    "creator_name": "Mtra. Roberto López Romero"
+  },
+  {
+    "id": 184,
+    "slug": "mecanica-de-materiales-i-371",
+    "subject_name": "Mecánica de Materiales I",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Mecánica de Materiales I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 71,
+    "created_at": "2026-06-25T05:15:13.966Z",
+    "updated_at": "2026-06-25T05:15:13.966Z",
+    "creator_name": "Mtra. Sofía Ruiz Alonso"
+  },
+  {
+    "id": 185,
+    "slug": "maquinas-electricas-i-371",
+    "subject_name": "Máquinas Eléctricas I",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Máquinas Eléctricas I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 57,
+    "created_at": "2026-06-25T05:15:13.967Z",
+    "updated_at": "2026-06-25T05:15:13.967Z",
+    "creator_name": "Dra. David Pérez López"
+  },
+  {
+    "id": 186,
+    "slug": "electronica-analogica-371",
+    "subject_name": "Electrónica Analógica",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Electrónica Analógica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 74,
+    "created_at": "2026-06-25T05:15:13.967Z",
+    "updated_at": "2026-06-25T05:15:13.967Z",
+    "creator_name": "Mtra. Francisco Gómez Pérez"
+  },
+  {
+    "id": 187,
+    "slug": "analisis-de-sistemas-de-potencia-371",
+    "subject_name": "Análisis de Sistemas de Potencia",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Análisis de Sistemas de Potencia dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 73,
+    "created_at": "2026-06-25T05:15:13.967Z",
+    "updated_at": "2026-06-25T05:15:13.967Z",
+    "creator_name": "Mtro. Miguel Moreno Gómez"
+  },
+  {
+    "id": 188,
+    "slug": "metodos-numericos-371",
+    "subject_name": "Métodos Numéricos",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Métodos Numéricos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 72,
+    "created_at": "2026-06-25T05:15:13.968Z",
+    "updated_at": "2026-06-25T05:15:13.968Z",
+    "creator_name": "Dra. Jorge Muñoz Álvarez"
+  },
+  {
+    "id": 189,
+    "slug": "transferencia-de-calor-371",
+    "subject_name": "Transferencia de Calor",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Transferencia de Calor dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 60,
+    "created_at": "2026-06-25T05:15:13.968Z",
+    "updated_at": "2026-06-25T05:15:13.968Z",
+    "creator_name": "Dr. David Gómez Ruiz"
+  },
+  {
+    "id": 190,
+    "slug": "diseno-de-elementos-de-maquinas-371",
+    "subject_name": "Diseño de Elementos de Máquinas",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Diseño de Elementos de Máquinas dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 83,
+    "created_at": "2026-06-25T05:15:13.968Z",
+    "updated_at": "2026-06-25T05:15:13.968Z",
+    "creator_name": "Mtro. Fernando Moreno Ruiz"
+  },
+  {
+    "id": 191,
+    "slug": "instalaciones-electricas-industriales-371",
+    "subject_name": "Instalaciones Eléctricas Industriales",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Instalaciones Eléctricas Industriales dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 58,
+    "created_at": "2026-06-25T05:15:13.969Z",
+    "updated_at": "2026-06-25T05:15:13.969Z",
+    "creator_name": "Mtro. María Sánchez Sánchez"
+  },
+  {
+    "id": 192,
+    "slug": "control-automatico-371",
+    "subject_name": "Control Automático",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Control Automático dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 80,
+    "created_at": "2026-06-25T05:15:13.969Z",
+    "updated_at": "2026-06-25T05:15:13.969Z",
+    "creator_name": "Mtra. Miguel Díaz Gómez"
+  },
+  {
+    "id": 193,
+    "slug": "subestaciones-electricas-371",
+    "subject_name": "Subestaciones Eléctricas",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Subestaciones Eléctricas dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 49,
+    "created_at": "2026-06-25T05:15:13.969Z",
+    "updated_at": "2026-06-25T05:15:13.969Z",
+    "creator_name": "Mtra. Sofía Vargas Torres"
+  },
+  {
+    "id": 194,
+    "slug": "ingenieria-economica-371",
+    "subject_name": "Ingeniería Económica",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Ingeniería Económica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 88,
+    "created_at": "2026-06-25T05:15:13.970Z",
+    "updated_at": "2026-06-25T05:15:13.970Z",
+    "creator_name": "Mtra. Lucía Díaz Sánchez"
+  },
+  {
+    "id": 195,
+    "slug": "centrales-electricas-371",
+    "subject_name": "Centrales Eléctricas",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Centrales Eléctricas dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 72,
+    "created_at": "2026-06-25T05:15:13.970Z",
+    "updated_at": "2026-06-25T05:15:13.970Z",
+    "creator_name": "Dra. Jorge Muñoz Álvarez"
+  },
+  {
+    "id": 196,
+    "slug": "mantenimiento-industrial-371",
+    "subject_name": "Mantenimiento Industrial",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Mantenimiento Industrial dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 84,
+    "created_at": "2026-06-25T05:15:13.970Z",
+    "updated_at": "2026-06-25T05:15:13.970Z",
+    "creator_name": "Dr. David Hernández Moreno"
+  },
+  {
+    "id": 197,
+    "slug": "proyecto-de-ime-371",
+    "subject_name": "Proyecto de IME",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Proyecto de IME dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 82,
+    "created_at": "2026-06-25T05:15:13.970Z",
+    "updated_at": "2026-06-25T05:15:13.970Z",
+    "creator_name": "Mtro. Ana Moreno Torres"
+  },
+  {
+    "id": 198,
+    "slug": "vibraciones-mecanicas-371",
+    "subject_name": "Vibraciones Mecánicas",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Vibraciones Mecánicas dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 78,
+    "created_at": "2026-06-25T05:15:13.971Z",
+    "updated_at": "2026-06-25T05:15:13.971Z",
+    "creator_name": "Dra. Ana Pérez López"
+  },
+  {
+    "id": 199,
+    "slug": "seguridad-e-higiene-industrial-371",
+    "subject_name": "Seguridad e Higiene Industrial",
+    "career_id": 371,
+    "program_description": "Programa académico oficial para la materia de Seguridad e Higiene Industrial dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 71,
+    "created_at": "2026-06-25T05:15:13.971Z",
+    "updated_at": "2026-06-25T05:15:13.971Z",
+    "creator_name": "Mtra. Sofía Ruiz Alonso"
+  },
+  {
+    "id": 200,
+    "slug": "precalculo-418",
+    "subject_name": "Precálculo",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Precálculo dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 84,
+    "created_at": "2026-06-25T05:15:13.971Z",
+    "updated_at": "2026-06-25T05:15:13.971Z",
+    "creator_name": "Dr. David Hernández Moreno"
+  },
+  {
+    "id": 201,
+    "slug": "algebra-lineal-418",
+    "subject_name": "Álgebra Lineal",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Álgebra Lineal dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 78,
+    "created_at": "2026-06-25T05:15:13.972Z",
+    "updated_at": "2026-06-25T05:15:13.972Z",
+    "creator_name": "Dra. Ana Pérez López"
+  },
+  {
+    "id": 202,
+    "slug": "introduccion-a-la-mecatronica-418",
+    "subject_name": "Introducción a la Mecatrónica",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Introducción a la Mecatrónica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 51,
+    "created_at": "2026-06-25T05:15:13.972Z",
+    "updated_at": "2026-06-25T05:15:13.972Z",
+    "creator_name": "Dra. Jorge Díaz Rodríguez"
+  },
+  {
+    "id": 203,
+    "slug": "dibujo-asistido-por-computadora-418",
+    "subject_name": "Dibujo Asistido por Computadora",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Dibujo Asistido por Computadora dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 49,
+    "created_at": "2026-06-25T05:15:13.972Z",
+    "updated_at": "2026-06-25T05:15:13.972Z",
+    "creator_name": "Mtra. Sofía Vargas Torres"
+  },
+  {
+    "id": 204,
+    "slug": "quimica-de-materiales-418",
+    "subject_name": "Química de Materiales",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Química de Materiales dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 89,
+    "created_at": "2026-06-25T05:15:13.973Z",
+    "updated_at": "2026-06-25T05:15:13.973Z",
+    "creator_name": "Mtra. Roberto López Romero"
+  },
+  {
+    "id": 205,
+    "slug": "ingles-i-418",
+    "subject_name": "Inglés I",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Inglés I dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 89,
+    "created_at": "2026-06-25T05:15:13.973Z",
+    "updated_at": "2026-06-25T05:15:13.973Z",
+    "creator_name": "Mtra. Roberto López Romero"
+  },
+  {
+    "id": 206,
+    "slug": "calculo-multivariable-418",
+    "subject_name": "Cálculo Multivariable",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Cálculo Multivariable dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 90,
+    "created_at": "2026-06-25T05:15:13.973Z",
+    "updated_at": "2026-06-25T05:15:13.973Z",
+    "creator_name": "Dra. Fernando Sánchez Moreno"
+  },
+  {
+    "id": 207,
+    "slug": "estatica-y-dinamica-418",
+    "subject_name": "Estática y Dinámica",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Estática y Dinámica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 60,
+    "created_at": "2026-06-25T05:15:13.974Z",
+    "updated_at": "2026-06-25T05:15:13.974Z",
+    "creator_name": "Dr. David Gómez Ruiz"
+  },
+  {
+    "id": 208,
+    "slug": "circuitos-electricos-418",
+    "subject_name": "Circuitos Eléctricos",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Circuitos Eléctricos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 73,
+    "created_at": "2026-06-25T05:15:13.974Z",
+    "updated_at": "2026-06-25T05:15:13.974Z",
+    "creator_name": "Mtro. Miguel Moreno Gómez"
+  },
+  {
+    "id": 209,
+    "slug": "programacion-estructurada-418",
+    "subject_name": "Programación Estructurada",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Programación Estructurada dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 66,
+    "created_at": "2026-06-25T05:15:13.974Z",
+    "updated_at": "2026-06-25T05:15:13.974Z",
+    "creator_name": "Dr. Elena Sánchez Pérez"
+  },
+  {
+    "id": 210,
+    "slug": "metrologia-e-instrumentacion-418",
+    "subject_name": "Metrología e Instrumentación",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Metrología e Instrumentación dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 67,
+    "created_at": "2026-06-25T05:15:13.975Z",
+    "updated_at": "2026-06-25T05:15:13.975Z",
+    "creator_name": "Mtro. David Torres Romero"
+  },
+  {
+    "id": 211,
+    "slug": "ingles-iii-418",
+    "subject_name": "Inglés III",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Inglés III dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 69,
+    "created_at": "2026-06-25T05:15:13.975Z",
+    "updated_at": "2026-06-25T05:15:13.975Z",
+    "creator_name": "Dra. Isabel Rodríguez Alonso"
+  },
+  {
+    "id": 212,
+    "slug": "mecanica-de-materiales-418",
+    "subject_name": "Mecánica de Materiales",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Mecánica de Materiales dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 80,
+    "created_at": "2026-06-25T05:15:13.975Z",
+    "updated_at": "2026-06-25T05:15:13.975Z",
+    "creator_name": "Mtra. Miguel Díaz Gómez"
+  },
+  {
+    "id": 213,
+    "slug": "electronica-digital-y-microcontroladores-418",
+    "subject_name": "Electrónica Digital y Microcontroladores",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Electrónica Digital y Microcontroladores dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 57,
+    "created_at": "2026-06-25T05:15:13.976Z",
+    "updated_at": "2026-06-25T05:15:13.976Z",
+    "creator_name": "Dra. David Pérez López"
+  },
+  {
+    "id": 214,
+    "slug": "teoria-de-control-418",
+    "subject_name": "Teoría de Control",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Teoría de Control dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 63,
+    "created_at": "2026-06-25T05:15:13.976Z",
+    "updated_at": "2026-06-25T05:15:13.976Z",
+    "creator_name": "Dra. Carlos Pérez Pérez"
+  },
+  {
+    "id": 215,
+    "slug": "mecanismos-y-elementos-de-maquinas-418",
+    "subject_name": "Mecanismos y Elementos de Máquinas",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Mecanismos y Elementos de Máquinas dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 63,
+    "created_at": "2026-06-25T05:15:13.976Z",
+    "updated_at": "2026-06-25T05:15:13.976Z",
+    "creator_name": "Dra. Carlos Pérez Pérez"
+  },
+  {
+    "id": 216,
+    "slug": "sensores-y-actuadores-418",
+    "subject_name": "Sensores y Actuadores",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Sensores y Actuadores dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 56,
+    "created_at": "2026-06-25T05:15:13.977Z",
+    "updated_at": "2026-06-25T05:15:13.977Z",
+    "creator_name": "Mtra. Fernando Alonso López"
+  },
+  {
+    "id": 217,
+    "slug": "termofluidos-418",
+    "subject_name": "Termofluidos",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Termofluidos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 49,
+    "created_at": "2026-06-25T05:15:13.977Z",
+    "updated_at": "2026-06-25T05:15:13.977Z",
+    "creator_name": "Mtra. Sofía Vargas Torres"
+  },
+  {
+    "id": 218,
+    "slug": "robotica-industrial-418",
+    "subject_name": "Robótica Industrial",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Robótica Industrial dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 72,
+    "created_at": "2026-06-25T05:15:13.977Z",
+    "updated_at": "2026-06-25T05:15:13.977Z",
+    "creator_name": "Dra. Jorge Muñoz Álvarez"
+  },
+  {
+    "id": 219,
+    "slug": "sistemas-oleohidraulicos-y-neumaticos-418",
+    "subject_name": "Sistemas Oleohidráulicos y Neumáticos",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Sistemas Oleohidráulicos y Neumáticos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 54,
+    "created_at": "2026-06-25T05:15:13.978Z",
+    "updated_at": "2026-06-25T05:15:13.978Z",
+    "creator_name": "Dr. Ana Pérez Gómez"
+  },
+  {
+    "id": 220,
+    "slug": "diseno-mecatronico-418",
+    "subject_name": "Diseño Mecatrónico",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Diseño Mecatrónico dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 92,
+    "created_at": "2026-06-25T05:15:13.978Z",
+    "updated_at": "2026-06-25T05:15:13.978Z",
+    "creator_name": "Mtro. David Torres Sánchez"
+  },
+  {
+    "id": 221,
+    "slug": "automatas-programables-plc-418",
+    "subject_name": "Autómatas Programables (PLC)",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Autómatas Programables (PLC) dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 78,
+    "created_at": "2026-06-25T05:15:13.978Z",
+    "updated_at": "2026-06-25T05:15:13.978Z",
+    "creator_name": "Dra. Ana Pérez López"
+  },
+  {
+    "id": 222,
+    "slug": "control-digital-418",
+    "subject_name": "Control Digital",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Control Digital dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 62,
+    "created_at": "2026-06-25T05:15:13.979Z",
+    "updated_at": "2026-06-25T05:15:13.979Z",
+    "creator_name": "Mtro. José Moreno Navarro"
+  },
+  {
+    "id": 223,
+    "slug": "formulacion-de-proyectos-418",
+    "subject_name": "Formulación de Proyectos",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Formulación de Proyectos dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 69,
+    "created_at": "2026-06-25T05:15:13.979Z",
+    "updated_at": "2026-06-25T05:15:13.979Z",
+    "creator_name": "Dra. Isabel Rodríguez Alonso"
+  },
+  {
+    "id": 224,
+    "slug": "integracion-mecatronica-cim-418",
+    "subject_name": "Integración Mecatrónica (CIM)",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Integración Mecatrónica (CIM) dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 84,
+    "created_at": "2026-06-25T05:15:13.979Z",
+    "updated_at": "2026-06-25T05:15:13.979Z",
+    "creator_name": "Dr. David Hernández Moreno"
+  },
+  {
+    "id": 225,
+    "slug": "estancia-profesional-418",
+    "subject_name": "Estancia Profesional",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Estancia Profesional dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 83,
+    "created_at": "2026-06-25T05:15:13.980Z",
+    "updated_at": "2026-06-25T05:15:13.980Z",
+    "creator_name": "Mtro. Fernando Moreno Ruiz"
+  },
+  {
+    "id": 226,
+    "slug": "mantenimiento-y-seguridad-mecatronica-418",
+    "subject_name": "Mantenimiento y Seguridad Mecatrónica",
+    "career_id": 418,
+    "program_description": "Programa académico oficial para la materia de Mantenimiento y Seguridad Mecatrónica dentro de la carrera. Se enfoca en las competencias profesionales del perfil del egresado de FIME.",
+    "evaluation_criteria": {
+      "Exámenes": "50%",
+      "Tareas y Proyectos": "20%",
+      "Prácticas y Laboratorio": "30%"
+    },
+    "resources": [],
+    "created_by": 92,
+    "created_at": "2026-06-25T05:15:13.980Z",
+    "updated_at": "2026-06-25T05:15:13.980Z",
+    "creator_name": "Mtro. David Torres Sánchez"
+  }
+]

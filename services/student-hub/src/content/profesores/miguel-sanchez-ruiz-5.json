@@ -1,0 +1,61 @@
+{
+  "slug": "miguel-sanchez-ruiz-5",
+  "title": "Profesor de Asignatura",
+  "fullName": "Mtro. Miguel Sánchez Ruiz",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 105",
+    "office": "Edificio FIME PTC, Cubículo 5",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2005,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2004,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2000,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "miguel.sánchez_5@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-5",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 5",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 53,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    349,
+    371,
+    371,
+    371,
+    418,
+    418
+  ]
+}

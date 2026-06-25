@@ -1,0 +1,66 @@
+{
+  "slug": "david-perez-lopez-9",
+  "title": "Profesor Investigador de Tiempo Completo (PTC)",
+  "fullName": "Dra. David Pérez López",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 109",
+    "office": "Edificio FIME PTC, Cubículo 9",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2001,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2000,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2005,
+        "degree": "Doctor en Ciencias de la Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 1996,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "david.pérez_9@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-9",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 9",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 57,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    349,
+    349,
+    371,
+    371,
+    418
+  ]
+}

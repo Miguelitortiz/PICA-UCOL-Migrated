@@ -17,20 +17,21 @@ interface Props {
 
 const { profesores = [] } = Astro.props;
 
-function getInitials(name: string) {
-  return name
-    .split(' ')
-    .filter(word => word.length > 2 && !['del', 'de', 'las', 'los'].includes(word.toLowerCase()))
-    .slice(0, 2)
-    .map(word => word[0])
-    .join('')
-    .toUpperCase();
+function getAcademicDegree(name: string) {
+  const lower = name.toLowerCase().trim();
+  if (lower.startsWith('dr.') || lower.startsWith('dra.')) return 'DOC';
+  if (lower.startsWith('mtro.')) return 'MTO';
+  if (lower.startsWith('mtra.')) return 'MTA';
+  if (lower.startsWith('lic.')) return 'LIC';
+  if (lower.startsWith('ing.')) return 'ING';
+  if (lower.startsWith('arq.')) return 'ARQ';
+  return 'DOC'; // Fallback genérico
 }
 ---
 
 <div class="teachers-grid">
   {profesores.map((prof) => {
-    const initials = getInitials(prof.fullName);
+    const initials = getAcademicDegree(prof.fullName);
     return (
       <div
         class="teacher-card"
@@ -38,7 +39,7 @@ function getInitials(name: string) {
         data-faculty={prof.faculty_id || ''}
         data-careers={JSON.stringify(prof.career_ids || [])}
         style="
-          background-color: white;
+          background-color: var(--color-ground);
           border: 1px solid var(--color-border);
           border-left: 3px solid var(--color-primary);
           border-radius: 2px;

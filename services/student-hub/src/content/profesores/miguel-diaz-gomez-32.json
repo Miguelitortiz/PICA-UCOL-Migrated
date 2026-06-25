@@ -1,0 +1,58 @@
+{
+  "slug": "miguel-diaz-gomez-32",
+  "title": "Investigador Titular B",
+  "fullName": "Mtra. Miguel Díaz Gómez",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 132",
+    "office": "Edificio FIME PTC, Cubículo 32",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2021,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2020,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2016,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "miguel.díaz_32@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-32",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 32",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 80,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    349,
+    418,
+    99
+  ]
+}

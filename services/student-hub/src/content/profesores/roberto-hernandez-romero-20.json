@@ -1,0 +1,63 @@
+{
+  "slug": "roberto-hernandez-romero-20",
+  "title": "Profesor Investigador de Tiempo Completo (PTC)",
+  "fullName": "Mtra. Roberto Hernández Romero",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 120",
+    "office": "Edificio FIME PTC, Cubículo 20",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2009,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2008,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2004,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "roberto.hernández_20@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-20",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 20",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 68,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    349,
+    371,
+    371,
+    371,
+    371,
+    371,
+    371,
+    99
+  ]
+}

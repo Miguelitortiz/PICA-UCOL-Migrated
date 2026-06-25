@@ -5,7 +5,7 @@ import Layout from '../layouts/Layout.astro';
 <Layout title="AdminHUB - Control de Gestión Docente y Administrativa">
   <div class="max-w-5xl mx-auto space-y-6">
     
-    <!-- Simulador de Roles en la Cabecera -->
+    <!-- Cabecera del panel con rol activo -->
     <div class="bg-white border border-border-sutil rounded-sm p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
         <span class="font-mono text-[9px] uppercase tracking-wider text-secondary font-bold">Consola de Control / AdminHUB</span>
@@ -17,25 +17,32 @@ import Layout from '../layouts/Layout.astro';
         </p>
       </div>
 
-      <!-- Simulador de Roles Dropdown -->
-      <div class="w-full md:w-auto bg-bg-piedra/60 p-2.5 border border-border-sutil rounded-sm flex items-center gap-3">
-        <span class="font-mono text-[9px] uppercase tracking-wider font-bold text-text-secondary">Rol Activo:</span>
-        <select 
-          id="role-selector" 
-          class="text-xs font-sans bg-white border border-border-sutil rounded-sm p-1.5 text-text-primary focus:border-secondary outline-none font-bold cursor-pointer h-11 px-3"
-        >
-          <option value="docente">👨‍🏫 Docente (Edición CV, Syllabus, Labs)</option>
-          <option value="jefe_carrera">🎓 Jefe de Carrera (Administrativo - Carrera)</option>
-          <option value="coordinador_facultad">🏛️ Coordinador de Facultad (Administrativo - Facultad)</option>
-          <option value="admin_general">🛠️ Administrador General (Administrativo - Global)</option>
-        </select>
+      <!-- Indicador de rol activo (reemplaza el simulador) -->
+      <div id="active-role-badge" class="w-full md:w-auto bg-bg-piedra/60 p-3 border border-border-sutil rounded-sm flex items-center gap-3">
+        <div id="role-indicator-dot" class="w-3 h-3 rounded-full bg-primary flex-shrink-0"></div>
+        <div>
+          <div class="font-mono text-[9px] uppercase tracking-wider font-bold text-text-secondary">Sesión Activa</div>
+          <div id="role-active-name" class="text-xs font-bold text-text-primary">Cargando...</div>
+          <div id="role-active-label" class="font-mono text-[9px] text-text-secondary uppercase tracking-wider"></div>
+        </div>
       </div>
     </div>
 
     <!-- ========================================== -->
     <!-- 1. VISTAS DEL DOCENTE (Panel Docente) -->
     <!-- ========================================== -->
-    <div id="panel-docente" class="space-y-6 role-panel">
+    <div id="panel-docente" class="space-y-6 role-panel hidden">
+
+      <!-- SECCIÓN: MIS GRUPOS ASIGNADOS -->
+      <div class="bg-white border border-border-sutil rounded-sm">
+        <div class="flex items-center gap-3 px-4 py-3 border-b border-border-sutil bg-bg-piedra/30">
+          <span class="font-mono text-xs font-bold text-primary uppercase">📚 Mis Grupos y Materias</span>
+        </div>
+        <div id="profesor-grupos-container" class="p-4">
+          <p class="text-xs text-text-secondary italic">Cargando grupos asignados...</p>
+        </div>
+      </div>
+
       <!-- Pestañas Docente -->
       <div class="bg-white border border-border-sutil rounded-sm flex flex-col min-h-[500px]">
         <!-- Encabezado de Pestañas -->
@@ -44,7 +51,7 @@ import Layout from '../layouts/Layout.astro';
             Curriculum Vitae (PDF)
           </button>
           <button class="docente-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-transparent text-text-secondary cursor-pointer transition-suiza" data-tab="syllabus-editor">
-            Cargar Plan de Estudios (Syllabus)
+            Cargar Plan de Estudios
           </button>
           <button class="docente-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-transparent text-text-secondary cursor-pointer transition-suiza" data-tab="lab-scheduler">
             Asignación de Laboratorios
@@ -137,8 +144,10 @@ import Layout from '../layouts/Layout.astro';
               <form id="form-syllabus" class="space-y-4 text-xs">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Materia o Asignatura</label>
-                    <input id="syl-subject" type="text" placeholder="Ej: Patrones de Diseño" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Seleccionar Materia asignada (Slider/Dropdown)</label>
+                    <select id="syl-subject" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold animate-pulse-once" required>
+                      <!-- Cargado dinámicamente según las materias asignadas del docente -->
+                    </select>
                   </div>
                   <div>
                     <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Carrera Destino</label>
@@ -157,23 +166,26 @@ import Layout from '../layouts/Layout.astro';
 
                 <!-- Criterios de Evaluación -->
                 <div class="space-y-3">
-                  <h4 class="font-bold text-xs text-primary uppercase">Criterios de Evaluación y Calificación (%)</h4>
+                  <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-xs text-primary uppercase">Criterios de Evaluación y Calificación (%)</h4>
+                    <span id="crit-total-indicator" class="font-mono text-xs font-bold text-text-secondary bg-bg-piedra px-2 py-0.5 border border-border-sutil rounded-sm">Suma: 0%</span>
+                  </div>
                   <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div>
                       <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Exámenes</label>
-                      <input id="crit-exams" type="text" placeholder="Ej: 50%" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" />
+                      <input id="crit-exams" type="number" min="0" max="100" placeholder="Ej: 50" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11 crit-input-pct" required />
                     </div>
                     <div>
                       <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Proyecto Integrador</label>
-                      <input id="crit-project" type="text" placeholder="Ej: 30%" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" />
+                      <input id="crit-project" type="number" min="0" max="100" placeholder="Ej: 30" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11 crit-input-pct" required />
                     </div>
                     <div>
                       <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Tareas</label>
-                      <input id="crit-assignments" type="text" placeholder="Ej: 20%" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" />
+                      <input id="crit-assignments" type="number" min="0" max="100" placeholder="Ej: 20" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11 crit-input-pct" required />
                     </div>
                     <div>
                       <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Quizzes / Otros</label>
-                      <input id="crit-quizzes" type="text" placeholder="Ej: 10%" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" />
+                      <input id="crit-quizzes" type="number" min="0" max="100" placeholder="Ej: 0" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11 crit-input-pct" required />
                     </div>
                   </div>
                 </div>
@@ -200,7 +212,7 @@ import Layout from '../layouts/Layout.astro';
                 </div>
 
                 <div class="pt-4 flex justify-between items-center border-t border-bg-piedra">
-                  <span class="text-[10px] text-text-secondary font-mono">El plan se guardará con autoría de tu docente activo.</span>
+                  <span class="text-[10px] text-text-secondary font-mono">El plan se guardará con tu autoría como docente activo.</span>
                   <button type="submit" class="px-6 bg-primary text-white text-xs font-mono font-bold uppercase rounded-sm hover:bg-opacity-90 transition-suiza cursor-pointer h-11 flex items-center justify-center">
                     Guardar Plan de Estudios
                   </button>
@@ -214,7 +226,7 @@ import Layout from '../layouts/Layout.astro';
             <div class="card-suiza bg-white space-y-4">
               <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Asignación / Reserva de Laboratorio</h3>
               <p class="text-xs text-text-secondary">
-                Como docente, registra en qué laboratorios impartes clases de tus materias para notificar a los alumnos e integrarlo en el croquis interactivo.
+                Como docente, registra en qué laboratorios impartes clases de tus materias asignadas en el horario oficial.
               </p>
 
               <form id="form-lab-schedule" class="space-y-4 text-xs">
@@ -224,11 +236,16 @@ import Layout from '../layouts/Layout.astro';
                     <select id="lab-room" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
                       <option value="Laboratorio de Cómputo 3">Laboratorio de Cómputo 3 (Edificio B)</option>
                       <option value="Laboratorio de Telemática 1">Laboratorio de Telemática 1 (Edificio C)</option>
+                      <option value="Laboratorio de Electrónica">Laboratorio de Electrónica (Edificio D)</option>
+                      <option value="Laboratorio de Redes">Laboratorio de Redes (Edificio C)</option>
+                      <option value="Laboratorio de Física">Laboratorio de Física (Edificio A)</option>
                     </select>
                   </div>
                   <div>
-                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Materia</label>
-                    <input id="lab-subject" type="text" placeholder="Ej: Desarrollo Web Integrativo" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Materia asignada</label>
+                    <select id="lab-subject" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <!-- Cargado dinámicamente -->
+                    </select>
                   </div>
                 </div>
 
@@ -290,6 +307,9 @@ import Layout from '../layouts/Layout.astro';
           </button>
           <button class="admin-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-transparent text-text-secondary cursor-pointer transition-suiza" data-tab="exams-mgr">
             Programar Exámenes
+          </button>
+          <button class="admin-tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-transparent text-text-secondary cursor-pointer transition-suiza" data-tab="groups-mgr">
+            Gestión de Grupos
           </button>
         </div>
 
@@ -417,6 +437,14 @@ import Layout from '../layouts/Layout.astro';
                 </div>
               </form>
             </div>
+
+            <!-- Lista de grupos con tutores actuales -->
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Tutores Actuales por Grupo</h3>
+              <div id="tutor-groups-list" class="space-y-2">
+                <p class="text-xs text-text-secondary italic">Cargando grupos...</p>
+              </div>
+            </div>
           </div>
 
           <!-- SUBTAB 3: EXAMEN MANAGER -->
@@ -490,6 +518,67 @@ import Layout from '../layouts/Layout.astro';
             </div>
           </div>
 
+          <!-- SUBTAB 4: GRUPOS MANAGER -->
+          <div id="admin-tab-groups-mgr" class="admin-tab-panel hidden space-y-6">
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Crear Nuevo Grupo Escolar</h3>
+              <form id="form-admin-group" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Nombre del Grupo</label>
+                    <input id="group-name" type="text" placeholder="Ej: 4° B" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" required />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Carrera</label>
+                    <select id="group-career" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold" required>
+                      <!-- Cargado dinámicamente -->
+                    </select>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Periodo Académico</label>
+                    <input id="group-period" type="text" placeholder="Ej: Ago-Ene 2027" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary font-bold h-11" />
+                  </div>
+                  <div>
+                    <label class="font-mono text-[9px] uppercase tracking-wider block text-text-secondary mb-1">Turno</label>
+                    <select id="group-shift" class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold">
+                      <option value="Matutino">Matutino</option>
+                      <option value="Vespertino">Vespertino</option>
+                      <option value="Mixto">Mixto</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="pt-4 border-t border-bg-piedra flex justify-end">
+                  <button type="submit" class="px-6 bg-primary text-white text-xs font-mono font-bold uppercase rounded-sm hover:bg-opacity-90 transition-suiza cursor-pointer h-11 flex items-center justify-center">
+                    Crear Grupo
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Lista de grupos -->
+            <div class="card-suiza bg-white space-y-4">
+              <h3 class="font-bold text-sm text-primary uppercase border-b border-border-sutil pb-2">Grupos Registrados en el Sistema</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="border-b border-border-sutil bg-bg-piedra">
+                      <th class="p-2 font-mono text-[9px] uppercase">Grupo</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Carrera</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Periodo</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Turno</th>
+                      <th class="p-2 font-mono text-[9px] uppercase">Tutor</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-groups-list">
+                    <!-- Cargados dinámicamente -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -497,14 +586,39 @@ import Layout from '../layouts/Layout.astro';
   </div>
 
   <script>
-    // --- BASIC AUTH & FETCH HELPER ---
-    function getAuthHeader() {
-      let saved = localStorage.getItem('eduvitae_auth');
-      if (!saved) {
-        saved = btoa('admin:admin_pass');
-        localStorage.setItem('eduvitae_auth', saved);
-      }
-      return `Basic ${saved}`;
+    // =========================================================================
+    // TIPOS Y CONSTANTES
+    // =========================================================================
+    const ROLE_LABELS: Record<string, string> = {
+      'docente': 'Docente',
+      'jefe_carrera': 'Jefe de Carrera',
+      'coordinador_facultad': 'Coordinador de Facultad',
+      'admin_direccion': 'Administrador de Dirección',
+      'admin_general': 'Administrador General'
+    };
+
+    const ROLE_COLORS: Record<string, string> = {
+      'docente': '#527630',
+      'jefe_carrera': '#006096',
+      'coordinador_facultad': '#006096',
+      'admin_direccion': '#774B1E',
+      'admin_general': '#990000'
+    };
+
+    const ADMIN_ROLES = ['jefe_carrera', 'coordinador_facultad', 'admin_direccion', 'admin_general'];
+
+    // =========================================================================
+    // AUTH HELPER — Lee JWT del localStorage
+    // =========================================================================
+    function getAuthHeader(): string {
+      const token = localStorage.getItem('pica_jwt');
+      return token ? `Bearer ${token}` : '';
+    }
+
+    function getCurrentUser(): any {
+      try {
+        return JSON.parse(localStorage.getItem('pica_user') || 'null');
+      } catch { return null; }
     }
 
     async function apiFetch(url: string, options: any = {}) {
@@ -512,28 +626,219 @@ import Layout from '../layouts/Layout.astro';
         ...options.headers,
         'Authorization': getAuthHeader()
       };
-      let res = await fetch(url, options);
+      const res = await fetch(url, options);
       if (res.status === 401) {
-        const username = prompt('Ingrese el usuario de administración:');
-        const password = prompt('Ingrese la contraseña de administración:');
-        if (username && password) {
-          const creds = btoa(`${username}:${password}`);
-          localStorage.setItem('eduvitae_auth', creds);
-          options.headers['Authorization'] = `Basic ${creds}`;
-          res = await fetch(url, options);
-        }
+        localStorage.removeItem('pica_jwt');
+        localStorage.removeItem('pica_user');
+        window.location.href = '/admin/login';
       }
       return res;
     }
 
-    // --- VARIABLES DE DATOS MAESTROS ---
+    // =========================================================================
+    // ESTADO GLOBAL
+    // =========================================================================
+    let currentUser: any = null;
     let professorsList: any[] = [];
     let groupsList: any[] = [];
     let careersList: any[] = [];
     let schedulesList: any[] = [];
     let examsList: any[] = [];
+    let myGroups: any[] = []; // Solo para docentes
 
-    // --- CARGAR DATOS GENERALES ---
+    // =========================================================================
+    // INICIALIZACIÓN — Determinar rol y mostrar panel correcto
+    // =========================================================================
+    async function initPanel() {
+      currentUser = getCurrentUser();
+      if (!currentUser) return;
+
+      // Mostrar indicador de rol
+      const dot = document.getElementById('role-indicator-dot');
+      const nameBadge = document.getElementById('role-active-name');
+      const roleBadge = document.getElementById('role-active-label');
+
+      if (dot) dot.style.backgroundColor = ROLE_COLORS[currentUser.role] || '#527630';
+      if (nameBadge) nameBadge.textContent = currentUser.professor_name || currentUser.username || 'Usuario';
+      if (roleBadge) roleBadge.textContent = ROLE_LABELS[currentUser.role] || currentUser.role;
+
+      const isDocente = currentUser.role === 'docente';
+      const isAdmin = ADMIN_ROLES.includes(currentUser.role);
+
+      if (isDocente) {
+        document.getElementById('panel-docente')?.classList.remove('hidden');
+        await loadDocenteData();
+      } else if (isAdmin) {
+        document.getElementById('panel-administrativo')?.classList.remove('hidden');
+        await loadAllAdminData();
+      }
+    }
+
+    // =========================================================================
+    // CARGAR DATOS PARA DOCENTE
+    // =========================================================================
+    async function loadDocenteData() {
+      try {
+        const [carRes, grpRes, myGrpRes] = await Promise.all([
+          apiFetch('/api/reference/careers'),
+          apiFetch('/api/groups'),
+          currentUser.professor_id ? apiFetch('/api/professors/me/groups') : Promise.resolve(null)
+        ]);
+
+        if (carRes.ok) careersList = await carRes.json();
+        if (grpRes.ok) groupsList = await grpRes.json();
+        if (myGrpRes && myGrpRes.ok) myGroups = await myGrpRes.json();
+
+        populateDocenteSelectors();
+        renderMyGroups();
+      } catch (err) {
+        console.error('Error al cargar datos del docente:', err);
+      }
+    }
+
+    // Renderizar la sección "Mis Grupos" del docente
+    function renderMyGroups() {
+      const container = document.getElementById('profesor-grupos-container');
+      if (!container) return;
+
+      if (myGroups.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-6 text-text-secondary">
+            <p class="text-sm font-medium">No tienes grupos asignados actualmente.</p>
+            <p class="text-xs font-mono mt-1">Contacta al administrador para que te asignen materias y grupos.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const groupsHTML = myGroups.map(g => `
+        <div class="flex items-center justify-between border border-border-sutil rounded-sm p-3 bg-bg-piedra/30 hover:bg-bg-piedra/60 transition-suiza">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-sm bg-primary/10 border border-primary/20 flex items-center justify-center">
+              <span class="font-mono text-[10px] font-bold text-primary">📚</span>
+            </div>
+            <div>
+              <p class="font-bold text-sm text-text-primary">${g.group_name}</p>
+              <p class="font-mono text-[10px] text-text-secondary">${g.subject_taught || 'Sin materia asignada'}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="font-mono text-[9px] px-2 py-0.5 rounded-sm bg-secondary/10 text-secondary border border-secondary/20 font-bold">
+              ${g.academic_period || 'Periodo no definido'}
+            </span>
+            <p class="font-mono text-[9px] text-text-secondary mt-0.5">${g.shift || ''}</p>
+          </div>
+        </div>
+      `).join('');
+
+      container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${groupsHTML}</div>`;
+    }
+
+    function populateDocenteSelectors() {
+      // Materias asignadas para syllabus
+      const sylSubject = document.getElementById("syl-subject") as HTMLSelectElement;
+      if (sylSubject) {
+        sylSubject.innerHTML = "";
+        
+        // Obtener lista única de materias asignadas al docente
+        const uniqueSubjects = [...new Set(myGroups.map(g => g.subject_taught).filter(Boolean))];
+        
+        if (uniqueSubjects.length === 0) {
+          sylSubject.innerHTML = '<option value="">No tienes materias asignadas</option>';
+        } else {
+          uniqueSubjects.forEach(sub => {
+            const opt = document.createElement("option");
+            opt.value = sub;
+            opt.textContent = sub;
+            sylSubject.appendChild(opt);
+          });
+        }
+      }
+
+      // Carreras para syllabus
+      const sylCareer = document.getElementById("syl-career") as HTMLSelectElement;
+      if (sylCareer) {
+        sylCareer.innerHTML = "";
+        careersList.forEach(c => {
+          const opt = document.createElement("option");
+          opt.value = String(c.id);
+          opt.textContent = `${c.name} (${c.slug})`;
+          sylCareer.appendChild(opt);
+        });
+      }
+
+      // Sincronizar en cascada lab-subject y lab-group
+      const labSubject = document.getElementById("lab-subject") as HTMLSelectElement;
+      const labGroup = document.getElementById("lab-group") as HTMLSelectElement;
+      
+      if (labSubject && labGroup) {
+        labSubject.innerHTML = "";
+        labGroup.innerHTML = "";
+        
+        // Agrupar asignaciones de materias del docente
+        const uniqueSubjects = [...new Set(myGroups.map(g => g.subject_taught).filter(Boolean))];
+        
+        if (uniqueSubjects.length === 0) {
+          labSubject.innerHTML = '<option value="">No tienes materias asignadas</option>';
+          labGroup.innerHTML = '<option value="">Sin grupos</option>';
+        } else {
+          uniqueSubjects.forEach(sub => {
+            const opt = document.createElement("option");
+            opt.value = sub;
+            opt.textContent = sub;
+            labSubject.appendChild(opt);
+          });
+
+          // Función para actualizar grupos de acuerdo a la materia seleccionada
+          const updateLabGroups = () => {
+            const selectedSubject = labSubject.value;
+            labGroup.innerHTML = "";
+            const matchedAssignments = myGroups.filter(g => g.subject_taught === selectedSubject);
+            
+            matchedAssignments.forEach(g => {
+              const opt = document.createElement("option");
+              opt.value = String(g.id); // class_group_id
+              const career = careersList.find(c => c.id === g.career_id);
+              opt.textContent = `${g.group_name} — ${career ? career.name : 'Carrera ' + g.career_id}`;
+              labGroup.appendChild(opt);
+            });
+          };
+
+          // Escuchar cambios
+          labSubject.addEventListener("change", updateLabGroups);
+          updateLabGroups(); // Carga inicial
+        }
+      }
+
+      // Escuchar y calcular suma de porcentajes de criterios al vuelo
+      const pctInputs = document.querySelectorAll(".crit-input-pct");
+      const totalIndicator = document.getElementById("crit-total-indicator");
+      
+      if (pctInputs.length > 0 && totalIndicator) {
+        const updatePctTotal = () => {
+          let sum = 0;
+          pctInputs.forEach(input => {
+            const val = parseInt((input as HTMLInputElement).value, 10) || 0;
+            sum += val;
+          });
+          totalIndicator.textContent = `Suma: ${sum}%`;
+          if (sum === 100) {
+            totalIndicator.className = "font-mono text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 border border-primary/20 rounded-sm";
+          } else {
+            totalIndicator.className = "font-mono text-xs font-bold text-error bg-error/10 px-2 py-0.5 border border-error/20 rounded-sm animate-pulse";
+          }
+        };
+
+        pctInputs.forEach(input => {
+          input.addEventListener("input", updatePctTotal);
+        });
+        updatePctTotal();
+      }
+    }
+
+    // =========================================================================
+    // CARGAR DATOS PARA ADMINISTRADOR
+    // =========================================================================
     async function loadAllAdminData() {
       try {
         const [profRes, grpRes, carRes, schedRes, examRes] = await Promise.all([
@@ -550,29 +855,32 @@ import Layout from '../layouts/Layout.astro';
         if (schedRes.ok) schedulesList = await schedRes.json();
         if (examRes.ok) examsList = await examRes.json();
 
-        populateFormSelectors();
+        populateAdminSelectors();
         renderSchedulesTable();
         renderExamsTable();
+        renderGroupsTable();
+        renderTutorGroupsList();
       } catch (err) {
         console.error('Error al precargar datos para administración:', err);
       }
     }
 
-    // --- POPULAR SELECTORES DE FORMULARIOS ---
-    function populateFormSelectors() {
-      // 1. Selector de Carreras (Syllabus)
-      const sylCareer = document.getElementById("syl-career") as HTMLSelectElement;
-      if (sylCareer) {
-        sylCareer.innerHTML = "";
-        careersList.forEach(c => {
-          const opt = document.createElement("option");
-          opt.value = String(c.id);
-          opt.textContent = `${c.name} (${c.slug})`;
-          sylCareer.appendChild(opt);
-        });
-      }
+    function populateAdminSelectors() {
+      // Carreras (Syllabus y Grupos)
+      ['syl-career', 'group-career'].forEach(id => {
+        const sel = document.getElementById(id) as HTMLSelectElement;
+        if (sel) {
+          sel.innerHTML = "";
+          careersList.forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = String(c.id);
+            opt.textContent = `${c.name}`;
+            sel.appendChild(opt);
+          });
+        }
+      });
 
-      // 2. Selectores de Grupos
+      // Grupos
       const grpSelectors = ["lab-group", "sched-group", "tutor-group", "exam-group"];
       grpSelectors.forEach(id => {
         const sel = document.getElementById(id) as HTMLSelectElement;
@@ -588,7 +896,7 @@ import Layout from '../layouts/Layout.astro';
         }
       });
 
-      // 3. Selectores de Profesores
+      // Profesores
       const profSelectors = ["sched-professor", "tutor-professor"];
       profSelectors.forEach(id => {
         const sel = document.getElementById(id) as HTMLSelectElement;
@@ -604,7 +912,9 @@ import Layout from '../layouts/Layout.astro';
       });
     }
 
-    // --- RENDER TABLA DE HORARIOS ---
+    // =========================================================================
+    // RENDER TABLES
+    // =========================================================================
     function renderSchedulesTable() {
       const tbody = document.getElementById("table-schedules-list");
       if (!tbody) return;
@@ -618,7 +928,6 @@ import Layout from '../layouts/Layout.astro';
       schedulesList.forEach(s => {
         const tr = document.createElement("tr");
         tr.className = "border-b border-bg-piedra hover:bg-bg-papel";
-        
         tr.innerHTML = `
           <td class="p-2 font-bold">${s.group_name || 'Grupo ' + s.class_group_id}</td>
           <td class="p-2 font-medium">${s.subject_name} ${s.is_laboratory ? '🧪' : ''}</td>
@@ -626,7 +935,7 @@ import Layout from '../layouts/Layout.astro';
           <td class="p-2 font-mono font-bold text-[10px] text-secondary">${s.classroom_name}</td>
           <td class="p-2 font-mono text-[10px] text-text-secondary">${s.day_of_week} ${s.start_time.substring(0,5)}-${s.end_time.substring(0,5)}</td>
           <td class="p-2 text-right">
-            <button class="btn-delete-sched inline-flex items-center justify-center px-4 h-11 bg-error/10 hover:bg-error/20 text-error font-mono text-[10px] uppercase font-bold border border-error/20 rounded-[2px] transition-suiza cursor-pointer" data-id="${s.id}">
+            <button class="btn-delete-sched inline-flex items-center justify-center px-4 h-9 bg-error/10 hover:bg-error/20 text-error font-mono text-[10px] uppercase font-bold border border-error/20 rounded-[2px] transition-suiza cursor-pointer" data-id="${s.id}">
               Eliminar
             </button>
           </td>
@@ -634,22 +943,17 @@ import Layout from '../layouts/Layout.astro';
         tbody.appendChild(tr);
       });
 
-      // Listeners borrar horario
       document.querySelectorAll(".btn-delete-sched").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.getAttribute("data-id");
-          if (confirm("¿Estás seguro de que deseas eliminar esta clase de la grilla horaria?")) {
+          if (confirm("¿Estás seguro de que deseas eliminar esta clase?")) {
             const res = await apiFetch(`/api/schedules/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-              alert("Horario eliminado correctamente.");
-              loadAllAdminData();
-            }
+            if (res.ok) { alert("Horario eliminado."); loadAllAdminData(); }
           }
         });
       });
     }
 
-    // --- RENDER TABLA DE EXÁMENES ---
     function renderExamsTable() {
       const tbody = document.getElementById("table-exams-list");
       if (!tbody) return;
@@ -663,8 +967,7 @@ import Layout from '../layouts/Layout.astro';
       examsList.forEach(e => {
         const tr = document.createElement("tr");
         tr.className = "border-b border-bg-piedra hover:bg-bg-papel";
-        const dateStr = new Date(e.exam_date).toLocaleDateString('es-MX', {day: 'numeric', month: 'short', year: 'numeric'});
-        
+        const dateStr = new Date(e.exam_date + 'T12:00:00').toLocaleDateString('es-MX', {day: 'numeric', month: 'short', year: 'numeric'});
         tr.innerHTML = `
           <td class="p-2 font-bold">${e.group_name || 'Grupo ' + e.class_group_id}</td>
           <td class="p-2 font-medium">${e.subject_name}</td>
@@ -672,7 +975,7 @@ import Layout from '../layouts/Layout.astro';
           <td class="p-2 font-mono text-[10px] text-text-secondary">${dateStr}</td>
           <td class="p-2 font-mono text-[10px] text-text-secondary">${e.exam_time.substring(0,5)}</td>
           <td class="p-2 text-right">
-            <button class="btn-delete-exam inline-flex items-center justify-center px-4 h-11 bg-error/10 hover:bg-error/20 text-error font-mono text-[10px] uppercase font-bold border border-error/20 rounded-[2px] transition-suiza cursor-pointer" data-id="${e.id}">
+            <button class="btn-delete-exam inline-flex items-center justify-center px-4 h-9 bg-error/10 hover:bg-error/20 text-error font-mono text-[10px] uppercase font-bold border border-error/20 rounded-[2px] transition-suiza cursor-pointer" data-id="${e.id}">
               Eliminar
             </button>
           </td>
@@ -680,49 +983,78 @@ import Layout from '../layouts/Layout.astro';
         tbody.appendChild(tr);
       });
 
-      // Listeners borrar examen
       document.querySelectorAll(".btn-delete-exam").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.getAttribute("data-id");
-          if (confirm("¿Estás seguro de que deseas eliminar este examen del calendario escolar?")) {
+          if (confirm("¿Estás seguro de que deseas eliminar este examen?")) {
             const res = await apiFetch(`/api/exams/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-              alert("Examen eliminado correctamente.");
-              loadAllAdminData();
-            }
+            if (res.ok) { alert("Examen eliminado."); loadAllAdminData(); }
           }
         });
       });
     }
 
-    // --- SELECTOR DE ROL (SIMULADOR) ---
-    const roleSelector = document.getElementById("role-selector") as HTMLSelectElement;
-    const panelDocente = document.getElementById("panel-docente");
-    const panelAdmin = document.getElementById("panel-administrativo");
+    function renderGroupsTable() {
+      const tbody = document.getElementById("table-groups-list");
+      if (!tbody) return;
+      tbody.innerHTML = "";
 
-    if (roleSelector) {
-      roleSelector.addEventListener("change", () => {
-        const role = roleSelector.value;
-        if (role === "docente") {
-          panelDocente?.classList.remove("hidden");
-          panelAdmin?.classList.add("hidden");
-        } else {
-          panelDocente?.classList.add("hidden");
-          panelAdmin?.classList.remove("hidden");
-        }
+      if (groupsList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-text-secondary/60 italic">No hay grupos registrados.</td></tr>`;
+        return;
+      }
+
+      groupsList.forEach(g => {
+        const career = careersList.find(c => c.id === g.career_id);
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-bg-piedra hover:bg-bg-papel";
+        tr.innerHTML = `
+          <td class="p-2 font-bold">${g.name}</td>
+          <td class="p-2 text-text-secondary">${career ? career.name : 'Carrera ' + g.career_id}</td>
+          <td class="p-2 font-mono text-[10px]">${g.academic_period || '—'}</td>
+          <td class="p-2 font-mono text-[10px]">${g.shift || '—'}</td>
+          <td class="p-2 text-[10px] text-text-secondary">${g.tutor_name || 'Sin tutor'}</td>
+        `;
+        tbody.appendChild(tr);
       });
     }
 
-    // --- NAVEGACIÓN SUBTABS ---
+    function renderTutorGroupsList() {
+      const container = document.getElementById("tutor-groups-list");
+      if (!container) return;
+
+      if (groupsList.length === 0) {
+        container.innerHTML = `<p class="text-xs text-text-secondary italic">No hay grupos registrados.</p>`;
+        return;
+      }
+
+      container.innerHTML = groupsList.map(g => {
+        const career = careersList.find(c => c.id === g.career_id);
+        return `
+          <div class="flex items-center justify-between border border-border-sutil rounded-sm p-2.5 bg-bg-piedra/30">
+            <div>
+              <span class="font-bold text-xs">${g.name}</span>
+              <span class="font-mono text-[9px] text-text-secondary ml-2">${career ? career.name : ''}</span>
+            </div>
+            <span class="font-mono text-[10px] ${g.tutor_name ? 'text-primary' : 'text-text-secondary'} font-bold">
+              ${g.tutor_name ? '👨‍🏫 ' + g.tutor_name : 'Sin tutor'}
+            </span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // NAVEGACIÓN SUBTABS
+    // =========================================================================
     document.querySelectorAll(".docente-tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".docente-tab-btn").forEach(b => {
-          b.classList.remove("text-primary", "border-b-primary");
+          b.classList.remove("text-primary", "border-primary");
           b.classList.add("border-transparent", "text-text-secondary");
         });
-        btn.classList.add("text-primary", "border-b-primary");
+        btn.classList.add("text-primary", "border-primary");
         btn.classList.remove("border-transparent", "text-text-secondary");
-
         document.querySelectorAll(".docente-tab-panel").forEach(p => p.classList.add("hidden"));
         const target = btn.getAttribute("data-tab");
         const panel = document.getElementById(`docente-tab-${target}`);
@@ -733,12 +1065,11 @@ import Layout from '../layouts/Layout.astro';
     document.querySelectorAll(".admin-tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".admin-tab-btn").forEach(b => {
-          b.classList.remove("text-primary", "border-b-primary");
+          b.classList.remove("text-primary", "border-primary");
           b.classList.add("border-transparent", "text-text-secondary");
         });
-        btn.classList.add("text-primary", "border-b-primary");
+        btn.classList.add("text-primary", "border-primary");
         btn.classList.remove("border-transparent", "text-text-secondary");
-
         document.querySelectorAll(".admin-tab-panel").forEach(p => p.classList.add("hidden"));
         const target = btn.getAttribute("data-tab");
         const panel = document.getElementById(`admin-tab-${target}`);
@@ -746,214 +1077,212 @@ import Layout from '../layouts/Layout.astro';
       });
     });
 
-    // --- FORM SUBMIT: SYLLABUS ---
-    const formSyllabus = document.getElementById("form-syllabus");
-    if (formSyllabus) {
-      formSyllabus.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const subject = (document.getElementById("syl-subject") as HTMLInputElement).value.trim();
-        const careerId = (document.getElementById("syl-career") as HTMLSelectElement).value;
-        const description = (document.getElementById("syl-description") as HTMLTextAreaElement).value.trim();
-        
-        const critExams = (document.getElementById("crit-exams") as HTMLInputElement).value.trim() || "0%";
-        const critProject = (document.getElementById("crit-project") as HTMLInputElement).value.trim() || "0%";
-        const critAssignments = (document.getElementById("crit-assignments") as HTMLInputElement).value.trim() || "0%";
-        const critQuizzes = (document.getElementById("crit-quizzes") as HTMLInputElement).value.trim() || "0%";
+    // =========================================================================
+    // FORM SUBMITS
+    // =========================================================================
 
-        const resTitle = (document.getElementById("res-title-1") as HTMLInputElement).value.trim();
-        const resAuthor = (document.getElementById("res-author-1") as HTMLInputElement).value.trim();
-        const resLink = (document.getElementById("res-link-1") as HTMLInputElement).value.trim();
+    // SYLLABUS
+    document.getElementById("form-syllabus")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const subject = (document.getElementById("syl-subject") as HTMLSelectElement).value;
+      const careerId = (document.getElementById("syl-career") as HTMLSelectElement).value;
+      const description = (document.getElementById("syl-description") as HTMLTextAreaElement).value.trim();
+      const critExams = parseInt((document.getElementById("crit-exams") as HTMLInputElement).value, 10) || 0;
+      const critProject = parseInt((document.getElementById("crit-project") as HTMLInputElement).value, 10) || 0;
+      const critAssignments = parseInt((document.getElementById("crit-assignments") as HTMLInputElement).value, 10) || 0;
+      const critQuizzes = parseInt((document.getElementById("crit-quizzes") as HTMLInputElement).value, 10) || 0;
+      const resTitle = (document.getElementById("res-title-1") as HTMLInputElement).value.trim();
+      const resAuthor = (document.getElementById("res-author-1") as HTMLInputElement).value.trim();
+      const resLink = (document.getElementById("res-link-1") as HTMLInputElement).value.trim();
 
-        const evaluation_criteria = {
-          exams: critExams,
-          project: critProject,
-          assignments: critAssignments,
-          quizzes: critQuizzes
-        };
+      // Validar suma 100%
+      const totalPct = critExams + critProject + critAssignments + critQuizzes;
+      if (totalPct !== 100) {
+        alert(`Error: La suma de los criterios de evaluación debe ser exactamente del 100%. Suma actual: ${totalPct}%`);
+        return;
+      }
 
-        const resources = [];
-        if (resTitle) {
-          resources.push({
-            title: resTitle,
-            author: resAuthor || "",
-            link: resLink || "#"
-          });
-        }
+      const evaluation_criteria = { 
+        exams: `${critExams}%`, 
+        project: `${critProject}%`, 
+        assignments: `${critAssignments}%`, 
+        quizzes: `${critQuizzes}%` 
+      };
+      const resources: any[] = [];
+      if (resTitle) resources.push({ title: resTitle, author: resAuthor || "", link: resLink || "#" });
 
-        const payload = {
-          subject_name: subject,
-          career_id: careerId,
-          program_description: description,
-          evaluation_criteria,
-          resources,
-          created_by: 1 // Docente activo simulado (Dr. Walter Mata id=1)
-        };
+      const payload = {
+        subject_name: subject,
+        career_id: careerId,
+        program_description: description,
+        evaluation_criteria,
+        resources,
+        created_by: currentUser?.professor_id || null
+      };
 
-        const res = await apiFetch('/api/syllabus', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          alert("¡Plan de estudios (Syllabus) guardado correctamente!");
-          formSyllabus.reset();
-        } else {
-          const err = await res.json();
-          alert("Error: " + err.error);
-        }
+      const res = await apiFetch('/api/syllabus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-    }
 
-    // --- FORM SUBMIT: LAB RESERVATION ---
-    const formLab = document.getElementById("form-lab-schedule");
-    if (formLab) {
-      formLab.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const room = (document.getElementById("lab-room") as HTMLSelectElement).value;
-        const subject = (document.getElementById("lab-subject") as HTMLInputElement).value.trim();
-        const groupId = (document.getElementById("lab-group") as HTMLSelectElement).value;
-        const day = (document.getElementById("lab-day") as HTMLSelectElement).value;
-        const start = (document.getElementById("lab-start") as HTMLInputElement).value + ":00";
-        const end = (document.getElementById("lab-end") as HTMLInputElement).value + ":00";
-
-        const payload = {
-          class_group_id: groupId,
-          subject_name: subject,
-          professor_id: 1, // Docente simulado (id=1)
-          classroom_name: room,
-          day_of_week: day,
-          start_time: start,
-          end_time: end,
-          is_laboratory: true
-        };
-
-        const res = await apiFetch('/api/schedules', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          alert("¡Reserva de laboratorio registrada en el horario escolar!");
-          formLab.reset();
-          loadAllAdminData();
-        } else {
-          const err = await res.json();
-          alert("Error: " + err.error);
+      if (res.ok) {
+        alert("¡Plan de estudios guardado correctamente!");
+        (document.getElementById("form-syllabus") as HTMLFormElement).reset();
+        // Disparar recálculo visual del indicador
+        const totalIndicator = document.getElementById("crit-total-indicator");
+        if (totalIndicator) {
+          totalIndicator.textContent = "Suma: 0%";
+          totalIndicator.className = "font-mono text-xs font-bold text-text-secondary bg-bg-piedra px-2 py-0.5 border border-border-sutil rounded-sm";
         }
+      } else {
+        const err = await res.json();
+        alert("Error: " + err.error);
+      }
+    });
+
+    // LAB RESERVATION
+    document.getElementById("form-lab-schedule")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const room = (document.getElementById("lab-room") as HTMLSelectElement).value;
+      const subject = (document.getElementById("lab-subject") as HTMLSelectElement).value;
+      const groupId = (document.getElementById("lab-group") as HTMLSelectElement).value;
+      const day = (document.getElementById("lab-day") as HTMLSelectElement).value;
+      const start = (document.getElementById("lab-start") as HTMLInputElement).value + ":00";
+      const end = (document.getElementById("lab-end") as HTMLInputElement).value + ":00";
+
+      const payload = {
+        class_group_id: groupId,
+        subject_name: subject,
+        professor_id: currentUser?.professor_id || null,
+        classroom_name: room,
+        day_of_week: day,
+        start_time: start,
+        end_time: end,
+        is_laboratory: true
+      };
+
+      const res = await apiFetch('/api/schedules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-    }
 
-    // --- FORM SUBMIT: ADMIN SCHEDULE ---
-    const formAdminSched = document.getElementById("form-admin-schedule");
-    if (formAdminSched) {
-      formAdminSched.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const groupId = (document.getElementById("sched-group") as HTMLSelectElement).value;
-        const subject = (document.getElementById("sched-subject") as HTMLInputElement).value.trim();
-        const profId = (document.getElementById("sched-professor") as HTMLSelectElement).value;
-        const room = (document.getElementById("sched-classroom") as HTMLInputElement).value.trim();
-        const day = (document.getElementById("sched-day") as HTMLSelectElement).value;
-        const start = (document.getElementById("sched-start") as HTMLInputElement).value + ":00";
-        const end = (document.getElementById("sched-end") as HTMLInputElement).value + ":00";
-        const isLab = (document.getElementById("sched-islab") as HTMLInputElement).checked;
+      if (res.ok) {
+        alert("¡Reserva de laboratorio registrada!");
+        (document.getElementById("form-lab-schedule") as HTMLFormElement).reset();
+      } else {
+        const err = await res.json();
+        alert("Error: " + err.error);
+      }
+    });
 
-        const payload = {
-          class_group_id: groupId,
-          subject_name: subject,
-          professor_id: profId || null,
-          classroom_name: room,
-          day_of_week: day,
-          start_time: start,
-          end_time: end,
-          is_laboratory: isLab
-        };
+    // ADMIN SCHEDULE
+    document.getElementById("form-admin-schedule")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const groupId = (document.getElementById("sched-group") as HTMLSelectElement).value;
+      const subject = (document.getElementById("sched-subject") as HTMLInputElement).value.trim();
+      const profId = (document.getElementById("sched-professor") as HTMLSelectElement).value;
+      const room = (document.getElementById("sched-classroom") as HTMLInputElement).value.trim();
+      const day = (document.getElementById("sched-day") as HTMLSelectElement).value;
+      const start = (document.getElementById("sched-start") as HTMLInputElement).value + ":00";
+      const end = (document.getElementById("sched-end") as HTMLInputElement).value + ":00";
+      const isLab = (document.getElementById("sched-islab") as HTMLInputElement).checked;
 
-        const res = await apiFetch('/api/schedules', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+      const payload = { class_group_id: groupId, subject_name: subject, professor_id: profId || null, classroom_name: room, day_of_week: day, start_time: start, end_time: end, is_laboratory: isLab };
 
-        if (res.ok) {
-          alert("¡Clase programada y cargada con éxito!");
-          formAdminSched.reset();
-          loadAllAdminData();
-        } else {
-          const err = await res.json();
-          alert("Error: " + err.error);
-        }
+      const res = await apiFetch('/api/schedules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-    }
 
-    // --- FORM SUBMIT: TUTOR ASSIGNMENT ---
-    const formAdminTutor = document.getElementById("form-admin-tutor");
-    if (formAdminTutor) {
-      formAdminTutor.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const groupId = (document.getElementById("tutor-group") as HTMLSelectElement).value;
-        const profId = (document.getElementById("tutor-professor") as HTMLSelectElement).value;
+      if (res.ok) {
+        alert("¡Clase programada con éxito!");
+        (document.getElementById("form-admin-schedule") as HTMLFormElement).reset();
+        loadAllAdminData();
+      } else {
+        const err = await res.json();
+        alert("Error: " + err.error);
+      }
+    });
 
-        const payload = {
-          group_id: groupId,
-          tutor_id: profId || null
-        };
+    // TUTOR ASSIGNMENT
+    document.getElementById("form-admin-tutor")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const groupId = (document.getElementById("tutor-group") as HTMLSelectElement).value;
+      const profId = (document.getElementById("tutor-professor") as HTMLSelectElement).value;
 
-        const res = await apiFetch('/api/groups/tutor', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          alert("¡Tutor de grupo asignado exitosamente!");
-          formAdminTutor.reset();
-          loadAllAdminData();
-        } else {
-          const err = await res.json();
-          alert("Error: " + err.error);
-        }
+      const res = await apiFetch('/api/groups/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ group_id: groupId, tutor_id: profId || null })
       });
-    }
 
-    // --- FORM SUBMIT: EXAMS PROGRAMMING ---
-    const formAdminExams = document.getElementById("form-admin-exams");
-    if (formAdminExams) {
-      formAdminExams.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const groupId = (document.getElementById("exam-group") as HTMLSelectElement).value;
-        const subject = (document.getElementById("exam-subject") as HTMLInputElement).value.trim();
-        const phase = (document.getElementById("exam-phase") as HTMLSelectElement).value;
-        const date = (document.getElementById("exam-date") as HTMLInputElement).value;
-        const time = (document.getElementById("exam-time") as HTMLInputElement).value + ":00";
+      if (res.ok) {
+        alert("¡Tutor asignado exitosamente!");
+        (document.getElementById("form-admin-tutor") as HTMLFormElement).reset();
+        loadAllAdminData();
+      } else {
+        const err = await res.json();
+        alert("Error: " + err.error);
+      }
+    });
 
-        const payload = {
-          class_group_id: groupId,
-          subject_name: subject,
-          exam_name: phase,
-          exam_date: date,
-          exam_time: time
-        };
+    // EXAMS PROGRAMMING
+    document.getElementById("form-admin-exams")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const groupId = (document.getElementById("exam-group") as HTMLSelectElement).value;
+      const subject = (document.getElementById("exam-subject") as HTMLInputElement).value.trim();
+      const phase = (document.getElementById("exam-phase") as HTMLSelectElement).value;
+      const date = (document.getElementById("exam-date") as HTMLInputElement).value;
+      const time = (document.getElementById("exam-time") as HTMLInputElement).value + ":00";
 
-        const res = await apiFetch('/api/exams', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+      const payload = { class_group_id: groupId, subject_name: subject, exam_name: phase, exam_date: date, exam_time: time };
 
-        if (res.ok) {
-          alert("¡Examen programado en el calendario estudiantil!");
-          formAdminExams.reset();
-          loadAllAdminData();
-        } else {
-          const err = await res.json();
-          alert("Error: " + err.error);
-        }
+      const res = await apiFetch('/api/exams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-    }
 
-    // --- PROCESAR CV DEL PDF (Original logic shortened for demo/safety) ---
+      if (res.ok) {
+        alert("¡Examen programado en el calendario!");
+        (document.getElementById("form-admin-exams") as HTMLFormElement).reset();
+        loadAllAdminData();
+      } else {
+        const err = await res.json();
+        alert("Error: " + err.error);
+      }
+    });
+
+    // CREATE GROUP
+    document.getElementById("form-admin-group")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = (document.getElementById("group-name") as HTMLInputElement).value.trim();
+      const careerId = (document.getElementById("group-career") as HTMLSelectElement).value;
+      const period = (document.getElementById("group-period") as HTMLInputElement).value.trim();
+      const shift = (document.getElementById("group-shift") as HTMLSelectElement).value;
+
+      const res = await apiFetch('/api/groups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, career_id: careerId, academic_period: period, shift })
+      });
+
+      if (res.ok) {
+        alert("¡Grupo creado correctamente!");
+        (document.getElementById("form-admin-group") as HTMLFormElement).reset();
+        loadAllAdminData();
+      } else {
+        const err = await res.json();
+        alert("Error: " + err.error);
+      }
+    });
+
+    // =========================================================================
+    // CV EDITOR DESDE PDF
+    // =========================================================================
     const pdfInput = document.getElementById("pdf-input") as HTMLInputElement;
     const uploadContainer = document.getElementById("upload-container");
     const loadingContainer = document.getElementById("loading-container");
@@ -969,95 +1298,81 @@ import Layout from '../layouts/Layout.astro';
 
     let currentCVData: any = null;
 
-    if (uploadContainer) {
-      uploadContainer.addEventListener("click", () => pdfInput?.click());
-    }
+    uploadContainer?.addEventListener("click", () => pdfInput?.click());
 
-    if (pdfInput) {
-      pdfInput.addEventListener("change", async () => {
-        const file = pdfInput.files?.[0];
-        if (!file) return;
+    pdfInput?.addEventListener("change", async () => {
+      const file = pdfInput.files?.[0];
+      if (!file) return;
+      uploadContainer?.classList.add("hidden");
+      loadingContainer?.classList.remove("hidden");
 
-        uploadContainer?.classList.add("hidden");
-        loadingContainer?.classList.remove("hidden");
+      const formData = new FormData();
+      formData.append("pdf", file);
 
-        const formData = new FormData();
-        formData.append("pdf", file);
-
-        try {
-          const res = await apiFetch("/api/extract", {
-            method: "POST",
-            body: formData
-          });
-
-          if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.error || "Fallo en la extracción");
-          }
-
-          currentCVData = await res.json();
-          
-          loadingContainer?.classList.add("hidden");
-          cvEditorForm?.classList.remove("hidden");
-
-          if (cvDocName) cvDocName.textContent = currentCVData.professorData?.fullName || "Docente";
-          if (cvFieldName) cvFieldName.value = currentCVData.professorData?.fullName || "";
-          if (cvFieldEmail) cvFieldEmail.value = currentCVData.professorData?.contactInfo?.institutionalEmail || "";
-          if (cvFieldUnit) cvFieldUnit.value = currentCVData.professorData?.laborData?.academicUnit || "";
-          if (cvFieldAppointment) cvFieldAppointment.value = currentCVData.professorData?.laborData?.currentAppointment || "";
-
-        } catch (e: any) {
-          loadingContainer?.classList.add("hidden");
-          errorContainer?.classList.remove("hidden");
-          const errorMsg = document.getElementById("error-message");
-          if (errorMsg) errorMsg.textContent = e.message;
+      try {
+        const res = await apiFetch("/api/extract", { method: "POST", body: formData });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Fallo en la extracción");
         }
-      });
-    }
+        currentCVData = await res.json();
+        loadingContainer?.classList.add("hidden");
+        cvEditorForm?.classList.remove("hidden");
 
-    if (btnErrorRetry) {
-      btnErrorRetry.addEventListener("click", () => {
-        errorContainer?.classList.add("hidden");
+        if (cvDocName) cvDocName.textContent = currentCVData.professorData?.fullName || "Docente";
+        if (cvFieldName) cvFieldName.value = currentCVData.professorData?.fullName || "";
+        if (cvFieldEmail) cvFieldEmail.value = currentCVData.professorData?.contactInfo?.institutionalEmail || "";
+        if (cvFieldUnit) cvFieldUnit.value = currentCVData.professorData?.laborData?.academicUnit || "";
+        if (cvFieldAppointment) cvFieldAppointment.value = currentCVData.professorData?.laborData?.currentAppointment || "";
+      } catch (e: any) {
+        loadingContainer?.classList.add("hidden");
+        errorContainer?.classList.remove("hidden");
+        const errorMsg = document.getElementById("error-message");
+        if (errorMsg) errorMsg.textContent = e.message;
+      }
+    });
+
+    btnErrorRetry?.addEventListener("click", () => {
+      errorContainer?.classList.add("hidden");
+      uploadContainer?.classList.remove("hidden");
+      if (pdfInput) pdfInput.value = "";
+    });
+
+    btnSaveCV?.addEventListener("click", async () => {
+      if (!currentCVData) return;
+
+      currentCVData.professorData.fullName = cvFieldName.value;
+      currentCVData.professorData.contactInfo.institutionalEmail = cvFieldEmail.value;
+      currentCVData.professorData.laborData.academicUnit = cvFieldUnit.value;
+      currentCVData.professorData.laborData.currentAppointment = cvFieldAppointment.value;
+
+      const payload = {
+        professorData: currentCVData,
+        delegation_id: currentUser?.delegation_id || 3,
+        faculty_id: currentUser?.faculty_id || null,
+        group_assignments: []
+      };
+
+      const res = await apiFetch("/api/professors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert("¡Docente y curriculum guardados correctamente!");
+        cvEditorForm?.classList.add("hidden");
         uploadContainer?.classList.remove("hidden");
         if (pdfInput) pdfInput.value = "";
-      });
-    }
+      } else {
+        const err = await res.json();
+        alert("Error: " + err.error);
+      }
+    });
 
-    if (btnSaveCV && cvFieldName && cvFieldEmail) {
-      btnSaveCV.addEventListener("click", async () => {
-        if (!currentCVData) return;
-
-        currentCVData.professorData.fullName = cvFieldName.value;
-        currentCVData.professorData.contactInfo.institutionalEmail = cvFieldEmail.value;
-        currentCVData.professorData.laborData.academicUnit = cvFieldUnit.value;
-        currentCVData.professorData.laborData.currentAppointment = cvFieldAppointment.value;
-
-        const payload = {
-          professorData: currentCVData,
-          delegation_id: 3, // Colima por defecto
-          faculty_id: 2, // FIME/Telemática
-          group_assignments: []
-        };
-
-        const res = await apiFetch("/api/professors", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          alert("¡Docente y curriculum guardados correctamente!");
-          cvEditorForm?.classList.add("hidden");
-          uploadContainer?.classList.remove("hidden");
-          loadAllAdminData();
-        } else {
-          const err = await res.json();
-          alert("Error: " + err.error);
-        }
-      });
-    }
-
-    // --- CARGAR DATOS AL INICIAR ---
-    loadAllAdminData();
+    // =========================================================================
+    // ARRANQUE
+    // =========================================================================
+    initPanel();
   </script>
 </Layout>

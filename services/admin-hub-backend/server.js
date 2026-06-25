@@ -8,8 +8,13 @@ import { spawn } from 'child_process';
 import pg from 'pg';
 import yaml from 'js-yaml';
 import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET || 'pica-ucol-jwt-secret-2026';
+const JWT_EXPIRES_IN = '8h';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -47,35 +52,39 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Basic Auth Middleware
-function basicAuth(req, res, next) {
+// ── Middleware de Autenticación JWT ─────────────────────────────────────
+function jwtAuth(req, res, next) {
   const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    res.setHeader('WWW-Authenticate', 'Basic realm="EduVitae Admin"');
-    return res.status(401).json({ error: 'Autenticación requerida.' });
+
+  // Soporte para Bearer token (JWT desde la UI)
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.slice(7);
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      req.user = decoded; // { id, username, role, professor_id, career_id, faculty_id }
+      return next();
+    } catch (err) {
+      return res.status(401).json({ error: 'Token inválido o expirado. Inicia sesión nuevamente.' });
+    }
   }
 
-  const parts = authHeader.split(' ');
-  if (parts.length !== 2 || parts[0].toLowerCase() !== 'basic') {
-    return res.status(401).json({ error: 'Formato de autenticación inválido.' });
+  // Fallback: Basic Auth para compatibilidad con Nginx/proxy interno
+  if (authHeader && authHeader.startsWith('Basic ')) {
+    const credentials = Buffer.from(authHeader.slice(6), 'base64').toString('utf-8');
+    const [user, pass] = credentials.split(':');
+    const expectedUser = process.env.ADMIN_USER || 'admin';
+    const expectedPass = process.env.ADMIN_PASSWORD || 'admin_pass';
+    if (user === expectedUser && pass === expectedPass) {
+      req.user = { id: 0, username: user, role: 'admin_general', professor_id: null };
+      return next();
+    }
   }
 
-  const credentials = Buffer.from(parts[1], 'base64').toString('utf-8');
-  const [user, pass] = credentials.split(':');
-
-  const expectedUser = process.env.ADMIN_USER || 'admin';
-  const expectedPass = process.env.ADMIN_PASSWORD || 'admin_pass';
-
-  if (user === expectedUser && pass === expectedPass) {
-    return next();
-  } else {
-    res.setHeader('WWW-Authenticate', 'Basic realm="EduVitae Admin"');
-    return res.status(401).json({ error: 'Credenciales inválidas.' });
-  }
+  return res.status(401).json({ error: 'Autenticación requerida. Inicia sesión en /admin/login.' });
 }
 
-// Aplicar Basic Auth a todos los endpoints /api/
-app.use('/api', basicAuth);
+// Aplicar JWT Auth a todos los endpoints /api/
+app.use('/api', jwtAuth);
 
 /**
  * Ejecuta un script de Python de forma asíncrona.
@@ -126,6 +135,97 @@ function slugify(text) {
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
 }
+
+// ── Endpoints de Autenticación ──────────────────────────────────────────
+
+// POST /auth/login — Autenticar usuario y emitir JWT
+app.post('/auth/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Usuario y contraseña son requeridos.' });
+    }
+
+    // Buscar usuario por username o email
+    const result = await pool.query(
+      `SELECT u.*, p.full_name as professor_name, p.slug as professor_slug, p.profile_data as professor_profile
+       FROM admin_users u
+       LEFT JOIN professors p ON u.professor_id = p.id
+       WHERE (u.username = $1 OR u.email = $1) AND u.is_active = TRUE`,
+      [username.trim().toLowerCase()]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Credenciales incorrectas.' });
+    }
+
+    const user = result.rows[0];
+    const validPassword = await bcrypt.compare(password, user.password_hash);
+
+    if (!validPassword) {
+      return res.status(401).json({ error: 'Credenciales incorrectas.' });
+    }
+
+    // Emitir JWT con perfil completo
+    const tokenPayload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      professor_id: user.professor_id,
+      professor_name: user.professor_name || null,
+      professor_slug: user.professor_slug || null,
+      career_id: user.career_id || null,
+      faculty_id: user.faculty_id || null
+    };
+
+    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+    return res.json({
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        professor_id: user.professor_id,
+        professor_name: user.professor_name || null,
+        professor_slug: user.professor_slug || null,
+        professor_profile: user.professor_profile || null,
+        career_id: user.career_id || null,
+        faculty_id: user.faculty_id || null
+      }
+    });
+  } catch (err) {
+    console.error('Error en /auth/login:', err);
+    return res.status(500).json({ error: 'Error interno de autenticación.' });
+  }
+});
+
+// GET /auth/me — Devuelve el perfil del usuario autenticado (requiere JWT)
+app.get('/auth/me', jwtAuth, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT u.*, p.full_name as professor_name, p.slug as professor_slug, p.profile_data as professor_profile
+       FROM admin_users u
+       LEFT JOIN professors p ON u.professor_id = p.id
+       WHERE u.id = $1 AND u.is_active = TRUE`,
+      [req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    const user = result.rows[0];
+    delete user.password_hash; // No exponer el hash
+
+    return res.json(user);
+  } catch (err) {
+    console.error('Error en /auth/me:', err);
+    return res.status(500).json({ error: 'Error al obtener perfil de usuario.' });
+  }
+});
 
 // ── Endpoints de Referencia (Datos Maestros) ───────────────────────────
 
@@ -566,10 +666,10 @@ app.post('/api/professors', async (req, res) => {
   }
 });
 
-// GET /api/professors - Lista profesores
+// GET /api/professors - Lista profesores (con scoping por rol)
 app.get('/api/professors', async (req, res) => {
   try {
-    const query = `
+    let query = `
       SELECT p.id, p.slug, p.full_name, p.email, p.delegation_id,
              COALESCE(
                json_agg(
@@ -579,10 +679,17 @@ app.get('/api/professors', async (req, res) => {
              ) as group_assignments
       FROM professors p
       LEFT JOIN professor_groups pg ON p.id = pg.professor_id
-      GROUP BY p.id
-      ORDER BY p.full_name ASC
     `;
-    const result = await pool.query(query);
+    let params = [];
+
+    // Los docentes solo pueden ver su propio perfil
+    if (req.user && req.user.role === 'docente' && req.user.professor_id) {
+      query += ' WHERE p.id = $1';
+      params.push(req.user.professor_id);
+    }
+
+    query += ' GROUP BY p.id ORDER BY p.full_name ASC';
+    const result = await pool.query(query, params);
     return res.json(result.rows);
   } catch (err) {
     console.error('Error al listar profesores:', err);
@@ -590,24 +697,54 @@ app.get('/api/professors', async (req, res) => {
   }
 });
 
-// GET /api/groups - Lista grupos filtrados opcionalmente por career_id
+// GET /api/groups - Lista grupos filtrados opcionalmente por career_id (con scoping por rol)
 app.get('/api/groups', async (req, res) => {
   try {
     const careerId = req.query.career_id;
-    let query = 'SELECT * FROM class_groups';
+    let query = 'SELECT cg.*, p.full_name as tutor_name FROM class_groups cg LEFT JOIN professors p ON cg.tutor_id = p.id';
     let params = [];
 
-    if (careerId) {
-      query += ' WHERE career_id = $1';
-      params.push(parseInt(careerId, 10));
+    // Jefe de carrera solo ve su carrera
+    const scopeCareer = req.user?.role === 'jefe_carrera' ? req.user.career_id : null;
+    const filterCareer = careerId ? parseInt(careerId, 10) : scopeCareer;
+
+    if (filterCareer) {
+      query += ' WHERE cg.career_id = $1';
+      params.push(filterCareer);
     }
-    query += ' ORDER BY name ASC';
+    query += ' ORDER BY cg.name ASC';
 
     const result = await pool.query(query, params);
     return res.json(result.rows);
   } catch (err) {
     console.error('Error al listar grupos:', err);
     return res.status(500).json({ error: 'Error al consultar grupos.' });
+  }
+});
+
+// GET /api/professors/me/groups — Grupos y materias del docente autenticado
+app.get('/api/professors/me/groups', async (req, res) => {
+  try {
+    if (!req.user || !req.user.professor_id) {
+      return res.status(403).json({ error: 'Este endpoint es solo para docentes.' });
+    }
+
+    const result = await pool.query(`
+      SELECT
+        cg.id, cg.slug, cg.name as group_name, cg.academic_period, cg.shift, cg.career_id,
+        pg.subject_taught,
+        p.full_name as tutor_name
+      FROM professor_groups pg
+      JOIN class_groups cg ON pg.class_group_id = cg.id
+      LEFT JOIN professors p ON cg.tutor_id = p.id
+      WHERE pg.professor_id = $1
+      ORDER BY cg.name ASC
+    `, [req.user.professor_id]);
+
+    return res.json(result.rows);
+  } catch (err) {
+    console.error('Error al obtener grupos del docente:', err);
+    return res.status(500).json({ error: 'Error al consultar grupos del docente.' });
   }
 });
 
@@ -664,15 +801,52 @@ app.post('/api/schedules', async (req, res) => {
       return res.status(400).json({ error: 'Faltan parámetros requeridos para el horario.' });
     }
 
+    const groupId = parseInt(class_group_id, 10);
+    const profId = professor_id ? parseInt(professor_id, 10) : null;
+
+    // Validación específica para docentes al reservar laboratorios
+    if (is_laboratory === true) {
+      if (!profId) {
+        return res.status(400).json({ error: 'Se requiere el ID del docente para reservar un laboratorio.' });
+      }
+
+      // Validar si existe una clase ordinaria programada en ese dia y rango de horas que contenga la reserva
+      // Se compara start_time y end_time de la reserva contra los de la clase regular
+      const classQuery = `
+        SELECT * FROM schedules 
+        WHERE class_group_id = $1 
+          AND subject_name = $2 
+          AND professor_id = $3 
+          AND day_of_week = $4 
+          AND is_laboratory = FALSE
+          AND start_time <= $5::time
+          AND end_time >= $6::time
+      `;
+      const classCheck = await pool.query(classQuery, [
+        groupId,
+        subject_name,
+        profId,
+        day_of_week,
+        start_time,
+        end_time
+      ]);
+
+      if (classCheck.rows.length === 0) {
+        return res.status(400).json({ 
+          error: `No tienes asignada una clase de "${subject_name}" el día ${day_of_week} en el horario de ${start_time.substring(0,5)} a ${end_time.substring(0,5)} para este grupo.`
+        });
+      }
+    }
+
     const query = `
       INSERT INTO schedules (class_group_id, subject_name, professor_id, classroom_name, day_of_week, start_time, end_time, is_laboratory)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *;
     `;
     const result = await pool.query(query, [
-      parseInt(class_group_id, 10),
+      groupId,
       subject_name,
-      professor_id ? parseInt(professor_id, 10) : null,
+      profId,
       classroom_name,
       day_of_week,
       start_time,
@@ -681,12 +855,12 @@ app.post('/api/schedules', async (req, res) => {
     ]);
     
     // Asegurar relación en professor_groups
-    if (professor_id) {
+    if (profId) {
       await pool.query(`
         INSERT INTO professor_groups (professor_id, class_group_id, subject_taught)
         VALUES ($1, $2, $3)
         ON CONFLICT DO NOTHING
-      `, [parseInt(professor_id, 10), parseInt(class_group_id, 10), subject_name]);
+      `, [profId, groupId, subject_name]);
     }
 
     return res.status(201).json(result.rows[0]);
@@ -732,13 +906,29 @@ app.post('/api/exams', async (req, res) => {
       return res.status(400).json({ error: 'Faltan parámetros requeridos para el examen.' });
     }
 
+    const groupId = parseInt(class_group_id, 10);
+
+    // Validar cantidad de exámenes dictada por el coordinador (máximo 3 exámenes por materia y grupo)
+    const countQuery = `
+      SELECT COUNT(*) FROM exam_dates 
+      WHERE class_group_id = $1 AND LOWER(TRIM(subject_name)) = LOWER(TRIM($2))
+    `;
+    const countCheck = await pool.query(countQuery, [groupId, subject_name]);
+    const examCount = parseInt(countCheck.rows[0].count, 10);
+
+    if (examCount >= 3) {
+      return res.status(400).json({ 
+        error: `Límite excedido: El coordinador académico dictamina un máximo de 3 fechas de evaluación/exámenes para la materia "${subject_name}" en este grupo.` 
+      });
+    }
+
     const query = `
       INSERT INTO exam_dates (class_group_id, subject_name, exam_name, exam_date, exam_time)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
     const result = await pool.query(query, [
-      parseInt(class_group_id, 10),
+      groupId,
       subject_name,
       exam_name,
       exam_date,
@@ -787,6 +977,27 @@ app.post('/api/syllabus', async (req, res) => {
       return res.status(400).json({ error: 'Faltan parámetros requeridos para el syllabus.' });
     }
 
+    // Procesar y validar criterios de evaluación
+    let parsedCriteria = typeof evaluation_criteria === 'string' ? JSON.parse(evaluation_criteria) : evaluation_criteria;
+    
+    // Sumar todos los valores numéricos de los criterios y limpiarlos a enteros
+    let totalPct = 0;
+    const cleanCriteria = {};
+    
+    for (const [key, val] of Object.entries(parsedCriteria)) {
+      // Extraer números del valor (ej. "50%" -> 50, 30 -> 30, "25" -> 25)
+      const numStr = String(val).replace(/[^0-9.-]/g, '');
+      const numVal = Math.round(parseFloat(numStr) || 0);
+      cleanCriteria[key] = `${numVal}%`;
+      totalPct += numVal;
+    }
+
+    if (totalPct !== 100) {
+      return res.status(400).json({ 
+        error: `La suma de los criterios de evaluación debe ser exactamente del 100%. Suma actual: ${totalPct}%.` 
+      });
+    }
+
     const slug = slugify(`${subject_name}-${career_id}`);
 
     const query = `
@@ -801,7 +1012,7 @@ app.post('/api/syllabus', async (req, res) => {
       subject_name,
       parseInt(career_id, 10),
       program_description || '',
-      typeof evaluation_criteria === 'string' ? JSON.parse(evaluation_criteria) : evaluation_criteria,
+      cleanCriteria,
       typeof resources === 'string' ? JSON.parse(resources) : resources,
       created_by ? parseInt(created_by, 10) : null
     ]);

@@ -82,11 +82,7 @@ const student = Astro.locals.student;
                 Mapa
               </a>
             </li>
-            <li>
-              <a href="/tutor" class={`nav-link ${isActive('/tutor') ? 'active' : ''}`}>
-                Tutor
-              </a>
-            </li>
+
             <li>
               <a href="/fechas" class={`nav-link ${isActive('/fechas') ? 'active' : ''}`}>
                 Fechas de evaluación
@@ -109,7 +105,7 @@ const student = Astro.locals.student;
             </svg>
           </a>
           {student && (
-            <form action="/auth/logout" method="POST" style="margin: 0;">
+            <form action="/student-auth/logout" method="POST" style="margin: 0;">
               <button type="submit" style="background: none; border: none; font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 700; color: var(--color-ink-2); cursor: pointer; text-transform: uppercase; padding: 4px;">
                 Salir
               </button>
@@ -218,7 +214,7 @@ const student = Astro.locals.student;
             { href: '/materias', label: 'Materias', active: isActive('/materias') },
             { href: '/profesores', label: 'Profesores', active: isActive('/profesores') },
             { href: '/mapa', label: 'Mapa', active: isActive('/mapa') },
-            { href: '/tutor', label: 'Tutor', active: isActive('/tutor') },
+
             { href: '/fechas', label: 'Fechas de evaluación', active: isActive('/fechas') },
             { href: '/perfil', label: 'Mi Perfil', active: isActive('/perfil') }
           ].map(item => (
@@ -236,7 +232,7 @@ const student = Astro.locals.student;
             >{item.label}</a>
           ))}
           {student && (
-            <form action="/auth/logout" method="POST" style="margin: 0; padding: 14px 0; border-bottom: 1px solid var(--color-rule);">
+            <form action="/student-auth/logout" method="POST" style="margin: 0; padding: 14px 0; border-bottom: 1px solid var(--color-rule);">
               <button type="submit" style="background: none; border: none; font-size: 1rem; font-weight: 600; color: var(--color-ink); cursor: pointer; padding: 0; width: 100%; text-align: left;">
                 Cerrar sesión
               </button>

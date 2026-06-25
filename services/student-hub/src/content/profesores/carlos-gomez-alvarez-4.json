@@ -1,0 +1,57 @@
+{
+  "slug": "carlos-gomez-alvarez-4",
+  "title": "Profesor de Asignatura",
+  "fullName": "Mtra. Carlos Gómez Álvarez",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 104",
+    "office": "Edificio FIME PTC, Cubículo 4",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2006,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2005,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2001,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "carlos.gómez_4@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-4",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 4",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 52,
+  "delegation_id": 4,
+  "career_ids": [
+    371,
+    418,
+    418
+  ]
+}

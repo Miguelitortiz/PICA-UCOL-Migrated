@@ -93,44 +93,25 @@ if (academicFormation.doctorados) {
 nodes.sort((a, b) => a.year - b.year);
 ---
 
-<div class="bg-white border border-borde-gris p-6 rounded-sm">
-  <h3 class="font-section text-xs uppercase tracking-wider font-semibold text-acento-verde mb-4 flex items-center">
-    <span class="text-acento-verde mr-2">§</span> Trayectoria de Formación
-  </h3>
+<div class="py-4">
+  <span class="overline overline--primary mb-6">Trayectoria de Formación</span>
 
-  <!-- Contenedor con scroll horizontal en móvil si excede ancho -->
-  <div class="overflow-x-auto pb-24 pt-2 scrollbar-none">
-    <div class="min-w-[600px] md:min-w-0 relative flex justify-between items-center w-full px-20 my-4">
-      
-      <!-- Línea horizontal de fondo -->
-      <div class="absolute top-[8px] left-[88px] right-[88px] h-[2px] bg-borde-gris/70 z-0"></div>
-
-      {nodes.map((node) => (
-        <div class="relative z-10 flex flex-col items-center group">
-          <!-- Nodo físico o punto -->
-          <div 
-            class="w-4 h-4 rounded-full bg-acento-verde border-[3px] border-white shadow-sm flex items-center justify-center relative cursor-help transition-transform duration-150 group-hover:scale-110"
-            title={`${node.degreeFull} por la ${node.institution}`}
-          >
-            <!-- Pulso sutil de hover -->
-            <span class="absolute -inset-1 rounded-full border border-acento-verde/30 opacity-0 group-hover:opacity-100 transition-opacity duration-150"></span>
-          </div>
-
-          <!-- Burbuja de texto (Estilo Vitrina) -->
-          <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-bg-piedra/90 border border-borde-gris px-2 py-1 rounded-sm w-36 text-center shadow-xs">
-            <span class="font-mono text-[9px] text-acento-verde font-bold block leading-none mb-1">
-              {node.label}
-            </span>
-            <span class="font-sans text-[10px] text-text-marino font-semibold block leading-tight truncate" title={node.degreeFull}>
-              {node.degreeShort}
-            </span>
-            <span class="font-mono text-[9px] text-text-marino/60 block mt-0.5 font-semibold">
-              {node.year}
-            </span>
-          </div>
-        </div>
-      ))}
-
-    </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative mt-4">
+    {nodes.map((node) => (
+      <div class="flex flex-col relative pl-6 border-l-2 border-primary md:border-l-0 md:pl-0 md:pt-6 md:border-t-2 md:border-rule-strong">
+        <!-- Punto indicador sobre la línea de tiempo -->
+        <div class="absolute left-[-6px] top-0 w-2.5 h-2.5 bg-primary md:left-0 md:top-[-6px]"></div>
+        
+        <span class="font-mono text-xs font-black text-primary block leading-none mb-1">
+          {node.year}
+        </span>
+        <strong class="text-sm font-bold text-ink block leading-tight mb-1" title={node.degreeFull}>
+          {node.label} en {node.degreeShort}
+        </strong>
+        <span class="text-xs text-ink-3 block leading-normal">
+          {node.institution}
+        </span>
+      </div>
+    ))}
   </div>
 </div>

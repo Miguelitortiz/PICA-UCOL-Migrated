@@ -21,6 +21,8 @@ CREATE TABLE class_groups (
     academic_period VARCHAR(50),
     shift VARCHAR(50),
     tutor_id INTEGER REFERENCES professors(id) ON DELETE SET NULL,
+    semester INTEGER,
+    group_letter VARCHAR(10),
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -84,6 +86,33 @@ CREATE TABLE subject_syllabus (
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
+
+-- 7. Tabla de Usuarios del AdminHUB (Autenticación JWT)
+CREATE TYPE admin_role AS ENUM (
+  'docente',
+  'jefe_carrera',
+  'coordinador_facultad',
+  'admin_direccion',
+  'admin_general'
+);
+
+CREATE TABLE admin_users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role admin_role NOT NULL DEFAULT 'docente',
+    professor_id INTEGER REFERENCES professors(id) ON DELETE SET NULL, -- Vincula docentes a su perfil
+    career_id INTEGER,       -- Scoping para jefe_carrera (filtra por carrera)
+    faculty_id INTEGER,      -- Scoping para coordinador_facultad (filtra por facultad)
+    faculty_ids INTEGER[],   -- Scoping para admin_direccion (filtra por facultades)
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_admin_users_username ON admin_users(username);
+CREATE INDEX idx_admin_users_role ON admin_users(role);
 
 -- Índices para búsquedas rápidas
 CREATE INDEX idx_professors_delegation ON professors(delegation_id);
@@ -179,3 +208,16 @@ INSERT INTO subject_syllabus (slug, subject_name, career_id, program_description
 'Técnicas de elicitación, análisis, especificación y validación de requisitos de software.',
 '{"exams": "50%", "project": "50%"}',
 '[]', 3);
+
+-- 8. Usuarios del AdminHUB (Prueba)
+-- Contraseña para todos: "prueba123" (hash bcrypt salt=10)
+INSERT INTO admin_users (username, email, password_hash, role, professor_id, career_id, faculty_id) VALUES
+-- Docentes (vinculados a sus perfiles de profesor)
+('cruiz',       'cruiz@ucol.mx',        '$2b$10$sJ9wtmXBK9UWArp7EGfUCupb05kG9R6jRwrqDdSS3uq0lcrcHQI42', 'docente',               1, NULL, NULL),
+('smendoza',    'smendoza@ucol.mx',     '$2b$10$sJ9wtmXBK9UWArp7EGfUCupb05kG9R6jRwrqDdSS3uq0lcrcHQI42', 'docente',               2, NULL, NULL),
+('eramirez',    'eramirez@ucol.mx',     '$2b$10$sJ9wtmXBK9UWArp7EGfUCupb05kG9R6jRwrqDdSS3uq0lcrcHQI42', 'docente',               3, NULL, NULL),
+-- Administrativos
+('jefe.carrera','jcarrera@ucol.mx',     '$2b$10$sJ9wtmXBK9UWArp7EGfUCupb05kG9R6jRwrqDdSS3uq0lcrcHQI42', 'jefe_carrera',          NULL, 191, NULL),
+('coord.fic',   'cfic@ucol.mx',         '$2b$10$sJ9wtmXBK9UWArp7EGfUCupb05kG9R6jRwrqDdSS3uq0lcrcHQI42', 'coordinador_facultad',  NULL, NULL, 2),
+('admin.dir',   'admindir@ucol.mx',     '$2b$10$sJ9wtmXBK9UWArp7EGfUCupb05kG9R6jRwrqDdSS3uq0lcrcHQI42', 'admin_direccion',       NULL, NULL, NULL),
+('admin',       'admin@ucol.mx',        '$2b$10$sJ9wtmXBK9UWArp7EGfUCupb05kG9R6jRwrqDdSS3uq0lcrcHQI42', 'admin_general',         NULL, NULL, NULL);

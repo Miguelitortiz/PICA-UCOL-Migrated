@@ -1,0 +1,56 @@
+{
+  "slug": "fernando-moreno-ruiz-35",
+  "title": "Profesor de Asignatura",
+  "fullName": "Mtro. Fernando Moreno Ruiz",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 135",
+    "office": "Edificio FIME PTC, Cubículo 35",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2003,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2002,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 1998,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "fernando.moreno_35@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-35",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 35",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 83,
+  "delegation_id": 4,
+  "career_ids": [
+    418,
+    418
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "slug": "david-hernandez-moreno-36",
+  "title": "Profesor Asociado C",
+  "fullName": "Dr. David Hernández Moreno",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 136",
+    "office": "Edificio FIME PTC, Cubículo 36",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2007,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2006,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [
+      {
+        "year": 2011,
+        "degree": "Doctor en Ciencias de la Ingeniería",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "licenciatura": {
+      "year": 2002,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "david.hernández_36@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-36",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 36",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 84,
+  "delegation_id": 4,
+  "career_ids": [
+    371,
+    371,
+    371
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "slug": "ana-perez-ruiz-17",
+  "title": "Investigador Titular B",
+  "fullName": "Mtro. Ana Pérez Ruiz",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 117",
+    "office": "Edificio FIME PTC, Cubículo 17",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2021,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2020,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2016,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "ana.pérez_17@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-17",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 17",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 65,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    349,
+    349,
+    371,
+    371,
+    371,
+    371
+  ]
+}

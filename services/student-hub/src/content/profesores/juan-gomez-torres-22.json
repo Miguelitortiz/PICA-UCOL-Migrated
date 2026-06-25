@@ -1,0 +1,55 @@
+{
+  "slug": "juan-gomez-torres-22",
+  "title": "Profesor Asociado C",
+  "fullName": "Mtra. Juan Gómez Torres",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 122",
+    "office": "Edificio FIME PTC, Cubículo 22",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2012,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2011,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2007,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "juan.gómez_22@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-22",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 22",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 70,
+  "delegation_id": 4,
+  "career_ids": [
+    349
+  ]
+}

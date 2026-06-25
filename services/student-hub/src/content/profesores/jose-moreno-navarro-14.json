@@ -1,0 +1,57 @@
+{
+  "slug": "jose-moreno-navarro-14",
+  "title": "Profesor de Asignatura",
+  "fullName": "Mtro. José Moreno Navarro",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 114",
+    "office": "Edificio FIME PTC, Cubículo 14",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2001,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2000,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 1996,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "josé.moreno_14@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-14",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 14",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 62,
+  "delegation_id": 4,
+  "career_ids": [
+    418,
+    418,
+    99
+  ]
+}

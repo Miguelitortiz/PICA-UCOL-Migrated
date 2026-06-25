@@ -91,7 +91,7 @@
         "building": "university",
         "building:levels": "1",
         "height": "3",
-        "name": "Aulas",
+        "name": "Aula 1",
         "id": "way/1154065675"
       },
       "geometry": {
@@ -127,7 +127,7 @@
       "id": "way/1154065676",
       "properties": {
         "building": "university",
-        "name": "Aulas",
+        "name": "Aula 2",
         "id": "way/1154065676"
       },
       "geometry": {
@@ -165,7 +165,7 @@
         "building": "university",
         "building:levels": "1",
         "height": "3",
-        "name": "Aulas",
+        "name": "Aula 3",
         "id": "way/1154065677"
       },
       "geometry": {
@@ -209,7 +209,7 @@
       "id": "way/1154065678",
       "properties": {
         "building": "university",
-        "name": "Talleres",
+        "name": "Aula 7",
         "id": "way/1154065678"
       },
       "geometry": {
@@ -249,7 +249,7 @@
       "id": "way/1154065679",
       "properties": {
         "building": "university",
-        "name": "Aulas",
+        "name": "Aula 4",
         "id": "way/1154065679"
       },
       "geometry": {
@@ -285,7 +285,7 @@
       "id": "way/1154065680",
       "properties": {
         "building": "university",
-        "name": "Aulas",
+        "name": "Aula 5",
         "id": "way/1154065680"
       },
       "geometry": {
@@ -321,7 +321,7 @@
       "id": "way/1154065681",
       "properties": {
         "building": "university",
-        "name": "Aulas",
+        "name": "Aula 6",
         "id": "way/1154065681"
       },
       "geometry": {
@@ -359,7 +359,7 @@
         "building": "university",
         "building:levels": "2",
         "layer": "-2",
-        "name": "Cómputo y Talleres",
+        "name": "Laboratorio de Cómputo",
         "id": "way/1154065682"
       },
       "geometry": {
@@ -413,7 +413,7 @@
         "access": "permissive",
         "building": "university",
         "layer": "-2",
-        "name": "Talleres",
+        "name": "Aula 8",
         "id": "way/1154065683"
       },
       "geometry": {
@@ -1009,7 +1009,8 @@
       "id": "way/1157965063",
       "properties": {
         "building": "university",
-        "id": "way/1157965063"
+        "id": "way/1157965063",
+        "name": "Aula 9"
       },
       "geometry": {
         "type": "Polygon",
@@ -1044,7 +1045,8 @@
       "id": "way/1157965064",
       "properties": {
         "building": "university",
-        "id": "way/1157965064"
+        "id": "way/1157965064",
+        "name": "Aula 10"
       },
       "geometry": {
         "type": "Polygon",
@@ -1079,7 +1081,8 @@
       "id": "way/1157965065",
       "properties": {
         "building": "university",
-        "id": "way/1157965065"
+        "id": "way/1157965065",
+        "name": "Laboratorio de Electrónica"
       },
       "geometry": {
         "type": "Polygon",

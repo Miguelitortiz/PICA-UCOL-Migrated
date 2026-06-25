@@ -24,8 +24,8 @@ const { title, description = 'Panel de Administración y Gestión Curricular PIC
     <div class="h-1.5 bg-primary w-full"></div>
 
     <!-- Encabezado Académico Superior -->
-    <header class="border-b border-border-sutil bg-white py-4 px-6 sm:px-12 sticky top-0 z-50">
-      <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+    <header class="border-b border-border-sutil bg-white py-3 px-6 sm:px-12 sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
         <div class="flex items-center gap-3">
           <div class="font-mono text-xl font-bold border-r border-border-sutil pr-4 text-primary">
             ■ ADMIN
@@ -36,11 +36,29 @@ const { title, description = 'Panel de Administración y Gestión Curricular PIC
           </div>
         </div>
 
-        <!-- Enlace rápido a StudentHUB -->
-        <div>
-          <a href="/" class="text-[10px] font-mono border border-border-sutil px-4 h-11 rounded-sm hover:bg-bg-piedra transition-suiza no-underline text-text-secondary font-bold inline-flex items-center justify-center">
-            &larr; IR AL STUDENTHUB (PORTAL PÚBLICO)
+        <!-- Zona de usuario autenticado -->
+        <div class="flex items-center gap-3">
+          <!-- Info del usuario (cargada desde JS) -->
+          <div id="user-info-badge" class="hidden items-center gap-2 bg-bg-piedra/70 border border-border-sutil rounded-sm px-3 h-9">
+            <div id="user-role-dot" class="w-2 h-2 rounded-full bg-primary flex-shrink-0"></div>
+            <div class="flex flex-col">
+              <span id="user-display-name" class="font-mono text-[10px] font-bold text-text-primary leading-tight"></span>
+              <span id="user-role-label" class="font-mono text-[8px] text-text-secondary uppercase tracking-wider leading-tight"></span>
+            </div>
+          </div>
+
+          <!-- Enlace rápido a StudentHUB -->
+          <a href="/" class="text-[10px] font-mono border border-border-sutil px-3 h-9 rounded-sm hover:bg-bg-piedra transition-suiza no-underline text-text-secondary font-bold inline-flex items-center justify-center">
+            &larr; StudentHUB
           </a>
+
+          <!-- Botón Cerrar Sesión -->
+          <button
+            id="btn-logout"
+            class="hidden text-[10px] font-mono border border-error/30 bg-error/5 hover:bg-error/10 text-error px-3 h-9 rounded-sm transition-suiza font-bold cursor-pointer"
+          >
+            Salir
+          </button>
         </div>
       </div>
     </header>
@@ -61,5 +79,93 @@ const { title, description = 'Panel de Administración y Gestión Curricular PIC
         </div>
       </div>
     </footer>
+
+    <!-- Script de sesión compartido -->
+    <script>
+      // Mapeo de roles a etiquetas legibles
+      const ROLE_LABELS: Record<string, string> = {
+        'docente': 'Docente',
+        'jefe_carrera': 'Jefe de Carrera',
+        'coordinador_facultad': 'Coordinador de Facultad',
+        'admin_direccion': 'Admin. de Dirección',
+        'admin_general': 'Administrador General'
+      };
+
+      const ROLE_COLORS: Record<string, string> = {
+        'docente': '#527630',
+        'jefe_carrera': '#006096',
+        'coordinador_facultad': '#006096',
+        'admin_direccion': '#774B1E',
+        'admin_general': '#990000'
+      };
+
+      // Verificar sesión y redirigir a login si no existe
+      function checkSession() {
+        const token = localStorage.getItem('pica_jwt');
+        if (!token) {
+          window.location.href = '/admin/login';
+          return null;
+        }
+        // Verificar expiración del token
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          if (payload.exp * 1000 < Date.now()) {
+            localStorage.removeItem('pica_jwt');
+            localStorage.removeItem('pica_user');
+            window.location.href = '/admin/login';
+            return null;
+          }
+          return payload;
+        } catch {
+          localStorage.removeItem('pica_jwt');
+          localStorage.removeItem('pica_user');
+          window.location.href = '/admin/login';
+          return null;
+        }
+      }
+
+      // Mostrar info del usuario en el header
+      function displayUserInfo(user: any) {
+        const badge = document.getElementById('user-info-badge');
+        const nameEl = document.getElementById('user-display-name');
+        const roleEl = document.getElementById('user-role-label');
+        const dot = document.getElementById('user-role-dot');
+        const logoutBtn = document.getElementById('btn-logout');
+
+        if (badge && nameEl && roleEl) {
+          nameEl.textContent = user.professor_name || user.username || 'Usuario';
+          roleEl.textContent = ROLE_LABELS[user.role] || user.role;
+          if (dot) dot.style.backgroundColor = ROLE_COLORS[user.role] || '#527630';
+          badge.classList.remove('hidden');
+          badge.classList.add('flex');
+        }
+        if (logoutBtn) {
+          logoutBtn.classList.remove('hidden');
+        }
+      }
+
+      // Cerrar sesión
+      document.getElementById('btn-logout')?.addEventListener('click', () => {
+        if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+          localStorage.removeItem('pica_jwt');
+          localStorage.removeItem('pica_user');
+          window.location.href = '/admin/login';
+        }
+      });
+
+      // Verificar sesión al cargar
+      const sessionUser = checkSession();
+      if (sessionUser) {
+        displayUserInfo(sessionUser);
+      }
+
+      // Exportar helper global de autenticación
+      (window as any).getJwtToken = () => localStorage.getItem('pica_jwt');
+      (window as any).getCurrentUser = () => {
+        try {
+          return JSON.parse(localStorage.getItem('pica_user') || 'null');
+        } catch { return null; }
+      };
+    </script>
   </body>
 </html>

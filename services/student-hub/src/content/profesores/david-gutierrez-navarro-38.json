@@ -1,0 +1,59 @@
+{
+  "slug": "david-gutierrez-navarro-38",
+  "title": "Profesor Asociado C",
+  "fullName": "Mtra. David Gutiérrez Navarro",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 138",
+    "office": "Edificio FIME PTC, Cubículo 38",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2002,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2001,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 1997,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "david.gutiérrez_38@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-38",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 38",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 86,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    371,
+    371,
+    371,
+    418
+  ]
+}

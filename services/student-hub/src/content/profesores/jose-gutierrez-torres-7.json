@@ -1,0 +1,58 @@
+{
+  "slug": "jose-gutierrez-torres-7",
+  "title": "Investigador Titular B",
+  "fullName": "Mtro. José Gutiérrez Torres",
+  "photoUrl": "/images/profesores/default.jpg",
+  "teaching": {
+    "theses": [],
+    "courses": []
+  },
+  "department": "Facultad de Ingeniería Mecánica y Eléctrica",
+  "contactInfo": {
+    "phone": "312 316 1000 Ext. 107",
+    "office": "Edificio FIME PTC, Cubículo 7",
+    "officeHours": "Lunes a Jueves 11:00-13:00"
+  },
+  "academicBody": {
+    "name": "Cuerpo Académico de FIME",
+    "level": "En Consolidación"
+  },
+  "admissionYear": 2019,
+  "certifications": [],
+  "academicFormation": {
+    "maestrias": [
+      {
+        "year": 2018,
+        "degree": "Maestría en Ingeniería Aplicada",
+        "institution": "Universidad de Colima"
+      }
+    ],
+    "doctorados": [],
+    "licenciatura": {
+      "year": 2014,
+      "degree": "Ingeniería Universitaria",
+      "institution": "Universidad de Colima"
+    }
+  },
+  "institutionalEmail": "josé.gutiérrez_7@ucol.mx",
+  "educationalMaterials": [],
+  "scientificProduction": {
+    "books": [],
+    "articles": [
+      {
+        "doi": "https://doi.org/10.1007/fime-mock-doi-7",
+        "year": 2025,
+        "title": "Análisis e Investigación en Ingeniería Aplicada - Caso 7",
+        "journal": "Revista de Investigación Científica FIME-UCOL"
+      }
+    ]
+  },
+  "id": 55,
+  "delegation_id": 4,
+  "career_ids": [
+    349,
+    349,
+    349,
+    349
+  ]
+}
