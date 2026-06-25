@@ -1,4 +1,5 @@
 import pool from '../../lib/db.js';
+import bcrypt from 'bcryptjs';
 
 export const POST = async ({ request, cookies }) => {
   try {
@@ -11,18 +12,29 @@ export const POST = async ({ request, cookies }) => {
     }
 
     const query = `
-      SELECT s.id, s.enrollment_id, s.full_name, s.email, s.class_group_id, c.slug as class_group_slug
+      SELECT s.id, s.enrollment_id, s.full_name, s.email, s.class_group_id, s.password_hash, c.slug as class_group_slug
       FROM students s
       LEFT JOIN class_groups c ON s.class_group_id = c.id
-      WHERE s.enrollment_id = $1 AND s.password_hash = $2
+      WHERE s.enrollment_id = $1
+      LIMIT 1
     `;
-    const res = await pool.query(query, [enrollment, password]);
+    const res = await pool.query(query, [enrollment]);
 
-    if (res.rows.length === 0) {
+    const studentRow = res.rows[0];
+    if (!studentRow) {
       return new Response(JSON.stringify({ error: 'Credenciales inválidas' }), { status: 401 });
     }
 
-    const student = res.rows[0];
+    const storedPassword = String(studentRow.password_hash || '');
+    const passwordMatches = storedPassword.startsWith('$2')
+      ? await bcrypt.compare(String(password), storedPassword)
+      : storedPassword === String(password);
+
+    if (!passwordMatches) {
+      return new Response(JSON.stringify({ error: 'Credenciales inválidas' }), { status: 401 });
+    }
+
+    const { password_hash, ...student } = studentRow;
 
     // Set cookie
     cookies.set('pica_session', JSON.stringify(student), {
