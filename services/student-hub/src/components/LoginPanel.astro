@@ -22,7 +22,7 @@ import '../styles/global.css';
         </p>
       </div>
 
-      <form id="login-form" style="display: flex; flex-direction: column; gap: 24px;">
+      <form id="login-form" autocomplete="off" style="display: flex; flex-direction: column; gap: 24px;">
         
         <div id="error-message" style="display: none; padding: 12px; background: var(--color-ink); color: var(--color-surface); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
           <!-- Mensaje de error -->
@@ -33,10 +33,13 @@ import '../styles/global.css';
           <input 
             type="text" 
             id="enrollment_id" 
-            name="enrollment_id" 
+            name="student_enrollment_id" 
             class="input" 
             placeholder="Ej. 20180000"
             required
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
             style="width: 100%; box-sizing: border-box;"
           />
         </div>
@@ -46,10 +49,13 @@ import '../styles/global.css';
           <input 
             type="password" 
             id="password" 
-            name="password" 
+            name="student_password" 
             class="input" 
             placeholder="••••••••"
             required
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
             style="width: 100%; box-sizing: border-box;"
           />
         </div>
@@ -136,11 +142,15 @@ import '../styles/global.css';
 <script>
   document.getElementById('login-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
+    const enrollmentInput = document.getElementById('enrollment_id') as HTMLInputElement | null;
+    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
     const errorMsg = document.getElementById('error-message');
     
     if (errorMsg) errorMsg.style.display = 'none';
+
+    const formData = new FormData();
+    formData.set('enrollment_id', enrollmentInput?.value.trim() || '');
+    formData.set('password', passwordInput?.value.trim() || '');
 
     try {
       const res = await fetch('/student-auth/login', {

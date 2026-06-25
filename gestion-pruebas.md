@@ -55,3 +55,33 @@ Si deseas entrar a la consola interactiva (`psql`) del contenedor para ejecutar 
 ```bash
 docker exec -it eduvitae-postgres psql -U admin -d eduvitae
 ```
+
+---
+
+## 5. Dejar Producción Igual que Local
+
+Si todo lo que hay en la base son datos de prueba, la forma más segura de alinear producción con local es reiniciar el volumen de PostgreSQL y volver a sembrar la base con el mismo script que usas en desarrollo.
+
+### Flujo recomendado
+
+```bash
+# 1) Detener y borrar contenedores + volumen de la base
+docker compose down -v
+
+# 2) Volver a construir y levantar todo
+docker compose up -d --build
+
+# 3) Re-sembrar la base con el dataset de prueba de FIME
+node scripts/seed-fime-data.js
+```
+
+### Qué logra esto
+
+- Recrea la base desde cero.
+- Vuelve a crear profesores, grupos, horarios, exámenes y alumnos de prueba.
+- Genera matrículas como `20260017` con contraseña `password`.
+- Deja producción y local con el mismo origen de datos.
+
+### Nota importante
+
+El archivo `scripts/init.sql` solo crea una base mínima. El dataset principal de pruebas para StudentHUB está en `scripts/seed-fime-data.js`, así que ese es el script que debe volver a ejecutarse después de reiniciar la base.

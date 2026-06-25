@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 export const POST = async ({ request, cookies }) => {
   try {
     const data = await request.formData();
-    const enrollment = data.get('enrollment_id');
-    const password = data.get('password');
+    const enrollment = String(data.get('enrollment_id') || '').trim();
+    const password = String(data.get('password') || '').trim();
 
     if (!enrollment || !password) {
       return new Response(JSON.stringify({ error: 'Faltan credenciales' }), { status: 400 });
