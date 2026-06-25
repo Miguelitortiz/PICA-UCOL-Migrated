@@ -147,6 +147,7 @@ app.post('/auth/login', async (req, res) => {
     }
 
     // Buscar usuario por username o email
+    console.log(`[AUTH] Intento de login para usuario: "${username}"`);
     const result = await pool.query(
       `SELECT u.*, p.full_name as professor_name, p.slug as professor_slug, p.profile_data as professor_profile
        FROM admin_users u
@@ -156,6 +157,7 @@ app.post('/auth/login', async (req, res) => {
     );
 
     if (result.rows.length === 0) {
+      console.log(`[AUTH] Usuario "${username}" no encontrado o no activo en la base de datos.`);
       return res.status(401).json({ error: 'Credenciales incorrectas.' });
     }
 
@@ -163,8 +165,11 @@ app.post('/auth/login', async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password_hash);
 
     if (!validPassword) {
+      console.log(`[AUTH] Contraseña incorrecta para el usuario "${username}". Hash en BD: "${user.password_hash}"`);
       return res.status(401).json({ error: 'Credenciales incorrectas.' });
     }
+
+    console.log(`[AUTH] Login exitoso para el usuario "${username}"`);
 
     // Emitir JWT con perfil completo
     const tokenPayload = {
@@ -293,17 +298,17 @@ app.post('/api/extract', upload.single('pdf'), async (req, res) => {
     const parsedData = JSON.parse(jsonContent);
 
     // Limpiar archivos temporales
-    await fs.unlink(tempPdfPath).catch(() => {});
-    await fs.unlink(tempJsonPath).catch(() => {});
+    await fs.unlink(tempPdfPath).catch(() => { });
+    await fs.unlink(tempJsonPath).catch(() => { });
 
     return res.status(200).json(parsedData);
   } catch (err) {
     console.error('Error en /api/extract:', err);
     if (req.file) {
-      await fs.unlink(req.file.path).catch(() => {});
+      await fs.unlink(req.file.path).catch(() => { });
     }
     if (tempJsonPath) {
-      await fs.unlink(tempJsonPath).catch(() => {});
+      await fs.unlink(tempJsonPath).catch(() => { });
     }
     return res.status(500).json({ error: err.message || 'Error interno al extraer los datos.' });
   }
@@ -313,7 +318,7 @@ app.post('/api/extract', upload.single('pdf'), async (req, res) => {
 async function purgeCache(slug) {
   try {
     console.log(`🧹 Iniciando purga de caché para /profesores/${slug} y páginas relacionadas...`);
-    
+
     const urlsToPurge = new Set();
     urlsToPurge.add('/');
     urlsToPurge.add('/buscar-profesor');
@@ -430,8 +435,8 @@ app.post('/api/professors', async (req, res) => {
     const formattedProfile = JSON.parse(formattedContent);
 
     // Limpiar archivos temporales de formateo
-    await fs.unlink(tempRawJsonPath).catch(() => {});
-    await fs.rm(formattedDir, { recursive: true, force: true }).catch(() => {});
+    await fs.unlink(tempRawJsonPath).catch(() => { });
+    await fs.rm(formattedDir, { recursive: true, force: true }).catch(() => { });
     tempRawJsonPath = null;
     formattedDir = null;
 
@@ -439,7 +444,7 @@ app.post('/api/professors', async (req, res) => {
     const slug = formattedProfile.slug;
     const fullName = formattedProfile.fullName;
     const email = formattedProfile.institutionalEmail;
-    
+
     // Auto-vincular delegación y encontrar career_ids de la facultad
     let finalDelegationId = delegation_id;
     let autoMatched = false;
@@ -450,7 +455,7 @@ app.post('/api/professors', async (req, res) => {
         const facPath = getReferencePath('faculties.yaml');
         const facContent = await fs.readFile(facPath, 'utf-8');
         faculties = yaml.load(facContent) || [];
-        
+
         if (faculty_id) {
           // Si el frontend envió un faculty_id explícito
           const fac = faculties.find(f => f.id === faculty_id);
@@ -460,8 +465,8 @@ app.post('/api/professors', async (req, res) => {
             if (!finalDelegationId) finalDelegationId = fac.delegation_id;
             autoMatched = true;
           }
-        } 
-        
+        }
+
         if (!autoMatched && formattedProfile.department) {
           // Si no, hacer match por string usando normalización sin acentos
           const normalizeString = (str) => {
@@ -643,7 +648,7 @@ app.post('/api/professors', async (req, res) => {
       }
 
       await client.query('COMMIT');
-      
+
       // Lanzar purga de caché en segundo plano
       purgeCache(slug);
 
@@ -657,10 +662,10 @@ app.post('/api/professors', async (req, res) => {
   } catch (err) {
     console.error('Error en /api/professors:', err);
     if (tempRawJsonPath) {
-      await fs.unlink(tempRawJsonPath).catch(() => {});
+      await fs.unlink(tempRawJsonPath).catch(() => { });
     }
     if (formattedDir) {
-      await fs.rm(formattedDir, { recursive: true, force: true }).catch(() => {});
+      await fs.rm(formattedDir, { recursive: true, force: true }).catch(() => { });
     }
     return res.status(500).json({ error: err.message || 'Error interno al guardar el perfil.' });
   }
@@ -765,7 +770,7 @@ app.post('/api/groups', async (req, res) => {
       DO UPDATE SET name = EXCLUDED.name, academic_period = EXCLUDED.academic_period, shift = EXCLUDED.shift
       RETURNING *;
     `;
-    
+
     const result = await pool.query(query, [groupSlug, parseInt(career_id, 10), name, academic_period || '', shift || '']);
     return res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -832,8 +837,8 @@ app.post('/api/schedules', async (req, res) => {
       ]);
 
       if (classCheck.rows.length === 0) {
-        return res.status(400).json({ 
-          error: `No tienes asignada una clase de "${subject_name}" el día ${day_of_week} en el horario de ${start_time.substring(0,5)} a ${end_time.substring(0,5)} para este grupo.`
+        return res.status(400).json({
+          error: `No tienes asignada una clase de "${subject_name}" el día ${day_of_week} en el horario de ${start_time.substring(0, 5)} a ${end_time.substring(0, 5)} para este grupo.`
         });
       }
     }
@@ -853,7 +858,7 @@ app.post('/api/schedules', async (req, res) => {
       end_time,
       is_laboratory || false
     ]);
-    
+
     // Asegurar relación en professor_groups
     if (profId) {
       await pool.query(`
@@ -917,8 +922,8 @@ app.post('/api/exams', async (req, res) => {
     const examCount = parseInt(countCheck.rows[0].count, 10);
 
     if (examCount >= 3) {
-      return res.status(400).json({ 
-        error: `Límite excedido: El coordinador académico dictamina un máximo de 3 fechas de evaluación/exámenes para la materia "${subject_name}" en este grupo.` 
+      return res.status(400).json({
+        error: `Límite excedido: El coordinador académico dictamina un máximo de 3 fechas de evaluación/exámenes para la materia "${subject_name}" en este grupo.`
       });
     }
 
@@ -979,11 +984,11 @@ app.post('/api/syllabus', async (req, res) => {
 
     // Procesar y validar criterios de evaluación
     let parsedCriteria = typeof evaluation_criteria === 'string' ? JSON.parse(evaluation_criteria) : evaluation_criteria;
-    
+
     // Sumar todos los valores numéricos de los criterios y limpiarlos a enteros
     let totalPct = 0;
     const cleanCriteria = {};
-    
+
     for (const [key, val] of Object.entries(parsedCriteria)) {
       // Extraer números del valor (ej. "50%" -> 50, 30 -> 30, "25" -> 25)
       const numStr = String(val).replace(/[^0-9.-]/g, '');
@@ -993,8 +998,8 @@ app.post('/api/syllabus', async (req, res) => {
     }
 
     if (totalPct !== 100) {
-      return res.status(400).json({ 
-        error: `La suma de los criterios de evaluación debe ser exactamente del 100%. Suma actual: ${totalPct}%.` 
+      return res.status(400).json({
+        error: `La suma de los criterios de evaluación debe ser exactamente del 100%. Suma actual: ${totalPct}%.`
       });
     }
 
