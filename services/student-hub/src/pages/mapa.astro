@@ -48,9 +48,23 @@ const schedulesJson = JSON.stringify(schedules);
     
     <!-- COLUMNA 1: El Mapa Interactivo (Leaflet) -->
     <div class="map-container-wrapper">
+      <div class="search-box-container" style="margin-bottom: 16px; position: relative;">
+        <label for="map-search-input" class="overline" style="margin-bottom: 6px;">Buscar espacio o aula</label>
+        <div style="display: flex; gap: 8px;">
+          <input 
+            type="search" 
+            id="map-search-input" 
+            class="input" 
+            placeholder="Ej. Telemática, Aula 1..." 
+            style="flex: 1;"
+          />
+          <button id="btn-clear-search" class="btn btn--ghost" style="height: 44px; display: none;">Limpiar</button>
+        </div>
+        <div id="search-suggestions" class="search-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--color-surface); border: 1px solid var(--color-rule-strong); z-index: 100; max-height: 200px; overflow-y: auto;"></div>
+      </div>
       <div id="map" class="interactive-map"></div>
       <p style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3); margin-top: 12px; text-align: right;">
-        * Cartografía base monocromática. Haz clic en los polígonos resaltados.
+        * Cartografía base monocromática. Haz clic en los polígonos resaltados. Los mapas geográficos requieren conexión a la red.
       </p>
     </div>
 
@@ -93,14 +107,12 @@ const schedulesJson = JSON.stringify(schedules);
   </script>
 
   <!-- ==========================================
-       3. INTEGRACIÓN DE LEAFLET.JS
+       3. INTEGRACIÓN DE LEAFLET.JS (LOCAL BUNDLE)
        ========================================== -->
-  <!-- Estilos de Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  <!-- Script de Leaflet -->
-  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    import L from 'leaflet';
+    import 'leaflet/dist/leaflet.css';
 
-  <script is:inline>
     (function initLeaflet() {
       // 1. Inicializar Mapa (Centrado aproximado en la UCOL Telemática)
       const map = L.map('map', {
@@ -248,6 +260,71 @@ const schedulesJson = JSON.stringify(schedules);
               }
             });
           }
+
+          // ── Search & Filter Logic ──
+          const searchInput = document.getElementById("map-search-input");
+          const clearBtn = document.getElementById("btn-clear-search");
+          const suggestionsContainer = document.getElementById("search-suggestions");
+
+          function performSearch(query) {
+            if (!query) {
+              suggestionsContainer.style.display = "none";
+              clearBtn.style.display = "none";
+              return;
+            }
+            
+            clearBtn.style.display = "block";
+            const normalizedQuery = query.toLowerCase().trim();
+            const matches = [];
+
+            geojsonLayer.eachLayer(layer => {
+              const name = layer.feature.properties?.name;
+              if (name && name.toLowerCase().includes(normalizedQuery)) {
+                matches.push({ name, layer });
+              }
+            });
+
+            if (matches.length > 0) {
+              suggestionsContainer.innerHTML = matches.map(m => 
+                `<button class="suggestion-item" style="display: block; width: 100%; text-align: left; padding: 10px 16px; background: none; border: none; border-bottom: 1px solid var(--color-rule); cursor: pointer; font-size: 0.875rem; font-family: var(--font-sans); color: var(--color-ink);" data-name="${m.name}">${m.name}</button>`
+              ).join('');
+              suggestionsContainer.style.display = "block";
+
+              // Add click listener to suggestions
+              suggestionsContainer.querySelectorAll(".suggestion-item").forEach(item => {
+                item.addEventListener("click", () => {
+                  const name = item.getAttribute("data-name");
+                  const match = matches.find(m => m.name === name);
+                  if (match) {
+                    map.fitBounds(match.layer.getBounds(), { padding: [50, 50] });
+                    match.layer.fire("click");
+                    searchInput.value = name;
+                    suggestionsContainer.style.display = "none";
+                  }
+                });
+              });
+            } else {
+              suggestionsContainer.innerHTML = `<div style="padding: 10px 16px; font-size: 0.875rem; color: var(--color-ink-3); font-style: italic;">No se encontraron espacios</div>`;
+              suggestionsContainer.style.display = "block";
+            }
+          }
+
+          searchInput?.addEventListener("input", (e) => {
+            performSearch(e.target.value);
+          });
+
+          clearBtn?.addEventListener("click", () => {
+            if (searchInput) searchInput.value = "";
+            suggestionsContainer.style.display = "none";
+            clearBtn.style.display = "none";
+          });
+
+          // Close suggestions when clicking outside
+          document.addEventListener("click", (e) => {
+            if (!suggestionsContainer.contains(e.target) && e.target !== searchInput) {
+              suggestionsContainer.style.display = "none";
+            }
+          });
         })
         .catch(err => console.error("Error cargando GeoJSON:", err));
     })();

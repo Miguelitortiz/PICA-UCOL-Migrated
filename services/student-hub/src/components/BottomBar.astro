@@ -1,0 +1,19 @@
+---
+/**
+ * BottomBar – simple site‑wide navigation displayed fixed at the bottom on mobile.
+ * Uses the project's color palette (var(--color-surface), var(--color-ink)).
+ * Adjust the hrefs to match your routing if needed.
+ */
+const navItems = [
+  { label: 'Horario', href: '/' },
+  { label: 'Calendario', href: '/calendario' },
+  { label: 'Perfil', href: '/perfil' },
+];
+---
+<nav class="bottom-bar">
+  {navItems.map(item => (
+    <a href={item.href} class="bottom-bar__link" aria-label={item.label}>
+      {item.label}
+    </a>
+  ))}
+</nav>

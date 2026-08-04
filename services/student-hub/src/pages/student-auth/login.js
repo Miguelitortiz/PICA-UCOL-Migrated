@@ -1,5 +1,6 @@
 import pool from '../../lib/db.js';
 import bcrypt from 'bcryptjs';
+import { encryptSession } from '../../lib/session.js';
 
 export const POST = async ({ request, cookies }) => {
   try {
@@ -36,11 +37,13 @@ export const POST = async ({ request, cookies }) => {
 
     const { password_hash, ...student } = studentRow;
 
-    // Set cookie
-    cookies.set('pica_session', JSON.stringify(student), {
+    // Set cookie with encryption, signature, and security flags
+    const sessionToken = encryptSession(student);
+    cookies.set('pica_session', sessionToken, {
       path: '/',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24 // 1 día
     });
 

@@ -1,3 +1,5 @@
+import { decryptSession } from './lib/session.js';
+
 export const onRequest = async (context, next) => {
   const { url, cookies, redirect, locals } = context;
 
@@ -17,7 +19,10 @@ export const onRequest = async (context, next) => {
   }
 
   try {
-    const student = JSON.parse(sessionCookie.value);
+    const student = decryptSession(sessionCookie.value);
+    if (!student) {
+      throw new Error('Failed to decrypt session');
+    }
     locals.student = student;
   } catch (error) {
     // Si la cookie es inválida, borrarla y redirigir

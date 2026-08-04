@@ -675,7 +675,7 @@ app.post('/api/professors', async (req, res) => {
 app.get('/api/professors', async (req, res) => {
   try {
     let query = `
-      SELECT p.id, p.slug, p.full_name, p.email, p.delegation_id,
+      SELECT p.id, p.slug, p.full_name, p.email, p.delegation_id, p.profile_data,
              COALESCE(
                json_agg(
                  json_build_object('class_group_id', pg.class_group_id, 'subject_taught', pg.subject_taught)

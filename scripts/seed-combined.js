@@ -1,12 +1,15 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
+const yaml = require('js-yaml');
 
 dotenv.config();
 
 const connectionString = process.env.DATABASE_URL || 'postgres://admin:admin_pass@localhost:5432/pica_db';
 const pool = new Pool({ connectionString });
 
-// Datos de Carreras de FIME en UCOL
+// Datos de Carreras de FIME en UCOL (de seed-fime-data.js)
 const FIME_CAREERS = [
   { id: 349, slug: 'ingenieria-en-computacion-inteligente', name: 'Ingeniería en Computación Inteligente', groups: ['B', 'D'] },
   { id: 371, slug: 'ingeniero-mecanico-electricista', name: 'Ingeniero Mecánico Electricista', groups: ['A', 'G', 'H'] },
@@ -53,6 +56,8 @@ const CAREER_SUBJECTS = {
 const FIRST_NAMES = ['José', 'María', 'Luis', 'Ana', 'Carlos', 'Laura', 'Juan', 'Elena', 'Francisco', 'Patricia', 'Jorge', 'Sofía', 'Miguel', 'Clara', 'Fernando', 'Lucía', 'David', 'Gabriela', 'Roberto', 'Isabel'];
 const LAST_NAMES = ['González', 'Rodríguez', 'García', 'Martínez', 'Sánchez', 'Pérez', 'Gómez', 'López', 'Ruiz', 'Hernández', 'Díaz', 'Álvarez', 'Moreno', 'Muñoz', 'Romero', 'Alonso', 'Gutiérrez', 'Navarro', 'Torres', 'Vargas'];
 const ACADEMIC_TITLES = ['Profesor Investigador de Tiempo Completo (PTC)', 'Profesor de Asignatura', 'Profesor Asociado C', 'Investigador Titular B'];
+const DEPARTMENTS = ['Facultad de Ingeniería Mecánica y Eléctrica', 'Facultad de Contabilidad y Administración', 'Facultad de Teleinformática', 'Facultad de Ciencias Químicas', 'Facultad de Ciencias de la Educación'];
+const SUBJECTS = ['Programación Estructurada', 'Bases de Datos', 'Inteligencia Artificial', 'Redes de Computadoras', 'Cálculo Diferencial', 'Sistemas Operativos', 'Ingeniería de Software', 'Álgebra Lineal', 'Física General', 'Teoría de Autómatas'];
 
 function getRandomElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -82,11 +87,17 @@ async function seed() {
   const client = await pool.connect();
 
   try {
+    // -------------------------------------------------------------------------
+    // Fase 1: Limpieza General de la DB
+    // -------------------------------------------------------------------------
     console.log('🧹 Limpiando registros anteriores de la base de datos...');
     await client.query('TRUNCATE admin_users, exam_dates, schedules, professor_groups, students, class_groups, professors, subject_syllabus CASCADE');
 
+    // -------------------------------------------------------------------------
+    // Fase 2: Sembrado de datos detallados de FIME (de seed-fime-data.js)
+    // -------------------------------------------------------------------------
     console.log('📝 Generando 45 profesores de FIME...');
-    const professors = [];
+    const fimeProfessors = [];
     for (let i = 1; i <= 45; i++) {
       const isFemale = Math.random() > 0.5;
       const firstName = getRandomElement(FIRST_NAMES);
@@ -160,17 +171,17 @@ async function seed() {
         RETURNING id;
       `, [slug, fullName, email, 4, JSON.stringify(profileData)]); // Delegación 4 = Coquimatlán
 
-      professors.push({
+      fimeProfessors.push({
         id: profRes.rows[0].id,
         slug,
         fullName,
         email
       });
     }
-    console.log(`✅ ${professors.length} profesores inyectados con éxito.`);
+    console.log(`✅ ${fimeProfessors.length} profesores de FIME inyectados.`);
 
-    console.log('🏫 Creando grupos de clase para semestres impares...');
-    const groups = [];
+    console.log('🏫 Creando grupos de clase para FIME (semestres impares)...');
+    const fimeGroups = [];
     for (const career of FIME_CAREERS) {
       for (const semester of ODD_SEMESTERS) {
         for (const letter of career.groups) {
@@ -184,22 +195,20 @@ async function seed() {
             RETURNING id, career_id, name, slug;
           `, [groupSlug, career.id, groupName, 'Ago-Ene 2026', shift, semester, letter]);
 
-          groups.push(res.rows[0]);
+          fimeGroups.push(res.rows[0]);
         }
       }
     }
-    console.log(`✅ ${groups.length} grupos de clase creados.`);
+    console.log(`✅ ${fimeGroups.length} grupos de clase creados para FIME.`);
 
-    console.log('📚 Creando planes de estudio (Syllabus)...');
-    // Para cada materia de cada carrera, creamos el syllabus
-    const syllabusMap = {}; // careerId_subjectName -> id
+    console.log('📚 Creando planes de estudio (Syllabus) de FIME...');
     for (const careerId of Object.keys(CAREER_SUBJECTS)) {
       const semesters = CAREER_SUBJECTS[careerId];
       for (const sem of Object.keys(semesters)) {
         const subjects = semesters[sem];
         for (const sub of subjects) {
           const slug = slugify(`${sub}-${careerId}`);
-          const creator = getRandomElement(professors);
+          const creator = getRandomElement(fimeProfessors);
           const evalCriteria = {
             "Exámenes": "50%",
             "Prácticas y Laboratorio": "30%",
@@ -221,19 +230,12 @@ async function seed() {
         }
       }
     }
-    console.log('✅ Catálogo de Planes de Estudio (Syllabus) inicializado.');
+    console.log('✅ Catálogo de Planes de Estudio (Syllabus) FIME inicializado.');
 
-    console.log('👨‍🏫 Asignando profesores a materias y grupos (evitando traslapes)...');
-    
-    // Mapeo default de profesor por materia-carrera para cumplir con "por lo general la misma materia se imparte por el mismo docente"
+    console.log('👨‍🏫 Asignando profesores de FIME a materias y grupos (evitando traslapes)...');
     const defaultCareerSubjectProf = {}; 
-    
-    // Inicializar matrices de ocupación para evitar choques en los horarios
-    // Estructura: busySlots[target][day][slot] = true
     const groupBusySlots = {};
     const profBusySlots = {};
-    
-    // Definición de días y slots horarios (4 slots de 2 horas)
     const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
     const SLOTS = [
       { start: '07:00:00', end: '09:00:00' },
@@ -242,53 +244,45 @@ async function seed() {
       { start: '13:00:00', end: '15:00:00' }
     ];
 
-    groups.forEach(g => {
+    fimeGroups.forEach(g => {
       groupBusySlots[g.id] = {};
       DAYS.forEach(d => {
         groupBusySlots[g.id][d] = [false, false, false, false];
       });
     });
 
-    professors.forEach(p => {
+    fimeProfessors.forEach(p => {
       profBusySlots[p.id] = {};
       DAYS.forEach(d => {
         profBusySlots[p.id][d] = [false, false, false, false];
       });
     });
 
-    // Guardar las asignaciones profesor-grupo-materia para asignación posterior de tutores
-    const groupProfessorMap = {}; // groupId -> Set of professorIds
+    const groupProfessorMap = {};
 
-    for (const group of groups) {
+    for (const group of fimeGroups) {
       groupProfessorMap[group.id] = new Set();
       const subjects = CAREER_SUBJECTS[group.career_id][parseInt(group.name.split('°')[0])];
       
       for (const subjectName of subjects) {
-        // Encontrar profesor
         const key = `${group.career_id}_${subjectName}`;
         if (!defaultCareerSubjectProf[key]) {
-          // Asignar un profesor por defecto para esta materia en esta carrera
-          defaultCareerSubjectProf[key] = getRandomElement(professors).id;
+          defaultCareerSubjectProf[key] = getRandomElement(fimeProfessors).id;
         }
 
         let assignedProfId = defaultCareerSubjectProf[key];
-        
-        // Considerar casos de profesores distintos en un 15% de probabilidad
         if (Math.random() < 0.15) {
-          assignedProfId = getRandomElement(professors).id;
+          assignedProfId = getRandomElement(fimeProfessors).id;
         }
 
         groupProfessorMap[group.id].add(assignedProfId);
 
-        // Guardar relación en professor_groups
         await client.query(`
           INSERT INTO professor_groups (professor_id, class_group_id, subject_taught)
           VALUES ($1, $2, $3)
           ON CONFLICT DO NOTHING;
         `, [assignedProfId, group.id, subjectName]);
 
-        // Generar horario (Schedules) para este grupo y materia
-        // Cada materia tiene 2 clases semanales de 2 horas (e.g. Lunes/Miércoles o Martes/Jueves)
         const isLab = subjectName.toLowerCase().includes('programación') || 
                       subjectName.toLowerCase().includes('laboratorio') || 
                       subjectName.toLowerCase().includes('circuitos') || 
@@ -300,11 +294,9 @@ async function seed() {
           ? (subjectName.toLowerCase().includes('programación') || subjectName.toLowerCase().includes('redes') ? 'Laboratorio de Cómputo' : 'Laboratorio de Electrónica') 
           : `Aula ${getRandomInt(1, 10)}`;
 
-        // Elegir parejas de días lógicos: Lunes/Miércoles o Martes/Jueves
         const dayPairs = Math.random() > 0.5 ? [['Lunes', 'Miércoles'], ['Lunes', 'Miércoles']] : [['Martes', 'Jueves'], ['Martes', 'Jueves']];
         const assignedDays = dayPairs[0];
 
-        // Buscar un slot libre para ambos días en el que coincidan tanto el grupo como el profesor
         let foundSlotIndex = -1;
         for (let slotIdx = 0; slotIdx < SLOTS.length; slotIdx++) {
           let slotFree = true;
@@ -320,7 +312,6 @@ async function seed() {
           }
         }
 
-        // Si no se encuentra un slot en la pareja de días lógica, buscar en cualquier slot libre secuencialmente
         if (foundSlotIndex === -1) {
           outerLoop:
           for (let slotIdx = 0; slotIdx < SLOTS.length; slotIdx++) {
@@ -340,7 +331,6 @@ async function seed() {
           }
         }
 
-        // Fallback: si aún hay conflicto (lo cual es muy raro con 45 profesores), asignar en primer slot libre del grupo y forzar
         if (foundSlotIndex === -1) {
           outerLoopFallback:
           for (let slotIdx = 0; slotIdx < SLOTS.length; slotIdx++) {
@@ -357,11 +347,9 @@ async function seed() {
           }
         }
 
-        // Registrar clases en la base de datos
         if (foundSlotIndex !== -1) {
           const slot = SLOTS[foundSlotIndex];
           for (const day of assignedDays) {
-            // Marcar ocupación
             groupBusySlots[group.id][day][foundSlotIndex] = true;
             profBusySlots[assignedProfId][day][foundSlotIndex] = true;
 
@@ -373,30 +361,23 @@ async function seed() {
         }
       }
     }
-    console.log('✅ Horarios de clases semanales inyectados sin traslapes.');
+    console.log('✅ Horarios de FIME programados.');
 
-    console.log('🤝 Asignando tutores únicos a cada grupo de clase...');
+    console.log('🤝 Asignando tutores únicos a grupos de FIME...');
     const assignedTutors = new Set();
-    
-    for (const group of groups) {
-      // Los profesores que enseñan en este grupo
+    for (const group of fimeGroups) {
       const candidates = Array.from(groupProfessorMap[group.id]);
-      // Filtrar aquellos que no sean tutores ya
       const availableCandidates = candidates.filter(profId => !assignedTutors.has(profId));
-      
       let selectedTutorId = null;
+
       if (availableCandidates.length > 0) {
         selectedTutorId = getRandomElement(availableCandidates);
       } else {
-        // Fallback en caso extremo: buscar cualquier profesor de FIME que enseñe en al menos una materia (forzar relación)
-        // Pero dado que tenemos 45 profesores y 40 grupos, y cada profesor enseña en múltiples materias, esto se cumple
-        const fimeProfs = professors.map(p => p.id).filter(id => !assignedTutors.has(id));
+        const fimeProfs = fimeProfessors.map(p => p.id).filter(id => !assignedTutors.has(id));
         if (fimeProfs.length > 0) {
           selectedTutorId = getRandomElement(fimeProfs);
-          // Forzar que el tutor enseñe una materia en este grupo agregando una asignación
           const subjects = CAREER_SUBJECTS[group.career_id][parseInt(group.name.split('°')[0])];
           const firstSubject = subjects[0];
-          
           await client.query(`
             INSERT INTO professor_groups (professor_id, class_group_id, subject_taught)
             VALUES ($1, $2, $3)
@@ -412,27 +393,24 @@ async function seed() {
         `, [selectedTutorId, group.id]);
       }
     }
-    console.log('✅ Tutores únicos asignados correctamente.');
+    console.log('✅ Tutores de FIME asignados.');
 
-    console.log('📅 Programando fechas de exámenes y evaluaciones (3 por materia)...');
-    for (const group of groups) {
+    console.log('📅 Programando exámenes para FIME...');
+    for (const group of fimeGroups) {
       const subjects = CAREER_SUBJECTS[group.career_id][parseInt(group.name.split('°')[0])];
       for (const subjectName of subjects) {
-        // Examen 1: 1er Parcial - Octubre 2026
         const d1 = `2026-10-${getRandomInt(12, 16)}`;
         await client.query(`
           INSERT INTO exam_dates (class_group_id, subject_name, exam_name, exam_date, exam_time)
           VALUES ($1, $2, $3, $4, $5);
         `, [group.id, subjectName, '1° Parcial', d1, '09:00:00']);
 
-        // Examen 2: 2do Parcial - Noviembre 2026
         const d2 = `2026-11-${getRandomInt(16, 20)}`;
         await client.query(`
           INSERT INTO exam_dates (class_group_id, subject_name, exam_name, exam_date, exam_time)
           VALUES ($1, $2, $3, $4, $5);
         `, [group.id, subjectName, '2° Parcial', d2, '09:00:00']);
 
-        // Examen 3: Ordinario - Enero 2027
         const d3 = `2027-01-${getRandomInt(18, 22)}`;
         await client.query(`
           INSERT INTO exam_dates (class_group_id, subject_name, exam_name, exam_date, exam_time)
@@ -440,11 +418,11 @@ async function seed() {
         `, [group.id, subjectName, 'Ordinario', d3, '09:00:00']);
       }
     }
-    console.log('✅ Fechas de evaluaciones y exámenes programadas.');
+    console.log('✅ Evaluaciones programadas.');
 
-    console.log('🎓 Inyectando alumnos simulados (5 por grupo)...');
+    console.log('🎓 Inyectando 5 estudiantes por grupo en FIME...');
     let studentIdCount = 20260000;
-    for (const group of groups) {
+    for (const group of fimeGroups) {
       for (let s = 1; s <= 5; s++) {
         studentIdCount++;
         const firstName = getRandomElement(FIRST_NAMES);
@@ -460,35 +438,29 @@ async function seed() {
         `, [enrollment, fullName, email, 'password', group.id]);
       }
     }
-    console.log(`✅ ${groups.length * 5} estudiantes inyectados.`);
+    console.log(`✅ ${fimeGroups.length * 5} estudiantes inyectados.`);
 
-    console.log('🔒 Creando usuarios administrativos y cuentas de docentes en AdminHUB...');
-    
-    // 1. Cuentas de docentes (una para cada uno de los 45 profesores)
-    for (const prof of professors) {
-      const username = prof.slug;
+    console.log('🔒 Creando usuarios administrativos y cuentas de docentes FIME...');
+    for (const prof of fimeProfessors) {
       await client.query(`
         INSERT INTO admin_users (username, email, password_hash, role, professor_id)
         VALUES ($1, $2, $3, $4, $5)
         ON CONFLICT (username) DO NOTHING;
-      `, [username, prof.email, DEFAULT_PASSWORD_HASH, 'docente', prof.id]);
+      `, [prof.slug, prof.email, DEFAULT_PASSWORD_HASH, 'docente', prof.id]);
     }
 
-    // 2. Administrador General
     await client.query(`
       INSERT INTO admin_users (username, email, password_hash, role)
       VALUES ($1, $2, $3, $4)
       ON CONFLICT (username) DO NOTHING;
     `, ['admin', 'admin@ucol.mx', DEFAULT_PASSWORD_HASH, 'admin_general']);
 
-    // 3. Coordinador de Facultad (FIME - ID de facultad 25 en YAML)
     await client.query(`
       INSERT INTO admin_users (username, email, password_hash, role, faculty_id)
       VALUES ($1, $2, $3, $4, $5)
       ON CONFLICT (username) DO NOTHING;
     `, ['coord.fime', 'coord.fime@ucol.mx', DEFAULT_PASSWORD_HASH, 'coordinador_facultad', 25]);
 
-    // 4. Jefes de carrera para las 4 carreras de FIME
     for (const career of FIME_CAREERS) {
       const code = career.slug.replace('ingenieria-en-', '').replace('ingeniero-', '').substring(0, 10);
       const username = `jefe.${code}`;
@@ -501,18 +473,164 @@ async function seed() {
       `, [username, email, DEFAULT_PASSWORD_HASH, 'jefe_carrera', career.id]);
     }
 
-    // 5. Administrador de dirección (acceso a varias facultades: FIME (25) y Telemática (12))
     await client.query(`
       INSERT INTO admin_users (username, email, password_hash, role, faculty_ids)
       VALUES ($1, $2, $3, $4, $5)
       ON CONFLICT (username) DO NOTHING;
     `, ['admin.dir', 'admindir@ucol.mx', DEFAULT_PASSWORD_HASH, 'admin_direccion', [25, 12]]);
+    console.log('✅ Cuentas administrativas de FIME creadas.');
 
-    console.log('✅ Cuentas administrativas creadas.');
+    // -------------------------------------------------------------------------
+    // Fase 3: Adición de Dataset Masivo (de seed-large-dataset.js)
+    // -------------------------------------------------------------------------
+    console.log('\n🏫 Cargando carreras desde careers.yaml para dataset grande...');
+    const careersPath = path.join(__dirname, '..', 'data', 'reference', 'careers.yaml');
+    const careersContent = fs.readFileSync(careersPath, 'utf-8');
+    const careers = yaml.load(careersContent) || [];
 
-    console.log('\n🎉 Inyección y siembra de base de datos de FIME finalizada con éxito.');
-    
+    console.log('🏫 Creando grupos de clase estándar para el dataset grande (sin borrar previos)...');
+    const largeGroupIds = [];
+    for (const car of careers) {
+      const shifts = ['Matutino', 'Vespertino'];
+      for (const shift of shifts) {
+        const grades = ['1A', '2B', '3A', '4B'];
+        for (const grade of grades) {
+          const groupName = `Grupo ${grade}`;
+          const groupSlug = `${slugify(groupName)}-${car.id}-${slugify(shift)}`;
+          
+          const res = await client.query(`
+            INSERT INTO class_groups (slug, career_id, name, academic_period, shift)
+            VALUES ($1, $2, $3, $4, $5)
+            ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name
+            RETURNING id, career_id;
+          `, [groupSlug, car.id, `${groupName} (${shift})`, 'Feb-Jul 2026', shift]);
+          
+          largeGroupIds.push(res.rows[0]);
+        }
+      }
+    }
+    console.log(`✅ ${largeGroupIds.length} grupos de clase listos para asignación del dataset grande.`);
+
+    const count = parseInt(process.argv[2], 10) || 100;
+    console.log(`📝 Generando ${count} registros de profesores simulados para el dataset grande...`);
+
+    // Usar transacción para velocidad
+    await client.query('BEGIN');
+
+    for (let i = 1; i <= count; i++) {
+      const name = `${getRandomElement(FIRST_NAMES)} ${getRandomElement(FIRST_NAMES)} ${getRandomElement(LAST_NAMES)} ${getRandomElement(LAST_NAMES)}`;
+      const baseSlug = slugify(name);
+      // Asegurar slug único agregando índice y prefijo de lote grande
+      const slug = `${baseSlug}-ld-${i}`;
+      const email = `${baseSlug.replace(/-/g, '_')}_ld_${i}@ucol.mx`;
+      
+      const delegationId = getRandomInt(1, 5); 
+      const title = getRandomElement(ACADEMIC_TITLES);
+      const dept = getRandomElement(DEPARTMENTS);
+      const admissionYear = getRandomInt(1995, 2025);
+
+      const profileData = {
+        slug,
+        fullName: name,
+        photoUrl: '/images/profesores/default.jpg',
+        title,
+        department: dept,
+        institutionalEmail: email,
+        admissionYear,
+        academicFormation: {
+          doctorados: getRandomInt(0, 1) === 1 ? [{
+            degree: 'Doctor en Ciencias',
+            institution: 'Universidad de Colima',
+            year: getRandomInt(2010, 2024)
+          }] : [],
+          maestrias: [{
+            degree: 'Maestría en Ingeniería',
+            institution: 'Universidad de Colima',
+            year: getRandomInt(2005, 2015)
+          }],
+          licenciatura: {
+            degree: 'Licenciatura Universitaria',
+            institution: 'Universidad de Colima',
+            year: getRandomInt(2000, 2010)
+          }
+        },
+        scientificProduction: {
+          articles: Array.from({ length: getRandomInt(1, 4) }, (_, idx) => ({
+            title: `Investigación Aplicada sobre Tecnologías y Educación - Parte ${idx + 1}`,
+            journal: 'Revista de Investigación Científica Ucol',
+            year: getRandomInt(2020, 2026),
+            impactFactor: parseFloat((Math.random() * 4).toFixed(2)) || null,
+            doi: `https://doi.org/10.1007/mock-doi-${i}-${idx}`
+          })),
+          books: getRandomInt(0, 1) === 1 ? [{
+            title: `Fundamentos y aplicaciones de ${getRandomElement(SUBJECTS)}`,
+            role: getRandomElement(['Autor', 'Coautor', 'Coordinador']),
+            editorial: 'Editorial Universitaria',
+            year: getRandomInt(2015, 2025)
+          }] : []
+        },
+        educationalMaterials: [],
+        teaching: {
+          courses: Array.from({ length: getRandomInt(1, 3) }, () => ({
+            name: getRandomElement(SUBJECTS),
+            level: 'Licenciatura',
+            students: getRandomInt(15, 40),
+            period: 'Feb-Jul 2026'
+          })),
+          theses: []
+        },
+        certifications: [],
+        academicBody: {
+          name: 'Cuerpo Académico de Investigación',
+          level: 'En Consolidación'
+        }
+      };
+
+      const profRes = await client.query(`
+        INSERT INTO professors (slug, full_name, email, delegation_id, profile_data)
+        VALUES ($1, $2, $3, $4, $5)
+        ON CONFLICT (slug) DO NOTHING
+        RETURNING id;
+      `, [slug, name, email, delegationId, JSON.stringify(profileData)]);
+
+      if (profRes.rows.length > 0) {
+        const professorId = profRes.rows[0].id;
+
+        // Asignar a grupos elegibles según delegación
+        const eligibleGroups = largeGroupIds.filter(g => {
+          const car = careers.find(c => c.id === g.career_id);
+          return car && car.delegation_id === delegationId;
+        });
+
+        if (eligibleGroups.length > 0) {
+          const numAssignments = getRandomInt(1, 2);
+          const assigned = new Set();
+          for (let a = 0; a < numAssignments; a++) {
+            const group = getRandomElement(eligibleGroups);
+            if (!assigned.has(group.id)) {
+              assigned.add(group.id);
+              await client.query(`
+                INSERT INTO professor_groups (professor_id, class_group_id, subject_taught)
+                VALUES ($1, $2, $3)
+                ON CONFLICT DO NOTHING;
+              `, [professorId, group.id, getRandomElement(SUBJECTS)]);
+            }
+          }
+        }
+      }
+
+      if (i % 500 === 0) {
+        console.log(`... ${i} profesores del dataset grande insertados`);
+      }
+    }
+
+    await client.query('COMMIT');
+    console.log(`✅ Dataset grande agregado con éxito. Profesores del dataset grande: ${count}`);
+
+    console.log('\n🎉 ¡Inyección de datos combinada finalizada con éxito!');
+
   } catch (err) {
+    await client.query('ROLLBACK');
     console.error('❌ Error durante la siembra de base de datos:', err);
   } finally {
     client.release();

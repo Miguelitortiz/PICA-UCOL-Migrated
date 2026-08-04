@@ -440,23 +440,23 @@
 
           <!-- Demo credentials -->
           <div class="demo-section">
-            <span class="demo-label">🔑 Accesos de prueba (contraseña: prueba123)</span>
+            <span class="demo-label">🔑 Accesos de prueba (contraseña: prueba123, admin: admin_pass)</span>
             <div class="demo-grid" id="demo-grid">
-              <button class="demo-item" data-user="cruiz" data-role="Docente">
+              <button class="demo-item" data-user="carlos.navarro_2@ucol.mx" data-role="Docente">
                 <div class="demo-item-role">Docente</div>
-                <div class="demo-item-user">cruiz</div>
+                <div class="demo-item-user">carlos.navarro_2</div>
               </button>
-              <button class="demo-item" data-user="smendoza" data-role="Docente">
+              <button class="demo-item" data-user="ana.pérez_6@ucol.mx" data-role="Docente">
                 <div class="demo-item-role">Docente</div>
-                <div class="demo-item-user">smendoza</div>
+                <div class="demo-item-user">ana.pérez_6</div>
               </button>
-              <button class="demo-item" data-user="jefe.carrera" data-role="Jefe de Carrera">
+              <button class="demo-item" data-user="jefe.computacio" data-role="Jefe de Carrera">
                 <div class="demo-item-role">Jefe de Carrera</div>
-                <div class="demo-item-user">jefe.carrera</div>
+                <div class="demo-item-user">jefe.computacio</div>
               </button>
-              <button class="demo-item" data-user="coord.fic" data-role="Coordinador FIC">
+              <button class="demo-item" data-user="coord.fime" data-role="Coordinador FIME">
                 <div class="demo-item-role">Coordinador</div>
-                <div class="demo-item-user">coord.fic</div>
+                <div class="demo-item-user">coord.fime</div>
               </button>
               <button class="demo-item" data-user="admin.dir" data-role="Admin Dirección">
                 <div class="demo-item-role">Admin Dirección</div>
@@ -464,7 +464,7 @@
               </button>
               <button class="demo-item" data-user="admin" data-role="Admin General">
                 <div class="demo-item-role">Admin General</div>
-                <div class="demo-item-user">admin</div>
+                <div class="demo-item-user">admin (admin_pass)</div>
               </button>
             </div>
           </div>
@@ -514,8 +514,9 @@
       // Click en tarjetas de demo
       demoGrid?.querySelectorAll('.demo-item').forEach(btn => {
         btn.addEventListener('click', () => {
-          usernameInput.value = btn.getAttribute('data-user') || '';
-          passwordInput.value = 'prueba123';
+          const username = btn.getAttribute('data-user') || '';
+          usernameInput.value = username;
+          passwordInput.value = username === 'admin' ? 'admin_pass' : 'prueba123';
           usernameInput.classList.remove('error');
           passwordInput.classList.remove('error');
           errorMsg.classList.remove('visible');

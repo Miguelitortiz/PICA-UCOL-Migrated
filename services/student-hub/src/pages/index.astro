@@ -80,15 +80,26 @@ if (student) {
 }
 
 const timeSlots = [
-  { start: "07:00:00", end: "09:00:00", label: "07:00–09:00" },
-  { start: "09:00:00", end: "11:00:00", label: "09:00–11:00" },
-  { start: "11:00:00", end: "13:00:00", label: "11:00–13:00" },
+  { start: "07:00:00", end: "07:50:00", label: "07:00–07:50" },
+  { start: "07:50:00", end: "08:40:00", label: "07:50–08:40" },
+  { start: "08:40:00", end: "09:30:00", label: "08:40–09:30" },
+  { start: "09:30:00", end: "10:00:00", label: "09:30–10:00" },
+  { start: "10:00:00", end: "10:50:00", label: "10:00–10:50" },
+  { start: "10:50:00", end: "11:40:00", label: "10:50–11:40" },
+  { start: "11:40:00", end: "12:30:00", label: "11:40–12:30" },
+  { start: "12:30:00", end: "13:20:00", label: "12:30–13:20" },
+  { start: "13:20:00", end: "14:10:00", label: "13:20–14:10" },
+  { start: "14:10:00", end: "15:00:00", label: "14:10–15:00" },
+  { start: "15:30:00", end: "16:20:00", label: "15:30–16:20" },
 ];
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
-function findScheduleItem(day: string, timeStart: string) {
-  return schedules.find(s => s.day_of_week === day && s.start_time === timeStart);
+function findScheduleItems(day: string, timeStart: string, timeEnd: string) {
+  return schedules.filter(s => {
+    if (s.day_of_week !== day) return false;
+    return s.start_time < timeEnd && s.end_time > timeStart;
+  });
 }
 
 function getSyllabusSlug(subjectName: string): string {
@@ -103,6 +114,32 @@ function getSyllabusDesc(subjectName: string): string {
     s.subject_name?.toLowerCase().trim() === subjectName?.toLowerCase().trim()
   );
   return s?.program_description || "Sin descripción disponible.";
+}
+
+// Helper: agrupar schedules por día para la vista de lista móvil
+function getDailySchedule(day: string) {
+  const dayItems = schedules
+    .filter(s => s.day_of_week === day)
+    .sort((a, b) => a.start_time.localeCompare(b.start_time));
+  
+  // Agrupar por franja horaria y deduplicar HTI
+  const grouped: Map<string, any[]> = new Map();
+  dayItems.forEach(item => {
+    const key = `${item.start_time}-${item.end_time}`;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key)!.push(item);
+  });
+  
+  const result: any[] = [];
+  grouped.forEach((items, _key) => {
+    const hasHti = items.some(i => i.subject_name?.toUpperCase().includes('HTI'));
+    const nonHti = items.filter(i => !i.subject_name?.toUpperCase().includes('HTI'));
+    const display = nonHti.length > 0 ? nonHti : items;
+    display.forEach(item => {
+      result.push({ ...item, hasHti });
+    });
+  });
+  return result;
 }
 ---
 
@@ -220,7 +257,8 @@ function getSyllabusDesc(subjectName: string): string {
         <span class="overline">Horario semanal</span>
       </div>
 
-      <div class="table-wrapper scroll" role="region" aria-label="Tabla de horario, desplazable horizontalmente" tabindex="0">
+      <!-- ── VISTA TABLA (Desktop) ── -->
+      <div class="schedule-desktop" role="region" aria-label="Tabla de horario, desplazable horizontalmente" tabindex="0">
         <table class="schedule-table" role="grid" aria-label="Horario semanal de clases">
           <thead>
             <tr>
@@ -237,41 +275,53 @@ function getSyllabusDesc(subjectName: string): string {
                   <span class="time-label">{slot.label}</span>
                 </td>
                 {daysOfWeek.map(day => {
-                  const item = findScheduleItem(day, slot.start);
-                  const syllabusSlug = item ? getSyllabusSlug(item.subject_name) : "#";
-                  const syllabusDesc = item ? getSyllabusDesc(item.subject_name) : "";
+                  const items = findScheduleItems(day, slot.start, slot.end);
+                  const hasHti = items.some(i => i.subject_name && i.subject_name.toUpperCase().includes('HTI'));
+                  const nonHtiItems = items.filter(i => !(i.subject_name && i.subject_name.toUpperCase().includes('HTI')));
+                  const displayItems = nonHtiItems.length > 0 ? nonHtiItems : items;
                   return (
                     <td class="schedule-table__cell">
-                      {item ? (
-                        <button
-                          class="class-entry class-card-btn"
-                          aria-label={`${item.subject_name}, ${item.professor_name}`}
-                          data-subject={item.subject_name}
-                          data-professor={item.professor_name}
-                          data-professor-email={item.professor_email}
-                          data-professor-slug={item.professor_slug}
-                          data-professor-phone={item.professor_phone || ""}
-                          data-professor-office={item.professor_office || ""}
-                          data-professor-hours={item.professor_office_hours || ""}
-                          data-professor-image={item.professor_image || ""}
-                          data-classroom={item.classroom_name || ""}
-                          data-is-lab={item.is_lab ? "Sí" : "No"}
-                          data-syllabus-slug={syllabusSlug}
-                          data-description={syllabusDesc}
-                          data-exams={JSON.stringify(examDates.filter(e => e.subject_name === item.subject_name))}
-                        >
-                          <span class="class-entry__subject">{item.subject_name}</span>
-                          {item.professor_name && (
-                            <span class="class-entry__professor">{item.professor_name}</span>
-                          )}
-                          {item.classroom_name && (
-                            <span class="class-entry__room">
-                              {item.classroom_name}
-                              {item.is_lab && <span class="class-entry__lab-tag">LAB</span>}
-                            </span>
-                          )}
-                        </button>
-                      ) : null}
+                      <div style="display: flex; flex-direction: column; gap: 4px;">
+                        {displayItems.map(item => {
+                        const syllabusSlug = item ? getSyllabusSlug(item.subject_name) : "#";
+                        const syllabusDesc = item ? getSyllabusDesc(item.subject_name) : "";
+                        const isHtiEntry = item.subject_name && item.subject_name.toUpperCase().includes('HTI');
+                        return (
+                          <button
+                            class={`class-entry class-card-btn ${hasHti ? 'independent-work' : ''}`}
+                            aria-label={`${item.subject_name}${hasHti && !isHtiEntry ? ' (incluye HTI)' : ''}, ${item.professor_name}`}
+                            data-subject={item.subject_name}
+                            data-professor={item.professor_name}
+                            data-professor-email={item.professor_email}
+                            data-professor-slug={item.professor_slug}
+                            data-professor-phone={item.professor_phone || ""}
+                            data-professor-office={item.professor_office || ""}
+                            data-professor-hours={item.professor_office_hours || ""}
+                            data-professor-image={item.professor_image || ""}
+                            data-classroom={item.classroom_name || ""}
+                            data-is-lab={item.is_lab ? "Sí" : "No"}
+                            data-syllabus-slug={syllabusSlug}
+                            data-description={syllabusDesc}
+                            data-exams={JSON.stringify(examDates.filter(e => e.subject_name === item.subject_name))}
+                          >
+                            <span class="class-entry__subject">{item.subject_name}</span>
+                            <span class="class-entry__time" style="font-size: 0.65rem; opacity: 0.8; display: block; font-family: monospace;">{item.start_time.substring(0, 5)} - {item.end_time.substring(0, 5)}</span>
+                            {item.professor_name && (
+                              <span class="class-entry__professor">{item.professor_name}</span>
+                            )}
+                            {item.classroom_name && (
+                              <span class="class-entry__room">
+                                {item.classroom_name}
+                                {item.is_lab && <span class="class-entry__lab-tag">LAB</span>}
+                              </span>
+                            )}
+                            {hasHti && !isHtiEntry && (
+                              <span class="class-entry__hti-tag">HTI</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                      </div>
                     </td>
                   );
                 })}
@@ -279,6 +329,66 @@ function getSyllabusDesc(subjectName: string): string {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <!-- ── VISTA LISTA (Móvil) ── -->
+      <div class="schedule-mobile" aria-label="Horario semanal por día">
+        {daysOfWeek.map(day => {
+          const dayItems = getDailySchedule(day);
+          return (
+            <div class="mobile-day">
+              <div class="mobile-day__header">
+                <span class="mobile-day__name">{day}</span>
+                <span class="mobile-day__count">{dayItems.length} {dayItems.length === 1 ? 'clase' : 'clases'}</span>
+              </div>
+              {dayItems.length === 0 ? (
+                <div class="mobile-day__empty">
+                  <span>Sin clases programadas</span>
+                </div>
+              ) : (
+                <div class="mobile-day__list">
+                  {dayItems.map(item => {
+                    const syllabusSlug = getSyllabusSlug(item.subject_name);
+                    const syllabusDesc = getSyllabusDesc(item.subject_name);
+                    const isHtiEntry = item.subject_name?.toUpperCase().includes('HTI');
+                    return (
+                      <button
+                        class={`mobile-class class-card-btn ${item.hasHti ? 'independent-work' : ''}`}
+                        aria-label={`${item.subject_name}${item.hasHti && !isHtiEntry ? ' (incluye HTI)' : ''}, ${item.professor_name}`}
+                        data-subject={item.subject_name}
+                        data-professor={item.professor_name}
+                        data-professor-email={item.professor_email}
+                        data-professor-slug={item.professor_slug}
+                        data-professor-phone={item.professor_phone || ""}
+                        data-professor-office={item.professor_office || ""}
+                        data-professor-hours={item.professor_office_hours || ""}
+                        data-professor-image={item.professor_image || ""}
+                        data-classroom={item.classroom_name || ""}
+                        data-is-lab={item.is_lab ? "Sí" : "No"}
+                        data-syllabus-slug={syllabusSlug}
+                        data-description={syllabusDesc}
+                        data-exams={JSON.stringify(examDates.filter(e => e.subject_name === item.subject_name))}
+                      >
+                        <span class="mobile-class__time">{item.start_time.substring(0, 5)} – {item.end_time.substring(0, 5)}</span>
+                        <div class="mobile-class__info">
+                          <span class="mobile-class__subject">{item.subject_name}</span>
+                          {item.professor_name && (
+                            <span class="mobile-class__professor">{item.professor_name}</span>
+                          )}
+                          <span class="mobile-class__meta">
+                            {item.classroom_name || ''}
+                            {item.is_lab && <span class="class-entry__lab-tag">LAB</span>}
+                            {item.hasHti && !isHtiEntry && <span class="class-entry__hti-tag">HTI</span>}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   </div>
@@ -643,16 +753,29 @@ function getSyllabusDesc(subjectName: string): string {
   }
 
   /* ══════════════════════════════════════════════════
-     TABLA DE HORARIO — Swiss style
+     RESPONSIVE: Desktop table vs Mobile list
+     ══════════════════════════════════════════════════ */
+  .schedule-desktop {
+    display: none;
+    overflow-x: auto;
+  }
+
+  .schedule-mobile {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    .schedule-desktop { display: block; }
+    .schedule-mobile { display: none; }
+  }
+
+  /* ══════════════════════════════════════════════════
+     TABLA DE HORARIO — Swiss style (Desktop)
      Solo reglas horizontales. Sin bordes de celda.
      Sin fondos alternados. Tipografía como jerarquía.
      ══════════════════════════════════════════════════ */
   .section-head {
     margin-bottom: 16px;
-  }
-
-  .table-wrapper {
-    overflow-x: auto;
   }
 
   .schedule-table {
@@ -779,6 +902,156 @@ function getSyllabusDesc(subjectName: string): string {
     border: 1px solid var(--color-ink-3);
     padding: 1px 3px;
     color: var(--color-ink-3);
+  }
+
+  /* ── HTI (Horas de Trabajo Independiente) ── */
+  .independent-work {
+    background-color: color-mix(in srgb, var(--color-secondary) 12%, transparent);
+    border-left-color: var(--color-secondary);
+    padding: 6px 8px;
+    border-radius: 2px;
+  }
+
+  .independent-work:hover {
+    background-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+    border-left-color: var(--color-secondary);
+  }
+
+  .class-entry__hti-tag {
+    font-size: 0.4375rem;     /* 7px */
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    display: inline-block;
+    margin-top: 2px;
+  }
+
+  /* ══════════════════════════════════════════════════
+     VISTA LISTA MÓVIL — agrupada por día
+     Swiss Design: separación por regla + tipografía.
+     ══════════════════════════════════════════════════ */
+  .mobile-day {
+    margin-bottom: 0;
+  }
+
+  .mobile-day__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0 8px;
+    border-bottom: 2px solid var(--color-ink);
+  }
+
+  .mobile-day__name {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-ink);
+  }
+
+  .mobile-day__count {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+  }
+
+  .mobile-day__empty {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .mobile-day__empty span {
+    font-size: 0.75rem;
+    color: var(--color-ink-3);
+    font-style: italic;
+  }
+
+  .mobile-day__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-class {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-rule);
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 80ms;
+  }
+
+  .mobile-class:last-child {
+    border-bottom: none;
+  }
+
+  .mobile-class:active {
+    background-color: var(--color-muted);
+  }
+
+  .mobile-class.independent-work {
+    background-color: color-mix(in srgb, var(--color-secondary) 8%, transparent);
+    border-left: 2px solid var(--color-secondary);
+    padding-left: 10px;
+    border-radius: 0;
+  }
+
+  .mobile-class.independent-work:active {
+    background-color: color-mix(in srgb, var(--color-secondary) 16%, transparent);
+  }
+
+  .mobile-class__time {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--color-ink-3);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    min-width: 80px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .mobile-class__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mobile-class__subject {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    line-height: 1.2;
+  }
+
+  .mobile-class__professor {
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: var(--color-ink-3);
+    line-height: 1.3;
+  }
+
+  .mobile-class__meta {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   /* ══════════════════════════════════════════════════
