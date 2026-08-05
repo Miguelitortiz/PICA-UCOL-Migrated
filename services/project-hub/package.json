@@ -1,5 +1,5 @@
 {
-  "name": "pica-project-hub",
+  "name": "@pica/project-hub",
   "type": "module",
   "version": "0.0.1",
   "engines": {

@@ -1,7 +1,6 @@
 ---
 import InstitutionalLayout from "../../layouts/InstitutionalLayout.astro";
-import pool from "../../lib/db.js";
-import { cargarCarreras } from "../../lib/cargarDatos.js";
+import { cargarCarreras, cargarGrupoConProfesores, cargarHorarioDeGrupo, cargarExamenesDeGrupo } from "../../lib/cargarDatos.js";
 
 // Contexto Estudiante
 const student = Astro.locals.student;
@@ -9,7 +8,7 @@ const student = Astro.locals.student;
 // Obtener el grupo activo
 const activeGroupSlug =
   student?.class_group_slug || Astro.url.searchParams.get("group") || "4-b-191";
-const careers = cargarCarreras();
+const careers = await cargarCarreras();
 
 let activeGroup = null;
 let uniqueSubjects = [];
@@ -18,39 +17,9 @@ let examDates = [];
 
 if (activeGroupSlug) {
   try {
-    // 1. Detalles del grupo y carrera
-    const gRes = await pool.query(
-      `
-      SELECT g.*
-      FROM class_groups g
-      WHERE g.slug = $1
-    `,
-      [activeGroupSlug],
-    );
-
-    if (gRes.rows.length > 0) {
-      activeGroup = gRes.rows[0];
-      const career = careers.find((c) => c.id === activeGroup.career_id);
-      activeGroup.careerName = career
-        ? career.name
-        : activeGroup.career_name || "Carrera Desconocida";
-
-      // 2. Extraer horarios para obtener materias y docentes
-      const sRes = await pool.query(
-        `
-        SELECT s.*, p.full_name as professor_name, p.email as professor_email, p.slug as professor_slug,
-               p.profile_data->'contactInfo'->>'phone' as professor_phone,
-               p.profile_data->'contactInfo'->>'office' as professor_office,
-               p.profile_data->>'image' as professor_image
-        FROM schedules s
-        LEFT JOIN professors p ON s.professor_id = p.id
-        WHERE s.class_group_id = $1
-        ORDER BY s.subject_name, s.day_of_week
-      `,
-        [activeGroup.id],
-      );
-
-      const schedules = sRes.rows;
+    activeGroup = await cargarGrupoConProfesores(activeGroupSlug);
+    if (activeGroup) {
+      const schedules = await cargarHorarioDeGrupo(activeGroup.id);
 
       // Agrupar Materias
       const subjectsMap = new Map();
@@ -80,16 +49,7 @@ if (activeGroupSlug) {
       });
       uniqueProfessors = Array.from(profsMap.values());
 
-      // 3. Obtener fechas de examen
-      const eRes = await pool.query(
-        `
-        SELECT * FROM exam_dates
-        WHERE class_group_id = $1
-        ORDER BY exam_date, exam_time
-      `,
-        [activeGroup.id],
-      );
-      examDates = eRes.rows;
+      examDates = await cargarExamenesDeGrupo(activeGroup.id);
     }
   } catch (e) {
     console.error("Error al consultar perfil del estudiante:", e);

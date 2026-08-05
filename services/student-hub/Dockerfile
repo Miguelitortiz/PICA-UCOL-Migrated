@@ -13,10 +13,7 @@ COPY data ./data
 COPY scripts ./scripts
 COPY services/student-hub ./services/student-hub
 
-# Correr script para generar los JSONs estáticos usando las dependencias de student-hub
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
-RUN NODE_PATH=./services/student-hub/node_modules node scripts/generate-static-data.js
+
 
 # Compilar la aplicación estática Astro
 RUN cd services/student-hub && npm run build

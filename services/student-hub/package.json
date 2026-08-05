@@ -1,5 +1,5 @@
 {
-  "name": "pica-student-hub",
+  "name": "@pica/student-hub",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -16,9 +16,7 @@
     "@tailwindcss/vite": "^4.3.1",
     "astro": "^6.4.7",
     "bcryptjs": "^2.4.3",
-    "js-yaml": "^4.1.0",
     "leaflet": "^1.9.4",
-    "pg": "^8.12.0",
     "tailwindcss": "^4.3.1"
   },
   "overrides": {

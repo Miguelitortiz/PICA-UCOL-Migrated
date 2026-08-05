@@ -1,12 +1,11 @@
 ---
 import LoginPanel from "../components/LoginPanel.astro";
 import InstitutionalLayout from "../layouts/InstitutionalLayout.astro";
-import { cargarCarreras, cargarDelegaciones } from "../lib/cargarDatos.js";
-import pool from "../lib/db.js";
+import { cargarCarreras, cargarDelegaciones, cargarTodosLosGrupos, cargarGrupoConProfesores, cargarHorarioDeGrupo, cargarExamenesDeGrupo, cargarSyllabusDeCarrera } from "../lib/cargarDatos.js";
 
 const student = Astro.locals.student;
-const delegations = cargarDelegaciones();
-const careers = cargarCarreras();
+const delegations = await cargarDelegaciones();
+const careers = await cargarCarreras();
 
 let allGroups = [];
 const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group");
@@ -16,65 +15,14 @@ let examDates = [];
 let syllabusList = [];
 
 if (student) {
-  try {
-    const grpsRes = await pool.query(`
-      SELECT g.*, c.name as career_name
-      FROM class_groups g
-      LEFT JOIN careers c ON g.career_id = c.id
-      ORDER BY g.name ASC
-    `);
-    allGroups = grpsRes.rows.map(g => {
-      const career = careers.find(c => c.id === g.career_id);
-      return { ...g, careerName: career ? career.name : g.career_name || "Desconocida" };
-    });
-  } catch (e) {
-    console.warn("No se pudieron cargar grupos:", e.message);
-  }
+  allGroups = await cargarTodosLosGrupos();
 
   if (activeGroupSlug) {
-    try {
-      const gRes = await pool.query(`
-        SELECT g.*, p.full_name as tutor_name, p.email as tutor_email, p.slug as tutor_slug,
-               p.profile_data->'contactInfo'->>'phone' as tutor_phone,
-               p.profile_data->'contactInfo'->>'office' as tutor_office,
-               p.profile_data->'contactInfo'->>'officeHours' as tutor_office_hours
-        FROM class_groups g
-        LEFT JOIN professors p ON g.tutor_id = p.id
-        WHERE g.slug = $1
-      `, [activeGroupSlug]);
-
-      if (gRes.rows.length > 0) {
-        activeGroup = gRes.rows[0];
-        const career = careers.find(c => c.id === activeGroup.career_id);
-        activeGroup.careerName = career ? career.name : "Carrera Desconocida";
-
-        const sRes = await pool.query(`
-          SELECT s.*, p.full_name as professor_name, p.email as professor_email, p.slug as professor_slug,
-                 p.profile_data->'contactInfo'->>'phone' as professor_phone,
-                 p.profile_data->'contactInfo'->>'office' as professor_office,
-                 p.profile_data->'contactInfo'->>'officeHours' as professor_office_hours,
-                 p.profile_data->>'image' as professor_image
-          FROM schedules s
-          LEFT JOIN professors p ON s.professor_id = p.id
-          WHERE s.class_group_id = $1
-          ORDER BY s.day_of_week, s.start_time
-        `, [activeGroup.id]);
-        schedules = sRes.rows;
-
-        const eRes = await pool.query(`
-          SELECT * FROM exam_dates
-          WHERE class_group_id = $1
-          ORDER BY exam_date, exam_time
-        `, [activeGroup.id]);
-        examDates = eRes.rows;
-
-        const sylRes = await pool.query(`
-          SELECT * FROM subject_syllabus WHERE career_id = $1
-        `, [activeGroup.career_id]);
-        syllabusList = sylRes.rows;
-      }
-    } catch (e) {
-      console.error("Error cargando detalles del grupo:", e);
+    activeGroup = await cargarGrupoConProfesores(activeGroupSlug);
+    if (activeGroup) {
+      schedules = await cargarHorarioDeGrupo(activeGroup.id);
+      examDates = await cargarExamenesDeGrupo(activeGroup.id);
+      syllabusList = await cargarSyllabusDeCarrera(activeGroup.career_id);
     }
   }
 }

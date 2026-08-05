@@ -1,5 +1,5 @@
 {
-  "name": "agreeable-apogee",
+  "name": "@pica/admin-hub-frontend",
   "type": "module",
   "version": "0.0.1",
   "engines": {

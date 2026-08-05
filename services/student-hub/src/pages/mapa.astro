@@ -1,22 +1,13 @@
 ---
 import InstitutionalLayout from "../layouts/InstitutionalLayout.astro";
-import pool from "../lib/db.js";
+import { fetchFromService } from "../lib/api-client.js";
 
 const student = Astro.locals.student;
 const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group") || "4-b-191";
 
-// Obtener todas las clases programadas en la BD para vincularlas a los polígonos
 let schedules = [];
 try {
-  const query = `
-    SELECT s.*, cg.name as group_name, p.full_name as professor_name
-    FROM schedules s
-    JOIN class_groups cg ON s.class_group_id = cg.id
-    LEFT JOIN professors p ON s.professor_id = p.id
-    ORDER BY s.day_of_week, s.start_time
-  `;
-  const res = await pool.query(query);
-  schedules = res.rows;
+  schedules = await fetchFromService('academic', '/schedules');
 } catch (e) {
   console.error("Error al cargar horarios para el mapa:", e);
 }

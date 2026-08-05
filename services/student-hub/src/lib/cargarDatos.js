@@ -1,178 +1,209 @@
-import fs from 'fs';
-import path from 'path';
-import yaml from 'js-yaml';
-import pool from './db.js';
+import { fetchFromService } from './api-client.js';
 
-// Directorio de referencias YAML en runtime
-const referenceDir = path.join(process.cwd(), 'data', 'reference');
-
-export function cargarDelegaciones() {
+export async function cargarDelegaciones() {
   try {
-    const fileContent = fs.readFileSync(path.join(referenceDir, 'delegations.yaml'), 'utf-8');
-    return yaml.load(fileContent) || [];
+    return await fetchFromService('reference', '/delegations');
   } catch (err) {
-    console.error('Error al leer delegations.yaml en runtime:', err);
+    console.error('Error loading delegations:', err);
     return [];
   }
 }
 
-export function cargarCarreras() {
+export async function cargarCarreras() {
   try {
-    const fileContent = fs.readFileSync(path.join(referenceDir, 'careers.yaml'), 'utf-8');
-    return yaml.load(fileContent) || [];
+    return await fetchFromService('reference', '/careers');
   } catch (err) {
-    console.error('Error al leer careers.yaml en runtime:', err);
+    console.error('Error loading careers:', err);
     return [];
   }
 }
 
-export function cargarFacultades() {
+export async function cargarFacultades() {
   try {
-    const fileContent = fs.readFileSync(path.join(referenceDir, 'faculties.yaml'), 'utf-8');
-    return yaml.load(fileContent) || [];
+    return await fetchFromService('reference', '/faculties');
   } catch (err) {
-    console.error('Error al leer faculties.yaml en runtime:', err);
+    console.error('Error loading faculties:', err);
     return [];
   }
 }
 
-export function cargarFacultadesDeDelegacion(delegationId) {
-  const faculties = cargarFacultades();
+export async function cargarFacultadesDeDelegacion(delegationId) {
+  const faculties = await cargarFacultades();
   return faculties.filter(f => f.delegation_id === delegationId);
 }
 
-export function cargarFacultadPorSlug(slug) {
-  const faculties = cargarFacultades();
+export async function cargarFacultadPorSlug(slug) {
+  const faculties = await cargarFacultades();
   return faculties.find(f => f.slug === slug) || null;
 }
 
-export function cargarCarrerasDeFacultad(faculty) {
-  const allCareers = cargarCarreras();
+export async function cargarCarrerasDeFacultad(faculty) {
+  const allCareers = await cargarCarreras();
   const careerIds = faculty.career_ids || [];
   return allCareers.filter(c => careerIds.includes(c.id));
 }
 
-export function cargarDelegacionPorSlug(slug) {
-  const delegations = cargarDelegaciones();
+export async function cargarDelegacionPorSlug(slug) {
+  const delegations = await cargarDelegaciones();
   return delegations.find(d => d.slug === slug) || null;
 }
 
-export function cargarCarreraPorSlug(slug) {
-  const careers = cargarCarreras();
+export async function cargarCarreraPorSlug(slug) {
+  const careers = await cargarCarreras();
   return careers.find(c => c.slug === slug) || null;
 }
 
-export function cargarCarrerasDeDelegacion(delegationId) {
-  const careers = cargarCarreras();
+export async function cargarCarrerasDeDelegacion(delegationId) {
+  const careers = await cargarCarreras();
   return careers.filter(c => c.delegation_id === delegationId);
+}
+
+export async function cargarTodosLosGrupos() {
+  try {
+    const groups = await fetchFromService('academic', '/groups');
+    const careers = await cargarCarreras();
+    return groups.map(g => {
+      const career = careers.find(c => c.id === g.career_id);
+      return {
+        ...g,
+        careerName: career ? career.name : "Desconocida"
+      };
+    });
+  } catch (err) {
+    console.error('Error loading all groups:', err);
+    return [];
+  }
 }
 
 export async function cargarGruposDeCarrera(careerId) {
   try {
-    const res = await pool.query('SELECT * FROM class_groups WHERE career_id = $1 ORDER BY name ASC', [careerId]);
-    return res.rows;
+    return await fetchFromService('academic', `/groups?career_id=${careerId}`);
   } catch (err) {
-    console.error(`Error al cargar grupos de carrera ${careerId} desde PostgreSQL:`, err);
+    console.error(`Error loading groups for career ${careerId}:`, err);
     return [];
   }
 }
 
 export async function cargarGrupoConProfesores(g_slug) {
   try {
-    const groupRes = await pool.query(`
-      SELECT g.*, p.full_name as tutor_name, p.email as tutor_email, p.slug as tutor_slug
-      FROM class_groups g
-      LEFT JOIN professors p ON g.tutor_id = p.id
-      WHERE g.slug = $1
-    `, [g_slug]);
-    if (groupRes.rows.length === 0) return null;
-    
-    const grp = groupRes.rows[0];
-    
-    const profsRes = await pool.query(`
-      SELECT p.slug, p.full_name as "fullName", p.email, pg.subject_taught
-      FROM professors p
-      JOIN professor_groups pg ON p.id = pg.professor_id
-      WHERE pg.class_group_id = $1
-      ORDER BY p.full_name ASC
-    `, [grp.id]);
-    
+    const groups = await fetchFromService('academic', '/groups');
+    const grp = groups.find(g => g.slug === g_slug);
+    if (!grp) return null;
+
+    const professors = await fetchFromService('professors', '/professors');
+    const tutor = professors.find(p => p.id === grp.tutor_id);
+    const careers = await cargarCarreras();
+    const career = careers.find(c => c.id === grp.career_id);
+
+    const groupProfs = professors
+      .filter(p => p.group_assignments && p.group_assignments.some(a => a.class_group_id === grp.id))
+      .map(p => {
+        const assignment = p.group_assignments.find(a => a.class_group_id === grp.id);
+        return {
+          slug: p.slug,
+          fullName: p.full_name,
+          email: p.email,
+          subject_taught: assignment ? assignment.subject_taught : ''
+        };
+      });
+
     return {
       id: grp.id,
       slug: grp.slug,
       name: grp.name,
       career_id: grp.career_id,
+      careerName: career ? career.name : "Carrera Desconocida",
       academic_period: grp.academic_period,
       shift: grp.shift,
       tutor_id: grp.tutor_id,
-      tutor_name: grp.tutor_name,
-      tutor_email: grp.tutor_email,
-      tutor_slug: grp.tutor_slug,
-      professors: profsRes.rows
+      tutor_name: tutor ? tutor.full_name : null,
+      tutor_email: tutor ? tutor.email : null,
+      tutor_slug: tutor ? tutor.slug : null,
+      tutor_phone: tutor?.profile_data?.contactInfo?.phone || null,
+      tutor_office: tutor?.profile_data?.contactInfo?.office || null,
+      tutor_office_hours: tutor?.profile_data?.contactInfo?.officeHours || null,
+      professors: groupProfs
     };
   } catch (err) {
-    console.error(`Error al cargar grupo con profesores para slug "${g_slug}" desde PostgreSQL:`, err);
+    console.error(`Error loading group for slug "${g_slug}":`, err);
     return null;
   }
 }
 
 export async function cargarHorarioDeGrupo(groupId) {
   try {
-    const res = await pool.query(`
-      SELECT s.*, p.full_name as "professorName", p.email as "professorEmail", p.slug as "professorSlug"
-      FROM schedules s
-      LEFT JOIN professors p ON s.professor_id = p.id
-      WHERE s.class_group_id = $1
-      ORDER BY s.day_of_week, s.start_time
-    `, [groupId]);
-    return res.rows;
+    const allSchedules = await fetchFromService('academic', '/schedules');
+    const schedules = allSchedules.filter(s => s.class_group_id === groupId);
+
+    const professors = await fetchFromService('professors', '/professors');
+
+    return schedules.map(s => {
+      const prof = professors.find(p => p.id === s.professor_id);
+      return {
+        ...s,
+        professor_name: prof ? prof.full_name : null,
+        professor_email: prof ? prof.email : null,
+        professor_slug: prof ? prof.slug : null,
+        professor_phone: prof?.profile_data?.contactInfo?.phone || null,
+        professor_office: prof?.profile_data?.contactInfo?.office || null,
+        professor_office_hours: prof?.profile_data?.contactInfo?.officeHours || null,
+        professor_image: prof?.profile_data?.image || null
+      };
+    });
   } catch (err) {
-    console.error(`Error al cargar horarios del grupo ${groupId}:`, err);
+    console.error(`Error loading schedules for group ${groupId}:`, err);
     return [];
   }
 }
 
 export async function cargarExamenesDeGrupo(groupId) {
   try {
-    const res = await pool.query(`
-      SELECT * FROM exam_dates
-      WHERE class_group_id = $1
-      ORDER BY exam_date, exam_time
-    `, [groupId]);
-    return res.rows;
+    const exams = await fetchFromService('academic', '/exams');
+    return exams.filter(e => e.class_group_id === groupId);
   } catch (err) {
-    console.error(`Error al cargar exámenes del grupo ${groupId}:`, err);
+    console.error(`Error loading exams for group ${groupId}:`, err);
     return [];
   }
 }
 
 export async function cargarSyllabusPorSlug(slug) {
   try {
-    const res = await pool.query(`
-      SELECT ss.*, p.full_name as "creatorName", p.email as "creatorEmail", p.slug as "creatorSlug", p.profile_data
-      FROM subject_syllabus ss
-      LEFT JOIN professors p ON ss.created_by = p.id
-      WHERE ss.slug = $1
-    `, [slug]);
-    return res.rows[0] || null;
+    const allSyllabus = await fetchFromService('academic', '/syllabus');
+    const ss = allSyllabus.find(s => s.slug === slug);
+    if (!ss) return null;
+
+    const professors = await fetchFromService('professors', '/professors');
+    const prof = professors.find(p => p.id === ss.created_by);
+
+    return {
+      ...ss,
+      creatorName: prof ? prof.full_name : null,
+      creatorEmail: prof ? prof.email : null,
+      creatorSlug: prof ? prof.slug : null,
+      profile_data: prof ? prof.profile_data : null
+    };
   } catch (err) {
-    console.error(`Error al cargar syllabus por slug "${slug}":`, err);
+    console.error(`Error loading syllabus by slug "${slug}":`, err);
     return null;
   }
 }
 
 export async function cargarSyllabusDeCarrera(careerId) {
   try {
-    const res = await pool.query(`
-      SELECT ss.*, p.full_name as "creatorName"
-      FROM subject_syllabus ss
-      LEFT JOIN professors p ON ss.created_by = p.id
-      WHERE ss.career_id = $1
-      ORDER BY ss.subject_name ASC
-    `, [careerId]);
-    return res.rows;
+    const allSyllabus = await fetchFromService('academic', '/syllabus');
+    const syllabusList = allSyllabus.filter(s => s.career_id === careerId);
+
+    const professors = await fetchFromService('professors', '/professors');
+
+    return syllabusList.map(s => {
+      const prof = professors.find(p => p.id === s.created_by);
+      return {
+        ...s,
+        creatorName: prof ? prof.full_name : null
+      };
+    });
   } catch (err) {
-    console.error(`Error al cargar planes de estudio de carrera ${careerId}:`, err);
+    console.error(`Error loading syllabus for career ${careerId}:`, err);
     return [];
   }
 }

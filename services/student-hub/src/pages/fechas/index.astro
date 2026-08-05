@@ -1,6 +1,6 @@
 ---
 import InstitutionalLayout from "../../layouts/InstitutionalLayout.astro";
-import pool from "../../lib/db.js";
+import { cargarGrupoConProfesores, cargarExamenesDeGrupo, cargarHorarioDeGrupo } from "../../lib/cargarDatos.js";
 
 const student = Astro.locals.student;
 const activeGroupSlug =
@@ -8,7 +8,6 @@ const activeGroupSlug =
 
 const now = new Date();
 
-// Estructura de salida
 let evaluationMonths: Array<{
   month: string;
   exams: Array<{
@@ -24,48 +23,32 @@ let evaluationMonths: Array<{
 }> = [];
 
 let academicPeriod = "";
+let examsRows = [];
 
 try {
-  // 1. Obtener el periodo académico del grupo
-  const gRes = await pool.query(
-    `SELECT academic_period FROM class_groups WHERE slug = $1`,
-    [activeGroupSlug]
-  );
-  if (gRes.rows.length > 0) {
-    academicPeriod = gRes.rows[0].academic_period || "";
+  const group = await cargarGrupoConProfesores(activeGroupSlug);
+  if (group) {
+    academicPeriod = group.academic_period || "";
+    const exams = await cargarExamenesDeGrupo(group.id);
+    const schedules = await cargarHorarioDeGrupo(group.id);
+
+    examsRows = exams.map(ed => {
+      const s = schedules.find(sched => sched.subject_name === ed.subject_name);
+      return {
+        id: ed.id,
+        subject_name: ed.subject_name,
+        exam_name: ed.exam_name,
+        exam_date: ed.exam_date,
+        exam_time: ed.exam_time,
+        professor_name: s ? s.professor_name : "No asignado",
+        classroom: s ? s.classroom_name : "Por asignar"
+      };
+    });
   }
 
-  // 2. Obtener exámenes del grupo junto con docente y aula del horario
-  const eRes = await pool.query(
-    `
-    SELECT
-      ed.id,
-      ed.subject_name,
-      ed.exam_name,
-      ed.exam_date,
-      ed.exam_time,
-      p.full_name   AS professor_name,
-      s.classroom_name AS classroom
-    FROM exam_dates ed
-    JOIN class_groups cg ON ed.class_group_id = cg.id
-    LEFT JOIN LATERAL (
-      SELECT professor_id, classroom_name
-      FROM schedules
-      WHERE class_group_id = cg.id
-        AND subject_name = ed.subject_name
-      LIMIT 1
-    ) s ON true
-    LEFT JOIN professors p ON s.professor_id = p.id
-    WHERE cg.slug = $1
-    ORDER BY ed.exam_date, ed.exam_time
-    `,
-    [activeGroupSlug]
-  );
-
-  // 3. Agrupar por mes
   const monthMap = new Map<string, typeof evaluationMonths[0]["exams"]>();
 
-  for (const row of eRes.rows) {
+  for (const row of examsRows) {
     const examDate = new Date(row.exam_date);
     const timeStr = row.exam_time ? row.exam_time.substring(0, 5) : "00:00";
     const [hh, mm] = timeStr.split(":").map(Number);

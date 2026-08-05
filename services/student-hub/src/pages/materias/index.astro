@@ -1,66 +1,43 @@
 ---
 import InstitutionalLayout from "../../layouts/InstitutionalLayout.astro";
-import pool from "../../lib/db.js";
-import { cargarCarreras } from "../../lib/cargarDatos.js";
+import { cargarCarreras, cargarGrupoConProfesores, cargarHorarioDeGrupo, cargarExamenesDeGrupo, cargarSyllabusDeCarrera } from "../../lib/cargarDatos.js";
 
 // Obtener el grupo activo
 const student = Astro.locals.student;
 const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group") || "4-b-191";
-const careers = cargarCarreras();
+const careers = await cargarCarreras();
 
 let enrolledSubjects = [];
 let activeGroup = null;
 
 if (activeGroupSlug) {
   try {
-    // 1. Obtener detalles del grupo
-    const gRes = await pool.query(`
-      SELECT g.*
-      FROM class_groups g
-      WHERE g.slug = $1
-    `, [activeGroupSlug]);
-
-    if (gRes.rows.length > 0) {
-      activeGroup = gRes.rows[0];
-      const career = careers.find(c => c.id === activeGroup.career_id);
-      activeGroup.careerName = career ? career.name : activeGroup.career_name || "Carrera Desconocida";
-
-      // 2. Obtener todas las materias matriculadas para este grupo a través del horario
-      // Agrupamos por subject_name para tener una lista única de materias
-      const sRes = await pool.query(`
-        SELECT DISTINCT ON (s.subject_name) 
-               s.subject_name,
-               p.full_name as professor_name,
-               p.email as professor_email,
-               p.slug as professor_slug,
-               p.profile_data->'contactInfo'->>'phone' as professor_phone,
-               p.profile_data->'contactInfo'->>'office' as professor_office,
-               p.profile_data->'contactInfo'->>'officeHours' as professor_office_hours,
-               p.profile_data->>'image' as professor_image,
-               s.classroom_name as classroom,
-               s.is_laboratory as is_lab
-        FROM schedules s
-        LEFT JOIN professors p ON s.professor_id = p.id
-        WHERE s.class_group_id = $1
-        ORDER BY s.subject_name, s.day_of_week
-      `, [activeGroup.id]);
+    activeGroup = await cargarGrupoConProfesores(activeGroupSlug);
+    if (activeGroup) {
+      const schedules = await cargarHorarioDeGrupo(activeGroup.id);
       
-      const uniqueSubjects = sRes.rows;
+      // Get unique subjects from schedules
+      const uniqueSubjectsMap = new Map();
+      for (const s of schedules) {
+        if (!uniqueSubjectsMap.has(s.subject_name)) {
+          uniqueSubjectsMap.set(s.subject_name, {
+            subject_name: s.subject_name,
+            professor_name: s.professor_name,
+            professor_email: s.professor_email,
+            professor_slug: s.professor_slug,
+            professor_phone: s.professor_phone,
+            professor_office: s.professor_office,
+            professor_office_hours: s.professor_office_hours,
+            professor_image: s.professor_image,
+            classroom: s.classroom_name,
+            is_lab: s.is_laboratory
+          });
+        }
+      }
+      const uniqueSubjects = Array.from(uniqueSubjectsMap.values());
 
-      // 3. Obtener el syllabus (programa) para cada materia
-      const sylRes = await pool.query(`
-        SELECT * FROM subject_syllabus
-        WHERE career_id = $1
-      `, [activeGroup.career_id]);
-      const syllabusList = sylRes.rows;
-
-      // 4. Obtener fechas de examen para este grupo
-      const eRes = await pool.query(`
-        SELECT * FROM exam_dates
-        WHERE class_group_id = $1
-        ORDER BY exam_date, exam_time
-      `, [activeGroup.id]);
-      const examDates = eRes.rows;
+      const syllabusList = await cargarSyllabusDeCarrera(activeGroup.career_id);
+      const examDates = await cargarExamenesDeGrupo(activeGroup.id);
 
       // Combinar los datos
       enrolledSubjects = uniqueSubjects.map(sub => {

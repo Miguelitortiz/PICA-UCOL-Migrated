@@ -1,45 +1,31 @@
 ---
 import InstitutionalLayout from '../../layouts/InstitutionalLayout.astro';
 import TeacherGrid from '../../components/TeacherGrid.astro';
-import pool from '../../lib/db.js';
 import { cargarDelegaciones, cargarFacultades } from '../../lib/cargarDatos.js';
+import { fetchFromService } from '../../lib/api-client.js';
+import { cargarProfesores } from '../../lib/cargarProfesores.js';
 
 const student = Astro.locals.student;
 const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group") || "4-b-191";
 
 let profesores = [];
 try {
-  const pRes = await pool.query(`
-    SELECT DISTINCT p.* 
-    FROM professors p
-    JOIN schedules s ON p.id = s.professor_id
-    JOIN class_groups cg ON s.class_group_id = cg.id
-    WHERE cg.slug = $1
-    UNION
-    SELECT p.*
-    FROM professors p
-    JOIN class_groups cg ON p.id = cg.tutor_id
-    WHERE cg.slug = $1
-  `, [activeGroupSlug]);
-  
-  profesores = pRes.rows.map(row => {
-    let profile = row.profile_data;
-    if (typeof profile === 'string') {
-      try { profile = JSON.parse(profile); } catch(e) {}
-    }
-    profile = profile || {};
-    profile.id = row.id;
-    profile.slug = row.slug;
-    profile.fullName = row.full_name;
-    profile.email = row.email;
-    profile.delegation_id = row.delegation_id;
-    return profile;
-  });
+  const allProfs = await cargarProfesores();
+  const groups = await fetchFromService('academic', '/groups');
+  const group = groups.find(g => g.slug === activeGroupSlug);
+  if (group) {
+    const schedules = await fetchFromService('academic', '/schedules');
+    const groupSchedules = schedules.filter(s => s.class_group_id === group.id);
+    
+    profesores = allProfs.filter(p => 
+      p.id === group.tutor_id || groupSchedules.some(s => s.professor_id === p.id)
+    );
+  }
 } catch(e) {
   console.error("Error loading teachers:", e);
 }
-const delegaciones = cargarDelegaciones();
-const facultades = cargarFacultades();
+const delegaciones = await cargarDelegaciones();
+const facultades = await cargarFacultades();
 
 const facultadesMap = facultades.map(f => ({
   id: f.id,

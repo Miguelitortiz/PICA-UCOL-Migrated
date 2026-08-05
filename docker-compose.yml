@@ -21,26 +21,79 @@ services:
       timeout: 5s
       retries: 5
 
-  # 2. Servidor de API y extractor (admin-hub-backend)
-  admin-hub-backend:
+  # 2. Auth Service
+  auth-service:
     build:
-      context: .
-      dockerfile: services/admin-hub-backend/Dockerfile
-    container_name: pica-admin-hub-backend
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: pica-auth-service
     restart: always
     environment:
       DATABASE_URL: postgres://${DB_USER:-admin}:${DB_PASSWORD:-admin_pass}@postgres:5432/pica_db
-      ADMIN_USER: ${ADMIN_USER:-admin}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin_pass}
-      PORT: 6769
-      PYTHON_PATH: python3
-    volumes:
-      - temp_uploads:/app/temp_uploads
+      JWT_SECRET: ${JWT_SECRET:-pica-ucol-jwt-secret-2026}
     depends_on:
       postgres:
         condition: service_healthy
 
-  # 3. Interfaz Administrativa (admin-hub-frontend)
+  # 3. Professors Service
+  professors-service:
+    build:
+      context: ./services/professors-service
+      dockerfile: Dockerfile
+    container_name: pica-professors-service
+    restart: always
+    environment:
+      DATABASE_URL: postgres://${DB_USER:-admin}:${DB_PASSWORD:-admin_pass}@postgres:5432/pica_db
+      JWT_SECRET: ${JWT_SECRET:-pica-ucol-jwt-secret-2026}
+      CV_EXTRACTOR_URL: http://cv-extractor-service:6774
+      REFERENCE_SERVICE_URL: http://reference-service:6773
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # 4. Academic Service
+  academic-service:
+    build:
+      context: ./services/academic-service
+      dockerfile: Dockerfile
+    container_name: pica-academic-service
+    restart: always
+    environment:
+      DATABASE_URL: postgres://${DB_USER:-admin}:${DB_PASSWORD:-admin_pass}@postgres:5432/pica_db
+      JWT_SECRET: ${JWT_SECRET:-pica-ucol-jwt-secret-2026}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # 5. Reference Service
+  reference-service:
+    build:
+      context: ./services/reference-service
+      dockerfile: Dockerfile
+    container_name: pica-reference-service
+    restart: always
+    depends_on:
+      - postgres
+
+  # 6. CV Extractor Service
+  cv-extractor-service:
+    build:
+      context: ./services/cv-extractor-service
+      dockerfile: Dockerfile
+    container_name: pica-cv-extractor-service
+    restart: always
+
+  # 7. Redis
+  redis:
+    image: redis:7-alpine
+    container_name: pica-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # 8. Interfaz Administrativa (admin-hub-frontend)
   admin-hub-frontend:
     build:
       context: .
@@ -48,9 +101,11 @@ services:
     container_name: pica-admin-hub-frontend
     restart: always
     depends_on:
-      - admin-hub-backend
+      - auth-service
+      - professors-service
+      - academic-service
 
-  # 4. StudentHUB Frontend (student-hub)
+  # 9. StudentHUB Frontend (student-hub)
   student-hub:
     build:
       context: .
@@ -65,7 +120,7 @@ services:
       postgres:
         condition: service_healthy
 
-  # 5. ProjectHUB Placeholder (project-hub)
+  # 10. ProjectHUB Placeholder (project-hub)
   project-hub:
     build:
       context: .
@@ -75,7 +130,7 @@ services:
     depends_on:
       - student-hub
 
-  # 6. Proxy de Entrada (Nginx Reverse Proxy)
+  # 11. Proxy de Entrada (Nginx Reverse Proxy)
   proxy:
     build:
       context: ./services/proxy
@@ -89,7 +144,11 @@ services:
     depends_on:
       - student-hub
       - admin-hub-frontend
-      - admin-hub-backend
+      - auth-service
+      - professors-service
+      - academic-service
+      - reference-service
+      - cv-extractor-service
       - project-hub
 
 volumes:
@@ -98,4 +157,6 @@ volumes:
   temp_uploads:
     driver: local
   proxy_cache:
+    driver: local
+  redis_data:
     driver: local

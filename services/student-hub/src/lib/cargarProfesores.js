@@ -1,32 +1,18 @@
-import pool from './db.js';
+import { fetchFromService } from './api-client.js';
 
-/**
- * Carga todos los perfiles de docentes en tiempo de ejecución desde PostgreSQL.
- */
 export async function cargarProfesores() {
   try {
-    const query = `
-      SELECT p.id, p.slug, p.full_name, p.email, p.delegation_id, p.profile_data,
-             COALESCE(
-               json_agg(g.career_id) FILTER (WHERE g.career_id IS NOT NULL),
-               '[]'
-             ) as career_ids
-      FROM professors p
-      LEFT JOIN professor_groups pg ON p.id = pg.professor_id
-      LEFT JOIN class_groups g ON pg.class_group_id = g.id
-      GROUP BY p.id
-      ORDER BY p.full_name ASC
-    `;
-    const res = await pool.query(query);
-    return res.rows.map(row => {
-      const profile = row.profile_data;
+    const rows = await fetchFromService('professors', '/professors');
+    return rows.map(row => {
+      const profile = row.profile_data || {};
       profile.id = row.id;
       profile.slug = row.slug;
       profile.fullName = row.full_name;
       profile.institutionalEmail = row.email;
       profile.delegation_id = row.delegation_id;
       
-      const combinedCareers = new Set(row.career_ids || []);
+      const careerIdsFromAssignments = row.group_assignments ? row.group_assignments.map(a => a.career_id).filter(Boolean) : [];
+      const combinedCareers = new Set(careerIdsFromAssignments);
       if (profile.auto_career_ids) {
         profile.auto_career_ids.forEach(cid => combinedCareers.add(cid));
       }
@@ -35,24 +21,21 @@ export async function cargarProfesores() {
       return profile;
     });
   } catch (err) {
-    console.error('Error al cargar profesores de PostgreSQL en runtime:', err);
+    console.error('Error loading teachers from professors-service:', err);
     return [];
   }
 }
 
-/**
- * Carga un docente específico a partir de su slug desde PostgreSQL.
- * @param {string} slug 
- */
 export async function cargarProfesor(slug) {
   try {
-    const res = await pool.query('SELECT profile_data FROM professors WHERE slug = $1', [slug]);
-    if (res.rows.length > 0) {
-      return res.rows[0].profile_data;
+    const rows = await fetchFromService('professors', '/professors');
+    const prof = rows.find(p => p.slug === slug);
+    if (prof) {
+      return prof.profile_data;
     }
     return null;
   } catch (err) {
-    console.error(`Error al cargar profesor con slug "${slug}" desde PostgreSQL:`, err);
+    console.error(`Error loading teacher with slug "${slug}" from professors-service:`, err);
     return null;
   }
 }

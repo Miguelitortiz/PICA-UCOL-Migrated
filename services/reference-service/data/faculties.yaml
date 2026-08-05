@@ -1,0 +1,281 @@
+# Facultades de la Universidad de Colima
+# Fuente: https://portal.ucol.mx/dges/planteles.htm
+# Estructura: Delegación → Facultad → Carreras (por ID de carrera)
+
+# ── Delegación 1: Manzanillo ──────────────────────────────────────────────────
+
+- id: 1
+  slug: turismo-y-gastronomia
+  delegation_id: 1
+  name: Facultad de Turismo y Gastronomía
+  portal_url: https://portal.ucol.mx/etg/
+  career_ids:
+    - 432  # Licenciatura en Gastronomía
+    - 110  # Licenciatura en Gestión Turística
+
+- id: 2
+  slug: ciencias-marinas
+  delegation_id: 1
+  name: Facultad de Ciencias Marinas
+  portal_url: https://portal.ucol.mx/facimar/
+  career_ids:
+    - 450  # Licenciatura en Sustentabilidad Marina
+
+- id: 3
+  slug: contabilidad-manzanillo
+  delegation_id: 1
+  name: Facultad de Contabilidad y Administración de Manzanillo
+  portal_url: https://portal.ucol.mx/fcam/
+  career_ids: []
+
+- id: 4
+  slug: ingenieria-electromecanica
+  delegation_id: 1
+  name: Facultad de Ingeniería Electromecánica
+  portal_url: https://portal.ucol.mx/fie/
+  career_ids:
+    - 454  # Ingeniería Oceánica
+
+- id: 5
+  slug: comercio-exterior
+  delegation_id: 1
+  name: Facultad de Comercio Exterior
+  portal_url: https://portal.ucol.mx/facomex/
+  career_ids:
+    - 436  # Licenciatura en Comercio Exterior
+    - 437  # Licenciatura en Aduanas
+    - 473  # Licenciatura en Negocios Internacionales
+
+# ── Delegación 2: Tecomán ─────────────────────────────────────────────────────
+
+- id: 6
+  slug: contabilidad-tecoman
+  delegation_id: 2
+  name: Facultad de Contabilidad y Administración de Tecomán
+  portal_url: https://portal.ucol.mx/fcat/
+  career_ids: []
+
+- id: 7
+  slug: ciencias-biologicas-agropecuarias
+  delegation_id: 2
+  name: Facultad de Ciencias Biológicas y Agropecuarias
+  portal_url: https://portal.ucol.mx/fcba/
+  career_ids:
+    - 420  # Ingeniero Agrónomo
+    - 367  # Licenciatura en Biología
+
+- id: 8
+  slug: medicina-veterinaria-zootecnia
+  delegation_id: 2
+  name: Facultad de Medicina Veterinaria y Zootecnia
+  portal_url: https://portal.ucol.mx/fmvz/
+  career_ids:
+    - 54   # Médico Veterinario Zootecnista
+
+# ── Delegación 3: Colima ──────────────────────────────────────────────────────
+
+- id: 9
+  slug: mercadotecnia
+  delegation_id: 3
+  name: Escuela de Mercadotecnia
+  portal_url: https://portal.ucol.mx/mercadotecnia/
+  career_ids:
+    - 102  # Licenciatura en Mercadotecnia
+    - 397  # Licenciatura en Publicidad y Relaciones Públicas
+
+- id: 10
+  slug: ciencias
+  delegation_id: 3
+  name: Facultad de Ciencias
+  portal_url: https://portal.ucol.mx/fc/
+  career_ids:
+    - 57   # Licenciatura en Matemáticas
+    - 88   # Licenciatura en Física
+    - 350  # Licenciatura en Gestión y Reducción del Riesgo de Desastres
+
+- id: 11
+  slug: ciencias-de-la-educacion
+  delegation_id: 3
+  name: Facultad de Ciencias de la Educación
+  portal_url: https://portal.ucol.mx/fce/
+  career_ids:
+    - 133  # Licenciatura en Educación Física y Deporte
+    - 134  # Licenciatura en Enseñanza de las Matemáticas
+    - 370  # Licenciatura en Educación Especial
+
+- id: 12
+  slug: telematica
+  delegation_id: 3
+  name: Facultad de Telemática
+  portal_url: https://portal.ucol.mx/telematica/
+  career_ids:
+    - 191  # Ingeniería de Software
+    - 348  # Ingeniería en Tecnologías de Internet
+
+- id: 13
+  slug: trabajo-social
+  delegation_id: 3
+  name: Facultad de Trabajo Social
+  portal_url: https://portal.ucol.mx/trabajosocial/
+  career_ids:
+    - 178  # Licenciatura en Trabajo Social
+
+- id: 14
+  slug: ciencias-politicas-sociales
+  delegation_id: 3
+  name: Facultad de Ciencias Políticas y Sociales
+  portal_url: https://portal.ucol.mx/cpolitica/
+  career_ids:
+    - 455  # Licenciatura en Ciencia Política y Gestión Pública
+    - 461  # Licenciatura en Relaciones Internacionales y Agenda Global
+
+- id: 15
+  slug: contabilidad-colima
+  delegation_id: 3
+  name: Facultad de Contabilidad y Administración de Colima
+  portal_url: https://portal.ucol.mx/fcac/
+  career_ids:
+    - 118  # Contador Público
+    - 478  # Licenciatura en Administración
+    - 476  # Licenciatura en Finanzas
+    - 460  # Licenciatura en Negocios Digitales
+
+- id: 16
+  slug: derecho
+  delegation_id: 3
+  name: Facultad de Derecho
+  portal_url: https://portal.ucol.mx/fd/
+  career_ids:
+    - 453  # Licenciatura en Derecho
+
+- id: 17
+  slug: enfermeria
+  delegation_id: 3
+  name: Facultad de Enfermería
+  portal_url: https://portal.ucol.mx/fenfermeria/
+  career_ids:
+    - 470  # Licenciatura en Enfermería
+
+- id: 18
+  slug: psicologia
+  delegation_id: 3
+  name: Facultad de Psicología
+  portal_url: https://portal.ucol.mx/fpsicologia/
+  career_ids:
+    - 469  # Licenciatura en Psicología
+
+- id: 19
+  slug: letras-y-comunicacion
+  delegation_id: 3
+  name: Facultad de Letras y Comunicación
+  portal_url: https://portal.ucol.mx/flc/
+  career_ids:
+    - 131  # Licenciatura en Comunicación
+    - 451  # Licenciatura en Lengua y Literatura
+    - 438  # Licenciatura en Periodismo Digital
+
+- id: 20
+  slug: medicina
+  delegation_id: 3
+  name: Facultad de Medicina
+  portal_url: https://portal.ucol.mx/fm/
+  career_ids:
+    - 189  # Médico Cirujano y Partero
+    - 190  # Licenciatura en Nutrición
+    - 464  # Licenciatura en Fisioterapia
+
+- id: 21
+  slug: bellas-artes
+  delegation_id: 3
+  name: Instituto Universitario de Bellas Artes
+  portal_url: https://portal.ucol.mx/iuba/
+  career_ids:
+    - 206  # Licenciatura en Artes Visuales
+    - 192  # Licenciatura en Danza Escénica
+    - 369  # Licenciatura en Música
+
+- id: 26
+  slug: filosofia
+  delegation_id: 3
+  name: Escuela de Filosofía
+  portal_url: https://portal.ucol.mx/ef/
+  career_ids:
+    - 174  # Licenciatura en Filosofía
+
+# ── Delegación 4: Coquimatlán ─────────────────────────────────────────────────
+
+- id: 22
+  slug: arquitectura-y-diseno
+  delegation_id: 4
+  name: Facultad de Arquitectura y Diseño
+  portal_url: https://portal.ucol.mx/fayd/
+  career_ids:
+    - 427  # Licenciatura en Arquitectura
+    - 429  # Licenciatura en Diseño Gráfico
+    - 428  # Licenciatura en Diseño Industrial
+
+- id: 23
+  slug: ciencias-quimicas
+  delegation_id: 4
+  name: Facultad de Ciencias Químicas
+  portal_url: https://portal.ucol.mx/fcq/
+  career_ids:
+    - 125  # Químico Farmacéutico Biólogo
+    - 368  # Ingeniería Química Metalúrgica
+    - 17   # Ingeniero Químico en Alimentos
+
+- id: 24
+  slug: ingenieria-civil
+  delegation_id: 4
+  name: Facultad de Ingeniería Civil
+  portal_url: https://portal.ucol.mx/fic/
+  career_ids:
+    - 153  # Ingeniería Civil
+    - 155  # Ingeniero Topógrafo Geomático
+
+- id: 25
+  slug: ingenieria-mecanica-electrica
+  delegation_id: 4
+  name: Facultad de Ingeniería Mecánica y Eléctrica
+  portal_url: https://portal.ucol.mx/fime/
+  career_ids:
+    - 371  # Ingeniero Mecánico Electricista
+    - 418  # Ingeniería en Mecatrónica
+    - 99   # Ingeniería en Sistemas Electrónicos y Telecomunicaciones
+    - 349  # Ingeniería en Tecnologías Electrónicas
+
+# ── Delegación 5: Villa de Álvarez ───────────────────────────────────────────
+
+
+
+- id: 27
+  slug: pedagogia
+  delegation_id: 5
+  name: Facultad de Pedagogía
+  portal_url: https://portal.ucol.mx/fpedagogia/
+  career_ids:
+    - 468  # Licenciatura en Pedagogía
+
+- id: 28
+  slug: economia
+  delegation_id: 5
+  name: Facultad de Economía
+  portal_url: https://portal.ucol.mx/feconomia/
+  career_ids:
+    - 477  # Licenciatura en Economía
+    - 467  # Licenciatura en Gestión de Negocios Globales (en inglés)
+
+- id: 29
+  slug: turismo
+  delegation_id: 5
+  name: Facultad de Turismo
+  portal_url: https://portal.ucol.mx/ft/
+  career_ids: []
+
+- id: 30
+  slug: lenguas-extranjeras
+  delegation_id: 5
+  name: Facultad de Lenguas Extranjeras
+  portal_url: https://portal.ucol.mx/fle/
+  career_ids:
+    - 177  # Licenciatura en Enseñanza de Lenguas
