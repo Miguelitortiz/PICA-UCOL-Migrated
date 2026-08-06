@@ -1,6 +1,47 @@
-# Plan Técnico: Migración de PICA-UCOL a Arquitectura de Microservicios
+# Plan Técnico: Despliegue en Producción y Migración a Microservicios
 
-## Resumen Ejecutivo
+## Despliegue Remoto en Servidor SSH (ici@148.213.103.157)
+
+### Objetivo
+Desplegar el proyecto PICA-UCOL-Migrated en el servidor proporcionado, probar su accesibilidad desde el exterior y establecer un flujo de trabajo local-remoto utilizando Git.
+
+### Estado Actual del Servidor
+Al revisar el servidor `ici@148.213.103.157`, se encontró que:
+1. La conexión SSH funciona correctamente.
+2. `git` está instalado (versión 2.53.0).
+3. `docker` y `docker compose` **no están instalados** actualmente.
+
+### Open Questions
+> [!WARNING]
+> ¿Deseas que instale automáticamente Docker y Docker Compose en el servidor remoto (`ici@148.213.103.157`) como parte de este despliegue, o prefieres instalarlo tú manualmente? (El plan asume que procederé con la instalación).
+
+### Pasos de Despliegue (Proposed Changes)
+
+1. **Instalación de Dependencias (Servidor Remoto)**
+   - Instalar Docker Engine y Docker Compose en el servidor a través de SSH.
+   - Habilitar el servicio de Docker.
+
+2. **Clonado del Repositorio**
+   - Ejecutar `git clone https://github.com/Miguelitortiz/PICA-UCOL-Migrated.git` en el home del usuario `ici`.
+
+3. **Configuración y Puesta en Marcha**
+   - Asegurar que exista un `.env.production` válido en el servidor.
+   - Ejecutar `docker compose up -d --build` para levantar toda la infraestructura (Base de datos, Backend, Frontend, Nginx Proxy, etc.).
+
+4. **Verificación de Accesibilidad (Verification Plan)**
+   - Comprobar que los contenedores están corriendo con `docker ps`.
+   - Realizar una prueba `curl` local en el servidor al puerto 80.
+   - Validar el acceso externo conectándose a `http://148.213.103.157` desde el entorno local.
+
+### Flujo de Trabajo Propuesto (Git Workflow)
+Tal como lo solicitaste, cualquier cambio seguirá estrictamente este flujo:
+1. **Desarrollo Local**: Modificar el código en la máquina local (`/var/home/Moi/Documents/Projects/PICA-UCOL-Migrated`).
+2. **Push a GitHub**: Hacer `git add`, `git commit` y `git push` a `origin main`.
+3. **Despliegue Remoto**: Conectarse al servidor vía SSH, ejecutar `git pull` en el directorio del proyecto y reconstruir los contenedores afectados con `docker compose up -d --build <servicio>`.
+
+---
+
+## Resumen Ejecutivo de la Migración
 
 PICA-UCOL es una plataforma académica de la Universidad de Colima que actualmente opera como un **monorepo con 5 servicios Docker** (StudentHUB, AdminHUB Frontend, AdminHUB Backend, ProjectHUB, Proxy Nginx). A pesar de estar containerizada, la arquitectura presenta **acoplamiento fuerte** entre servicios, un **backend monolítico de 1052 líneas** que mezcla múltiples dominios, y **archivos .astro gigantes** (hasta 168KB / 3768 líneas en un solo archivo). Este plan describe la migración gradual hacia una arquitectura de microservicios genuina, orientada a la expansión, mantenibilidad y trabajo colaborativo.
 
