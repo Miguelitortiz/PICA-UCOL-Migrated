@@ -33,7 +33,7 @@ export const POST = async ({ request, cookies }) => {
     cookies.set('pica_session', sessionToken, {
       path: '/',
       httpOnly: true,
-      secure: true,
+      secure: false, // Permitir login por HTTP para pruebas
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 // 1 día
     });
