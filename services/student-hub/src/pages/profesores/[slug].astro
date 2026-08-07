@@ -27,6 +27,8 @@ const {
   teaching,
   certifications,
   academicBody,
+  biography,
+  showOnlyBiography
 } = profesor;
 ---
 
@@ -74,11 +76,20 @@ const {
 
       <!-- Contenido (Cerrado por defecto en móvil, visible siempre en desktop) -->
       <div class="accordion-content p-4 lg:p-0 hidden lg:block space-y-6">
-        <!-- Línea de Tiempo Horizontal (Formación) -->
-        <HorizontalTimeline academicFormation={academicFormation} />
+        {biography && (
+          <div class="bg-surface border border-rule p-6 sm:p-8 rounded-sm prose prose-sm sm:prose-base max-w-none text-ink">
+            <h2 class="font-bold text-xl sm:text-2xl text-primary mb-4 mt-0">Sembranza</h2>
+            <p class="leading-relaxed whitespace-pre-wrap">{biography}</p>
+          </div>
+        )}
 
-        <!-- Pestañas (Tabs) con Altura Fija y Scroll Interno -->
-        <div class="bg-ground flex flex-col h-[622px]">
+        {!showOnlyBiography && (
+          <>
+            <!-- Línea de Tiempo Horizontal (Formación) -->
+            <HorizontalTimeline academicFormation={academicFormation} />
+
+            <!-- Pestañas (Tabs) con Altura Fija y Scroll Interno -->
+            <div class="bg-ground flex flex-col h-[622px]">
           <!-- Encabezado de Pestañas -->
           <div class="flex font-mono text-[10px] sm:text-xs uppercase tracking-wider font-bold bg-ground">
             <button class="tab-btn px-4 h-11 flex items-center justify-center hover:text-primary border-b-2 border-primary text-primary cursor-pointer transition-all duration-120" data-tab="publicaciones">
@@ -191,6 +202,8 @@ const {
             </div>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   </div>
