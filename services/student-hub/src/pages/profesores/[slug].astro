@@ -59,8 +59,8 @@ const {
 
         <ImpactSidebar
           admissionYear={admissionYear}
-          articles={scientificProduction.articles}
-          theses={teaching.theses}
+          articles={scientificProduction?.articles || []}
+          theses={teaching?.theses || []}
           academicBody={academicBody}
         />
       </div>
@@ -111,15 +111,15 @@ const {
             <!-- Panel 1: Publicaciones -->
             <div class="tab-panel" id="panel-publicaciones">
               <PublicationList
-                articles={scientificProduction.articles}
-                books={scientificProduction.books}
+                articles={scientificProduction?.articles || []}
+                books={scientificProduction?.books || []}
               />
             </div>
 
             <!-- Panel 2: Materias -->
             <div class="tab-panel hidden" id="panel-materias">
               <TeachingList
-                courses={teaching.courses}
+                courses={teaching?.courses || []}
                 showOnly="courses"
               />
             </div>
@@ -127,7 +127,7 @@ const {
             <!-- Panel 3: Tesis -->
             <div class="tab-panel hidden" id="panel-tesis">
               <TeachingList
-                theses={teaching.theses}
+                theses={teaching?.theses || []}
                 showOnly="theses"
               />
             </div>
