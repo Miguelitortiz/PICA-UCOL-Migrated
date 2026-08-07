@@ -22,7 +22,7 @@ const currentYear = new Date().getFullYear();
 const yearsOfService = currentYear - admissionYear;
 
 // Obtener iniciales para el placeholder de foto
-const initials = fullName
+const initials = (fullName || 'P A')
   .split(' ')
   .filter(word => word.length > 2 && !['del', 'de', 'las', 'los'].includes(word.toLowerCase()))
   .slice(0, 2)

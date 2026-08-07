@@ -31,7 +31,14 @@ export async function cargarProfesor(slug) {
     const rows = await fetchFromService('professors', '/professors');
     const prof = rows.find(p => p.slug === slug);
     if (prof) {
-      return prof.profile_data;
+      const profile = prof.profile_data || {};
+      profile.id = prof.id;
+      profile.slug = prof.slug;
+      profile.fullName = profile.fullName || prof.full_name;
+      profile.institutionalEmail = profile.institutionalEmail || prof.email;
+      profile.department = profile.department || 'FIME'; // fallback if not in JSON
+      profile.admissionYear = profile.admissionYear || 1997; // fallback
+      return profile;
     }
     return null;
   } catch (err) {
