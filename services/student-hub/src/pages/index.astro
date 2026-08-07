@@ -189,7 +189,7 @@ function getDailySchedule(day: string) {
             semBtn.style.transition = 'all 120ms';
             semBtn.style.textAlign = 'center';
             semBtn.className = 'sem-btn';
-            semBtn.textContent = `${sem}° Semestre`;
+            semBtn.textContent = `${sem}°  Semestre`;
             semBtn.addEventListener('click', () => {
               selectedSemester = sem;
               selectedCareerSemLabel.textContent = `${selectedCareerName} — Semestre ${selectedSemester}°`;

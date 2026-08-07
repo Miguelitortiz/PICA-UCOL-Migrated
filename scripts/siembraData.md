@@ -1,12 +1,67 @@
-## Limpiar Base de Datos
+# Guía de Siembra de Datos (Data Seeding)
 
+Este documento detalla los pasos exactos y seguros requeridos para realizar la siembra de datos en los entornos locales y de producción, resolviendo posibles problemas de permisos.
+
+## Requisitos Previos (Producción)
+
+Si estás actualizando la base de datos de producción, asegúrate de acceder por SSH y posicionarte en la raíz del proyecto:
+```bash
+ssh ici@148.213.103.157
+cd PICA-UCOL-Migrated
+git pull origin main
+```
+
+---
+
+## Pasos para la Siembra de Datos
+
+### 1. Limpiar la Base de Datos
+Este script se conecta de forma segura a través de `pg` y trunca todas las tablas requeridas.
 ```bash
 node scripts/clear-db.js
 ```
 
-## Importar Datos
+### 2. Generar el Archivo SQL desde el CSV
+Procesa los archivos CSV de horarios y regenera el script `import_horarios.sql` que contiene las sentencias `INSERT`.
+```bash
+node scripts/generate-sql-from-csv.js
+```
+
+### 3. Verificar y Migrar el Esquema (Solo si es necesario)
+Si hubo actualizaciones recientes en el esquema (por ejemplo, nuevas columnas como `is_hti` en la tabla `schedules`), asegúrate de que existan en la base de datos antes de importar. Puedes ejecutar consultas rápidas en línea mediante Node:
+```bash
+node -e "
+const { Pool } = require('pg');
+require('dotenv').config();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL || 'postgres://admin:admin_pass@localhost:5432/pica_db' });
+pool.query('ALTER TABLE schedules ADD COLUMN IF NOT EXISTS is_hti BOOLEAN DEFAULT FALSE;')
+  .then(() => { console.log('Esquema verificado'); process.exit(0); });
+"
+```
+
+### 4. Importar los Datos a PostgreSQL
+Para evitar problemas de permisos usando `docker exec` (especialmente para usuarios sin acceso al socket de Docker y donde `sudo` interactivo es un problema), puedes insertar el archivo SQL directamente usando Node.js, ya que la aplicación tiene acceso a la base de datos por el puerto TCP:
 
 ```bash
-docker exec -i pica-postgres psql -U admin -d pica_db < scripts/import_horarios.sql
+node -e "
+const fs = require('fs');
+const { Pool } = require('pg');
+require('dotenv').config();
 
-node scripts/generate-sql-from-csv.js
+const pool = new Pool({ connectionString: process.env.DATABASE_URL || 'postgres://admin:admin_pass@localhost:5432/pica_db' });
+const sql = fs.readFileSync('scripts/import_horarios.sql', 'utf8');
+
+pool.query(sql)
+  .then(() => { 
+    console.log('✅ Importación SQL exitosa'); 
+    process.exit(0); 
+  })
+  .catch(e => { 
+    console.error('❌ Error en la importación SQL:', e); 
+    process.exit(1); 
+  });
+"
+```
+
+> **Nota:** Alternativamente, si tienes permisos de Docker directos o acceso de superusuario pleno, puedes realizar la importación así:
+> `docker exec -i pica-postgres psql -U admin -d pica_db < scripts/import_horarios.sql`
