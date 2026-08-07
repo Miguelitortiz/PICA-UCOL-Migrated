@@ -5,33 +5,30 @@ import { cargarCarreras, cargarDelegaciones, cargarTodosLosGrupos, cargarGrupoCo
 
 const student = Astro.locals.student;
 const delegations = await cargarDelegaciones();
-const careers = await cargarCarreras();
+const allCareers = await cargarCarreras();
+const fimeCareerIds = [349, 371, 418, 99];
+const careers = allCareers.filter(c => fimeCareerIds.includes(c.id));
+const allGroups = await cargarTodosLosGrupos();
 
-let allGroups = [];
 const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group");
 let activeGroup = null;
 let schedules = [];
 let examDates = [];
 let syllabusList = [];
 
-if (student) {
-  allGroups = await cargarTodosLosGrupos();
-
-  if (activeGroupSlug) {
-    activeGroup = await cargarGrupoConProfesores(activeGroupSlug);
-    if (activeGroup) {
-      schedules = await cargarHorarioDeGrupo(activeGroup.id);
-      examDates = await cargarExamenesDeGrupo(activeGroup.id);
-      syllabusList = await cargarSyllabusDeCarrera(activeGroup.career_id);
-    }
+if (activeGroupSlug) {
+  activeGroup = await cargarGrupoConProfesores(activeGroupSlug);
+  if (activeGroup) {
+    schedules = await cargarHorarioDeGrupo(activeGroup.id);
+    examDates = await cargarExamenesDeGrupo(activeGroup.id);
+    syllabusList = await cargarSyllabusDeCarrera(activeGroup.career_id);
   }
 }
 
 const timeSlots = [
   { start: "07:00:00", end: "07:50:00", label: "07:00–07:50" },
   { start: "07:50:00", end: "08:40:00", label: "07:50–08:40" },
-  { start: "08:40:00", end: "09:30:00", label: "08:40–09:30" },
-  { start: "09:30:00", end: "10:00:00", label: "09:30–10:00" },
+  { start: "09:10:00", end: "10:00:00", label: "09:10–10:00" },
   { start: "10:00:00", end: "10:50:00", label: "10:00–10:50" },
   { start: "10:50:00", end: "11:40:00", label: "10:50–11:40" },
   { start: "11:40:00", end: "12:30:00", label: "11:40–12:30" },
@@ -39,6 +36,10 @@ const timeSlots = [
   { start: "13:20:00", end: "14:10:00", label: "13:20–14:10" },
   { start: "14:10:00", end: "15:00:00", label: "14:10–15:00" },
   { start: "15:30:00", end: "16:20:00", label: "15:30–16:20" },
+  { start: "16:20:00", end: "17:10:00", label: "16:20–17:10" },
+  { start: "17:10:00", end: "18:00:00", label: "17:10–18:00" },
+  { start: "18:00:00", end: "18:50:00", label: "18:00–18:50" },
+  { start: "18:50:00", end: "19:40:00", label: "18:50–19:40" },
 ];
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
@@ -64,47 +65,217 @@ function getSyllabusDesc(subjectName: string): string {
   return s?.program_description || "Sin descripción disponible.";
 }
 
-// Helper: agrupar schedules por día para la vista de lista móvil
 function getDailySchedule(day: string) {
-  const dayItems = schedules
+  return schedules
     .filter(s => s.day_of_week === day)
-    .sort((a, b) => a.start_time.localeCompare(b.start_time));
-  
-  // Agrupar por franja horaria y deduplicar HTI
-  const grouped: Map<string, any[]> = new Map();
-  dayItems.forEach(item => {
-    const key = `${item.start_time}-${item.end_time}`;
-    if (!grouped.has(key)) grouped.set(key, []);
-    grouped.get(key)!.push(item);
-  });
-  
-  const result: any[] = [];
-  grouped.forEach((items, _key) => {
-    const hasHti = items.some(i => i.subject_name?.toUpperCase().includes('HTI'));
-    const nonHti = items.filter(i => !i.subject_name?.toUpperCase().includes('HTI'));
-    const display = nonHti.length > 0 ? nonHti : items;
-    display.forEach(item => {
-      result.push({ ...item, hasHti });
-    });
-  });
-  return result;
+    .sort((a, b) => a.start_time.localeCompare(b.start_time))
+    .map(item => ({
+      ...item,
+      isHti: item.is_hti || item.subject_name?.toUpperCase().includes('HTI')
+    }));
 }
 ---
 
 {!student ? (
-  <LoginPanel />
+  <InstitutionalLayout title="Selección de Grupo">
+    <div style="max-width: 800px; margin: 80px auto; padding: 0 24px; min-height: 400px;">
+      
+      <!-- Paso 1: Selecciona tu Carrera -->
+      <div id="step-career" class="wizard-step">
+        <span class="overline overline--primary">Paso 1 de 3</span>
+        <h1 style="font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; color: var(--color-ink); margin-top: 8px; line-height: 1.1; margin-bottom: 12px;">
+          Selecciona tu Carrera
+        </h1>
+        <p style="font-size: 1rem; color: var(--color-ink-2); line-height: 1.5; margin-bottom: 36px;">
+          Elige tu carrera académica para comenzar a visualizar tu horario.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+          {careers.map(career => (
+            <button 
+              class="career-btn" 
+              data-id={career.id}
+              data-name={career.name}
+              style="text-align: left; padding: 20px; border: 1px solid var(--color-rule-strong); background: var(--color-surface); font-family: var(--font-sans); font-size: 1rem; font-weight: 700; color: var(--color-ink); cursor: pointer; transition: all 120ms;"
+            >
+              {career.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Paso 2: Selecciona tu Semestre -->
+      <div id="step-semester" class="wizard-step" style="display: none;">
+        <span class="overline overline--primary">Paso 2 de 3</span>
+        <h1 style="font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; color: var(--color-ink); margin-top: 8px; line-height: 1.1; margin-bottom: 8px;">
+          Selecciona tu Semestre
+        </h1>
+        <p id="selected-career-label" style="font-size: 1.125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 36px;"></p>
+
+        <div id="semesters-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 40px;"></div>
+        
+        <button 
+          id="btn-back-to-career" 
+          style="padding: 10px 18px; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; background: transparent; border: 1px solid var(--color-rule-strong); color: var(--color-ink); cursor: pointer; transition: all 150ms;"
+        >
+          ← Anterior
+        </button>
+      </div>
+
+      <!-- Paso 3: Selecciona tu Grupo -->
+      <div id="step-group" class="wizard-step" style="display: none;">
+        <span class="overline overline--primary">Paso 3 de 3</span>
+        <h1 style="font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; color: var(--color-ink); margin-top: 8px; line-height: 1.1; margin-bottom: 8px;">
+          Selecciona tu Grupo
+        </h1>
+        <p id="selected-career-sem-label" style="font-size: 1.125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 36px;"></p>
+
+        <div id="groups-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-bottom: 40px;"></div>
+        
+        <button 
+          id="btn-back-to-semester" 
+          style="padding: 10px 18px; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; background: transparent; border: 1px solid var(--color-rule-strong); color: var(--color-ink); cursor: pointer; transition: all 150ms;"
+        >
+          ← Anterior
+        </button>
+      </div>
+
+    </div>
+
+    <script is:inline define:vars={{ allGroups }}>
+      let selectedCareerId = null;
+      let selectedCareerName = "";
+      let selectedSemester = null;
+      let selectedGroupSlug = null;
+
+      const stepCareer = document.getElementById('step-career');
+      const stepSemester = document.getElementById('step-semester');
+      const stepGroup = document.getElementById('step-group');
+
+      const careerBtns = document.querySelectorAll('.career-btn');
+      const semestersGrid = document.getElementById('semesters-grid');
+      const groupsGrid = document.getElementById('groups-grid');
+
+      const selectedCareerLabel = document.getElementById('selected-career-label');
+      const selectedCareerSemLabel = document.getElementById('selected-career-sem-label');
+
+      const btnBackToCareer = document.getElementById('btn-back-to-career');
+      const btnBackToSemester = document.getElementById('btn-back-to-semester');
+
+      careerBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedCareerId = parseInt(btn.getAttribute('data-id'), 10);
+          selectedCareerName = btn.getAttribute('data-name');
+          
+          selectedSemester = null;
+          selectedGroupSlug = null;
+
+          selectedCareerLabel.textContent = selectedCareerName;
+
+          const careerGroups = allGroups.filter(g => g.career_id === selectedCareerId);
+          const semesters = [...new Set(careerGroups.map(g => g.semester))].sort((a, b) => a - b);
+
+          semestersGrid.innerHTML = '';
+          semesters.forEach(sem => {
+            const semBtn = document.createElement('button');
+            semBtn.style.padding = '18px';
+            semBtn.style.border = '1px solid var(--color-rule-strong)';
+            semBtn.style.backgroundColor = 'var(--color-surface)';
+            semBtn.style.fontFamily = 'var(--font-sans)';
+            semBtn.style.fontSize = '1.1rem';
+            semBtn.style.fontWeight = '700';
+            semBtn.style.color = 'var(--color-ink)';
+            semBtn.style.cursor = 'pointer';
+            semBtn.style.transition = 'all 120ms';
+            semBtn.style.textAlign = 'center';
+            semBtn.className = 'sem-btn';
+            semBtn.textContent = `${sem}° Semestre`;
+            semBtn.addEventListener('click', () => {
+              selectedSemester = sem;
+              selectedCareerSemLabel.textContent = `${selectedCareerName} — Semestre ${selectedSemester}°`;
+
+              const finalGroups = careerGroups.filter(g => g.semester === selectedSemester);
+              groupsGrid.innerHTML = '';
+              finalGroups.forEach(grp => {
+                const grpBtn = document.createElement('button');
+                grpBtn.style.padding = '18px';
+                grpBtn.style.border = '1px solid var(--color-rule-strong)';
+                grpBtn.style.backgroundColor = 'var(--color-surface)';
+                grpBtn.style.fontFamily = 'var(--font-sans)';
+                grpBtn.style.fontSize = '1.1rem';
+                grpBtn.style.fontWeight = '700';
+                grpBtn.style.color = 'var(--color-ink)';
+                grpBtn.style.cursor = 'pointer';
+                grpBtn.style.transition = 'all 120ms';
+                grpBtn.style.textAlign = 'center';
+                grpBtn.className = 'grp-btn';
+                grpBtn.textContent = grp.name;
+                grpBtn.addEventListener('click', () => {
+                  selectedGroupSlug = grp.slug;
+                  document.cookie = `pica_selected_group=${selectedGroupSlug}; path=/; max-age=${60 * 60 * 24 * 365}`;
+                  window.location.href = '/';
+                });
+
+                grpBtn.addEventListener('mouseenter', () => {
+                  grpBtn.style.borderColor = 'var(--color-ink)';
+                  grpBtn.style.backgroundColor = 'var(--color-muted)';
+                });
+                grpBtn.addEventListener('mouseleave', () => {
+                  grpBtn.style.borderColor = 'var(--color-rule-strong)';
+                  grpBtn.style.backgroundColor = 'var(--color-surface)';
+                });
+
+                groupsGrid.appendChild(grpBtn);
+              });
+
+              stepSemester.style.display = 'none';
+              stepGroup.style.display = 'block';
+            });
+
+            semBtn.addEventListener('mouseenter', () => {
+              semBtn.style.borderColor = 'var(--color-ink)';
+              semBtn.style.backgroundColor = 'var(--color-muted)';
+            });
+            semBtn.addEventListener('mouseleave', () => {
+              semBtn.style.borderColor = 'var(--color-rule-strong)';
+              semBtn.style.backgroundColor = 'var(--color-surface)';
+            });
+
+            semestersGrid.appendChild(semBtn);
+          });
+
+          stepCareer.style.display = 'none';
+          stepSemester.style.display = 'block';
+        });
+
+        btn.addEventListener('mouseenter', () => {
+          btn.style.borderColor = 'var(--color-ink)';
+          btn.style.backgroundColor = 'var(--color-muted)';
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.borderColor = 'var(--color-rule-strong)';
+          btn.style.backgroundColor = 'var(--color-surface)';
+        });
+      });
+
+      btnBackToCareer.addEventListener('click', () => {
+        stepSemester.style.display = 'none';
+        stepCareer.style.display = 'block';
+      });
+
+      btnBackToSemester.addEventListener('click', () => {
+        stepGroup.style.display = 'none';
+        stepSemester.style.display = 'block';
+      });
+    </script>
+  </InstitutionalLayout>
 ) : (
 <InstitutionalLayout title="Horario del Estudiante">
 
-  <!-- ═══════════════════════════════════════════════════
-       ENCABEZADO ASIMÉTRICO
-       Swiss Design: el h1 domina. El selector es auxiliar.
-       Layout 2/3 — 1/3 en desktop.
-       ═══════════════════════════════════════════════════ -->
-  <div class="page-header">
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
     <div class="page-header__title">
       <span class="overline overline--primary">Panel Principal &mdash; Horario</span>
-      <h1 class="page-title">
+      <h1 class="page-title" style="margin-bottom: 8px;">
         Horario del<br />Estudiante
       </h1>
       {activeGroup && (
@@ -113,8 +284,21 @@ function getDailySchedule(day: string) {
         </p>
       )}
     </div>
-
+    
+    <div style="margin-bottom: 8px;">
+      <button id="btn-change-group" style="padding: 10px 18px; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; background: transparent; border: 1px solid var(--color-rule-strong); color: var(--color-ink); cursor: pointer; transition: all 150ms;">
+        Cambiar de Grupo
+      </button>
+    </div>
   </div>
+
+  <script is:inline>
+    document.getElementById('btn-change-group')?.addEventListener('click', () => {
+      document.cookie = "pica_selected_group=; path=/; max-age=0;";
+      window.location.href = "/";
+    });
+  </script>
+
 
   <hr class="rule" style="margin-bottom: 40px;" />
 
@@ -224,20 +408,17 @@ function getDailySchedule(day: string) {
                 </td>
                 {daysOfWeek.map(day => {
                   const items = findScheduleItems(day, slot.start, slot.end);
-                  const hasHti = items.some(i => i.subject_name && i.subject_name.toUpperCase().includes('HTI'));
-                  const nonHtiItems = items.filter(i => !(i.subject_name && i.subject_name.toUpperCase().includes('HTI')));
-                  const displayItems = nonHtiItems.length > 0 ? nonHtiItems : items;
                   return (
                     <td class="schedule-table__cell">
-                      <div style="display: flex; flex-direction: column; gap: 4px;">
-                        {displayItems.map(item => {
+                       <div style="display: flex; flex-direction: column; gap: 4px;">
+                        {items.map(item => {
                         const syllabusSlug = item ? getSyllabusSlug(item.subject_name) : "#";
                         const syllabusDesc = item ? getSyllabusDesc(item.subject_name) : "";
-                        const isHtiEntry = item.subject_name && item.subject_name.toUpperCase().includes('HTI');
+                        const isHtiEntry = item.is_hti || (item.subject_name && item.subject_name.toUpperCase().includes('HTI'));
                         return (
                           <button
-                            class={`class-entry class-card-btn ${hasHti ? 'independent-work' : ''}`}
-                            aria-label={`${item.subject_name}${hasHti && !isHtiEntry ? ' (incluye HTI)' : ''}, ${item.professor_name}`}
+                            class={`class-entry class-card-btn ${isHtiEntry ? 'independent-work' : ''}`}
+                            aria-label={`${item.subject_name}${isHtiEntry ? ' (HTI)' : ''}, ${item.professor_name}`}
                             data-subject={item.subject_name}
                             data-professor={item.professor_name}
                             data-professor-email={item.professor_email}
@@ -263,7 +444,7 @@ function getDailySchedule(day: string) {
                                 {item.is_lab && <span class="class-entry__lab-tag">LAB</span>}
                               </span>
                             )}
-                            {hasHti && !isHtiEntry && (
+                            {isHtiEntry && (
                               <span class="class-entry__hti-tag">HTI</span>
                             )}
                           </button>
@@ -298,11 +479,11 @@ function getDailySchedule(day: string) {
                   {dayItems.map(item => {
                     const syllabusSlug = getSyllabusSlug(item.subject_name);
                     const syllabusDesc = getSyllabusDesc(item.subject_name);
-                    const isHtiEntry = item.subject_name?.toUpperCase().includes('HTI');
+                    const isHtiEntry = item.isHti || item.subject_name?.toUpperCase().includes('HTI');
                     return (
                       <button
-                        class={`mobile-class class-card-btn ${item.hasHti ? 'independent-work' : ''}`}
-                        aria-label={`${item.subject_name}${item.hasHti && !isHtiEntry ? ' (incluye HTI)' : ''}, ${item.professor_name}`}
+                        class={`mobile-class class-card-btn ${isHtiEntry ? 'independent-work' : ''}`}
+                        aria-label={`${item.subject_name}${isHtiEntry ? ' (HTI)' : ''}, ${item.professor_name}`}
                         data-subject={item.subject_name}
                         data-professor={item.professor_name}
                         data-professor-email={item.professor_email}
@@ -326,7 +507,7 @@ function getDailySchedule(day: string) {
                           <span class="mobile-class__meta">
                             {item.classroom_name || ''}
                             {item.is_lab && <span class="class-entry__lab-tag">LAB</span>}
-                            {item.hasHti && !isHtiEntry && <span class="class-entry__hti-tag">HTI</span>}
+                            {isHtiEntry && <span class="class-entry__hti-tag">HTI</span>}
                           </span>
                         </div>
                       </button>

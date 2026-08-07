@@ -119,6 +119,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - ./services/student-hub/public:/app/services/student-hub/public
 
   # 10. ProjectHUB Placeholder (project-hub)
   project-hub:

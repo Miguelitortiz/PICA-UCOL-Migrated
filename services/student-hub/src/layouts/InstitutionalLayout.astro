@@ -1,5 +1,5 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 
 interface Props {
   title: string;
@@ -8,26 +8,26 @@ interface Props {
 
 const {
   title,
-  description = "StudentHUB — Consulta de materias, horarios, docentes y aulas en la Universidad de Colima."
+  description = "StudentHUB — Consulta de materias, horarios, docentes y aulas en la Universidad de Colima.",
 } = Astro.props;
 
 const pathname = Astro.url.pathname;
 
 function isActive(path: string): boolean {
-  if (path === '/') return pathname === '/';
+  if (path === "/") return pathname === "/";
   return pathname.startsWith(path);
 }
 
 const student = Astro.locals.student;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title} | StudentHUB PICA-UCOL</title>
+    <title>{title} | StudentHUB</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={`${title} | StudentHUB`} />
     <meta property="og:description" content={description} />
@@ -37,9 +37,11 @@ const student = Astro.locals.student;
   </head>
 
   <body>
-
     <!-- Banda primaria institucional — única presencia de color estructural -->
-    <div style="height: 4px; background-color: var(--color-primary); width: 100%;"></div>
+    <div
+      style="height: 4px; background-color: var(--color-primary); width: 100%;"
+    >
+    </div>
 
     <!-- ═══════════════════════════════════════
          HEADER ESCRITORIO
@@ -50,140 +52,185 @@ const student = Astro.locals.student;
          ═══════════════════════════════════════ -->
     <header class="site-header" id="site-header">
       <div class="header-inner">
-
         <!-- Wordmark: "PICA / StudentHUB" -->
         <a href="/" class="wordmark" aria-label="StudentHUB — Inicio">
-          <span class="wordmark__overline">Universidad de Colima · PICA</span>
+          <span class="wordmark__overline">Universidad de Colima</span>
           <span class="wordmark__title">
             Student<em>HUB</em>
           </span>
         </a>
 
         <!-- Navegación primaria — texto puro, sin iconos -->
-        <nav aria-label="Navegación principal" style="flex: 1; margin-left: 24px;">
+        <nav
+          aria-label="Navegación principal"
+          style="flex: 1; margin-left: 24px;"
+        >
           <ul class="nav-list" role="list">
             <li>
-              <a href="/" class={`nav-link ${isActive('/') ? 'active' : ''}`}>
+              <a href="/" class={`nav-link ${isActive("/") ? "active" : ""}`}>
                 Horario
               </a>
             </li>
             <li>
-              <a href="/materias" class={`nav-link ${isActive('/materias') ? 'active' : ''}`}>
+              <a
+                href="/materias"
+                class={`nav-link ${isActive("/materias") ? "active" : ""}`}
+              >
                 Materias
               </a>
             </li>
             <li>
-              <a href="/profesores" class={`nav-link ${isActive('/profesores') ? 'active' : ''}`}>
+              <a
+                href="/profesores"
+                class={`nav-link ${isActive("/profesores") ? "active" : ""}`}
+              >
                 Profesores
               </a>
             </li>
             <li>
-              <a href="/mapa" class={`nav-link ${isActive('/mapa') ? 'active' : ''}`}>
+              <a
+                href="/mapa"
+                class={`nav-link ${isActive("/mapa") ? "active" : ""}`}
+              >
                 Mapa
               </a>
             </li>
 
             <li>
-              <a href="/fechas" class={`nav-link ${isActive('/fechas') ? 'active' : ''}`}>
+              <a
+                href="/fechas"
+                class={`nav-link ${isActive("/fechas") ? "active" : ""}`}
+              >
                 Fechas de evaluación
               </a>
             </li>
           </ul>
         </nav>
 
-        <!-- Avatar del usuario (Escritorio) -->
-        <div style="display: flex; align-items: center; gap: 16px;">
-          {student && (
-            <span style="font-family: var(--font-sans); font-size: 0.875rem; font-weight: 700; color: var(--color-ink);">
-              {student.full_name}
-            </span>
-          )}
-          <a href="/perfil" class={`user-avatar ${isActive('/perfil') ? 'active' : ''}`} aria-label="Perfil del estudiante" title="Mi Perfil">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </a>
-          {student && (
-            <form action="/student-auth/logout" method="POST" style="margin: 0;">
-              <button type="submit" style="background: none; border: none; font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 700; color: var(--color-ink-2); cursor: pointer; text-transform: uppercase; padding: 4px;">
-                Salir
+        <!-- Grupo Activo (Escritorio) -->
+        {
+          student && (
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-ink-2); text-transform: uppercase; background: var(--color-muted); padding: 4px 8px;">
+                Grupo: {student.class_group_slug.toUpperCase()}
+              </span>
+              <button
+                id="btn-change-group-header"
+                style="background: none; border: 1px solid var(--color-rule-strong); font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 700; color: var(--color-ink-2); cursor: pointer; text-transform: uppercase; padding: 4px 8px; transition: all 120ms;"
+              >
+                Regresar
               </button>
-            </form>
-          )}
-        </div>
+            </div>
+          )
+        }
 
-      <!-- Regla divisora bajo el header -->
-      <hr class="rule" style="margin: 0;" />
+        <!-- Regla divisora bajo el header -->
+        <hr class="rule" style="margin: 0;" />
+      </div>
     </header>
 
-    <!-- ═══════════════════════════════════════
+      <!-- ═══════════════════════════════════════
          MAIN
          ═══════════════════════════════════════ -->
-    <main
-      id="main-content"
-      style="
+      <main
+        id="main-content"
+        style="
         max-width: 1280px;
         margin: 0 auto;
         padding: 40px 24px 80px;
         min-height: calc(100vh - 120px);
       "
-    >
-      <slot />
-    </main>
+      >
+        <slot />
+      </main>
 
-    <!-- ═══════════════════════════════════════
+      <!-- ═══════════════════════════════════════
          FOOTER
          ═══════════════════════════════════════ -->
-    <footer style="
+      <footer
+        style="
       border-top: 1px solid var(--color-rule);
       background-color: var(--color-surface);
       padding: 20px 24px;
-    ">
-      <div style="max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-3);">
-          StudentHUB · Universidad de Colima · PICA
-        </span>
-        <span style="font-size: 0.625rem; color: var(--color-rule-strong);">
-          Sistema de información académica
-        </span>
-      </div>
-    </footer>
+    "
+      >
+        <div
+          style="max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;"
+        >
+          <span
+            style="font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-3);"
+          >
+            StudentHUB · Universidad de Colima
+          </span>
+          <span style="font-size: 0.625rem; color: var(--color-rule-strong);">
+            Sistema de información académica
+          </span>
+        </div>
+      </footer>
 
-    <!-- ═══════════════════════════════════════
+      <!-- ═══════════════════════════════════════
          NAV MÓVIL — barra inferior
          ═══════════════════════════════════════ -->
-    <nav
-      class="mobile-nav"
-      aria-label="Navegación móvil"
-      style="display: none;"
-    >
-      <a href="/" class={`mobile-nav__item ${isActive('/') ? 'mobile-nav__item--active' : ''}`}>
-        <span class="mobile-nav__dot" aria-hidden="true"></span>
-        <span class="mobile-nav__label">Horario</span>
-      </a>
-      <a href="/materias" class={`mobile-nav__item ${isActive('/materias') ? 'mobile-nav__item--active' : ''}`}>
-        <span class="mobile-nav__dot" aria-hidden="true"></span>
-        <span class="mobile-nav__label">Materias</span>
-      </a>
-      <a href="/profesores" class={`mobile-nav__item ${isActive('/profesores') ? 'active' : ''}`}>
-        <span class="mobile-nav__dot" aria-hidden="true"></span>
-        <span class="mobile-nav__label">Profesores</span>
-      </a>
-      <a href="/mapa" class={`mobile-nav__item ${isActive('/mapa') ? 'active' : ''}`}>
-        <span class="mobile-nav__dot" aria-hidden="true"></span>
-        <span class="mobile-nav__label">Mapa</span>
-      </a>
-      <button id="btn-more" class="mobile-nav__item" aria-haspopup="true" aria-expanded="false">
-        <span class="mobile-nav__dot" aria-hidden="true"></span>
-        <span class="mobile-nav__label">Más</span>
-      </button>
-    </nav>
+      <nav
+        class="mobile-nav"
+        aria-label="Navegación móvil"
+        style="display: none;"
+      >
+        <a
+          href="/"
+          class={`mobile-nav__item ${isActive("/") ? "mobile-nav__item--active" : ""}`}
+        >
+          <span class="mobile-nav__dot" aria-hidden="true"></span>
+          <span class="mobile-nav__label">Horario</span>
+        </a>
+        <a
+          href="/materias"
+          class={`mobile-nav__item ${isActive("/materias") ? "mobile-nav__item--active" : ""}`}
+        >
+          <span class="mobile-nav__dot" aria-hidden="true"></span>
+          <span class="mobile-nav__label">Materias</span>
+        </a>
+        <a
+          href="/profesores"
+          class={`mobile-nav__item ${isActive("/profesores") ? "active" : ""}`}
+        >
+          <span class="mobile-nav__dot" aria-hidden="true"></span>
+          <span class="mobile-nav__label">Profesores</span>
+        </a>
+        <a
+          href="/mapa"
+          class={`mobile-nav__item ${isActive("/mapa") ? "active" : ""}`}
+        >
+          <span class="mobile-nav__dot" aria-hidden="true"></span>
+          <span class="mobile-nav__label">Mapa</span>
+        </a>
+        <button
+          id="btn-more"
+          class="mobile-nav__item"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <span class="mobile-nav__dot" aria-hidden="true"></span>
+          <span class="mobile-nav__label">Más</span>
+        </button>
+      </nav>
 
-    <!-- Drawer móvil -->
-    <div id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menú" style="display: none;">
-      <div id="drawer-backdrop" style="position: fixed; inset: 0; background: rgba(26,26,26,0.5); z-index: 40;"></div>
-      <div id="drawer-panel" style="
+      <!-- Drawer móvil -->
+      <div
+        id="mobile-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menú"
+        style="display: none;"
+      >
+        <div
+          id="drawer-backdrop"
+          style="position: fixed; inset: 0; background: rgba(26,26,26,0.5); z-index: 40;"
+        >
+        </div>
+        <div
+          id="drawer-panel"
+          style="
         position: fixed;
         bottom: 0;
         left: 0;
@@ -192,12 +239,19 @@ const student = Astro.locals.student;
         border-top: 1px solid var(--color-rule);
         z-index: 50;
         padding: 24px;
-      ">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <span style="font-size: 0.625rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-ink-3);">
-            Menú académico
-          </span>
-          <button id="btn-close-drawer" style="
+      "
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;"
+          >
+            <span
+              style="font-size: 0.625rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-ink-3);"
+            >
+              Menú académico
+            </span>
+            <button
+              id="btn-close-drawer"
+              style="
             background: none;
             border: none;
             font-size: 1.25rem;
@@ -205,231 +259,291 @@ const student = Astro.locals.student;
             cursor: pointer;
             padding: 4px;
             line-height: 1;
-          " aria-label="Cerrar menú">×</button>
-        </div>
-        <hr class="rule" style="margin-bottom: 20px;" />
-        <nav style="display: flex; flex-direction: column; gap: 0;">
-          {[
-            { href: '/', label: 'Horario', active: isActive('/') },
-            { href: '/materias', label: 'Materias', active: isActive('/materias') },
-            { href: '/profesores', label: 'Profesores', active: isActive('/profesores') },
-            { href: '/mapa', label: 'Mapa', active: isActive('/mapa') },
-
-            { href: '/fechas', label: 'Fechas de evaluación', active: isActive('/fechas') },
-            { href: '/perfil', label: 'Mi Perfil', active: isActive('/perfil') }
-          ].map(item => (
-            <a
-              href={item.href}
-              style={`
+          "
+              aria-label="Cerrar menú">×</button
+            >
+          </div>
+          <hr class="rule" style="margin-bottom: 20px;" />
+          <nav style="display: flex; flex-direction: column; gap: 0;">
+            {
+              [
+                { href: "/", label: "Horario", active: isActive("/") },
+                {
+                  href: "/materias",
+                  label: "Materias",
+                  active: isActive("/materias"),
+                },
+                {
+                  href: "/profesores",
+                  label: "Profesores",
+                  active: isActive("/profesores"),
+                },
+                { href: "/mapa", label: "Mapa", active: isActive("/mapa") },
+                {
+                  href: "/fechas",
+                  label: "Fechas de evaluación",
+                  active: isActive("/fechas"),
+                },
+              ].map((item) => (
+                <a
+                  href={item.href}
+                  style={`
                 display: block;
                 padding: 14px 0;
                 font-size: 1rem;
-                font-weight: ${item.active ? '800' : '600'};
-                color: ${item.active ? 'var(--color-primary)' : 'var(--color-ink)'};
+                font-weight: ${item.active ? "800" : "600"};
+                color: ${item.active ? "var(--color-primary)" : "var(--color-ink)"};
                 text-decoration: none;
                 border-bottom: 1px solid var(--color-rule);
               `}
-            >{item.label}</a>
-          ))}
-          {student && (
-            <form action="/student-auth/logout" method="POST" style="margin: 0; padding: 14px 0; border-bottom: 1px solid var(--color-rule);">
-              <button type="submit" style="background: none; border: none; font-size: 1rem; font-weight: 600; color: var(--color-ink); cursor: pointer; padding: 0; width: 100%; text-align: left;">
-                Cerrar sesión
-              </button>
-            </form>
-          )}
-        </nav>
+                >
+                  {item.label}
+                </a>
+              ))
+            }
+            {
+              student && (
+                <div style="padding: 14px 0; border-bottom: 1px solid var(--color-rule); display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-ink-2); text-transform: uppercase;">
+                    Grupo: {student.class_group_slug.toUpperCase()}
+                  </span>
+                  <button
+                    id="btn-change-group-mobile"
+                    style="background: none; border: none; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-ink-3); text-transform: uppercase; cursor: pointer; padding: 4px;"
+                  >
+                    Cambiar
+                  </button>
+                </div>
+              )
+            }
+          </nav>
+        </div>
       </div>
-    </div>
 
-    <script>
-      function setupMobileNav() {
-        const btnMore   = document.getElementById('btn-more');
-        const drawer    = document.getElementById('mobile-drawer');
-        const backdrop  = document.getElementById('drawer-backdrop');
-        const btnClose  = document.getElementById('btn-close-drawer');
+      <script>
+        function setupMobileNav() {
+          const btnMore = document.getElementById("btn-more");
+          const drawer = document.getElementById("mobile-drawer");
+          const backdrop = document.getElementById("drawer-backdrop");
+          const btnClose = document.getElementById("btn-close-drawer");
 
-        function openDrawer() {
-          if (drawer) {
-            drawer.style.display = 'block';
-            btnMore?.setAttribute('aria-expanded', 'true');
-            document.body.style.overflow = 'hidden';
+          function openDrawer() {
+            if (drawer) {
+              drawer.style.display = "block";
+              btnMore?.setAttribute("aria-expanded", "true");
+              document.body.style.overflow = "hidden";
+            }
           }
-        }
-        function closeDrawer() {
-          if (drawer) {
-            drawer.style.display = 'none';
-            btnMore?.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
+          function closeDrawer() {
+            if (drawer) {
+              drawer.style.display = "none";
+              btnMore?.setAttribute("aria-expanded", "false");
+              document.body.style.overflow = "";
+            }
           }
+
+          btnMore?.addEventListener("click", openDrawer);
+          backdrop?.addEventListener("click", closeDrawer);
+          btnClose?.addEventListener("click", closeDrawer);
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeDrawer();
+          });
+
+          const btnChangeGroupMobile = document.getElementById(
+            "btn-change-group-mobile",
+          );
+          btnChangeGroupMobile?.addEventListener("click", () => {
+            document.cookie = "pica_selected_group=; path=/; max-age=0;";
+            window.location.href = "/";
+          });
+
+          const btnChangeGroupHeader = document.getElementById(
+            "btn-change-group-header",
+          );
+          btnChangeGroupHeader?.addEventListener("click", () => {
+            document.cookie = "pica_selected_group=; path=/; max-age=0;";
+            window.location.href = "/";
+          });
         }
 
-        btnMore?.addEventListener('click', openDrawer);
-        backdrop?.addEventListener('click', closeDrawer);
-        btnClose?.addEventListener('click', closeDrawer);
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
-      }
-
-      setupMobileNav();
-      document.addEventListener('astro:page-load', setupMobileNav);
-    </script>
-
+        setupMobileNav();
+        document.addEventListener("astro:page-load", setupMobileNav);
+      </script>
+    </header>
   </body>
-</html>
 
-<style>
-  /* ══════════════════════════════════
+  <style>
+    /* ══════════════════════════════════
      LAYOUT — Header institucional
      ══════════════════════════════════ */
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    background-color: var(--color-surface);
-  }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background-color: var(--color-surface);
+    }
 
-  .header-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 24px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
-  }
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
 
-  /* Wordmark tipográfico */
-  .wordmark {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    text-decoration: none;
-    flex-shrink: 0;
-  }
+    /* Wordmark tipográfico */
+    .wordmark {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
 
-  .wordmark__overline {
-    font-size: 0.5625rem;     /* 9px */
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--color-ink-3);
-    line-height: 1;
-  }
+    .wordmark__overline {
+      font-size: 0.5625rem; /* 9px */
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-ink-3);
+      line-height: 1;
+    }
 
-  .wordmark__title {
-    font-family: var(--font-sans);
-    font-size: 1.25rem;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    color: var(--color-ink);
-    line-height: 1;
-  }
+    .wordmark__title {
+      font-family: var(--font-sans);
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--color-ink);
+      line-height: 1;
+    }
 
-  /* "HUB" en cursiva es el acento tipográfico, no de color */
-  .wordmark__title em {
-    font-style: normal;
-    color: var(--color-primary);
-  }
+    /* "HUB" en cursiva es el acento tipográfico, no de color */
+    .wordmark__title em {
+      font-style: normal;
+      color: var(--color-primary);
+    }
 
-  /* Lista de navegación */
-  .nav-list {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+    /* Lista de navegación */
+    .nav-list {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* Avatar de usuario */
-  .user-avatar {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--color-rule-strong);
-    color: var(--color-ink-2);
-    text-decoration: none;
-    transition: background-color 120ms, border-color 120ms;
-  }
-  .user-avatar.active {
-    border-color: var(--color-ink);
-    color: var(--color-ink);
-    background-color: var(--color-muted);
-  }
-  .user-avatar:hover {
-    background-color: var(--color-muted);
-    border-color: var(--color-ink-3);
-  }
+    /* Avatar de usuario */
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-rule-strong);
+      color: var(--color-ink-2);
+      text-decoration: none;
+      transition:
+        background-color 120ms,
+        border-color 120ms;
+    }
+    .user-avatar.active {
+      border-color: var(--color-ink);
+      color: var(--color-ink);
+      background-color: var(--color-muted);
+    }
+    .user-avatar:hover {
+      background-color: var(--color-muted);
+      border-color: var(--color-ink-3);
+    }
 
-  /* ══════════════════════════════════
+    /* ══════════════════════════════════
      NAVEGACIÓN MÓVIL
      ══════════════════════════════════ */
-  .mobile-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: var(--color-surface);
-    border-top: 1px solid var(--color-rule);
-    height: auto;
-    min-height: 56px;
-    display: flex !important;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-evenly;
-    z-index: 40;
-    padding: 6px 0;
-  }
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--color-surface);
+      border-top: 1px solid var(--color-rule);
+      height: auto;
+      min-height: 56px;
+      display: flex !important;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-evenly;
+      z-index: 40;
+      padding: 6px 0;
+    }
 
-  @media (min-width: 768px) {
-    .mobile-nav { display: none !important; }
-    body { padding-bottom: 0; }
-  }
+    @media (min-width: 768px) {
+      .mobile-nav {
+        display: none !important;
+      }
+      body {
+        padding-bottom: 0;
+      }
+    }
 
-  @media (max-width: 767px) {
-    body { padding-bottom: 120px; }
-    .site-header { display: none; }
-    .mobile-nav { display: flex !important; }
-  }
+    @media (max-width: 767px) {
+      body {
+        padding-bottom: 120px;
+      }
+      .site-header {
+        display: none;
+      }
+      .mobile-nav {
+        display: flex !important;
+      }
+    }
 
-  .mobile-nav__item {
-    flex: 1 0 70px;
-    max-width: 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    text-decoration: none;
-    color: var(--color-ink-3);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px 4px;
-    transition: color var(--duration);
-  }
+    .mobile-nav__item {
+      flex: 1 0 70px;
+      max-width: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-decoration: none;
+      color: var(--color-ink-3);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 4px;
+      transition: color var(--duration);
+    }
 
-  .mobile-nav__item--active { color: var(--color-primary); }
-  .mobile-nav__item:hover:not(.mobile-nav__item--active) { color: var(--color-ink); }
+    .mobile-nav__item--active {
+      color: var(--color-primary);
+    }
+    .mobile-nav__item:hover:not(.mobile-nav__item--active) {
+      color: var(--color-ink);
+    }
 
-  .mobile-nav__dot {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: currentColor;
-    opacity: 0.3;
-  }
+    .mobile-nav__dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: currentColor;
+      opacity: 0.3;
+    }
 
-  .mobile-nav__item--active .mobile-nav__dot { opacity: 1; }
+    .mobile-nav__item--active .mobile-nav__dot {
+      opacity: 1;
+    }
 
-  .mobile-nav__label {
-    font-size: 0.5rem;       /* 8px */
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    line-height: 1;
-  }
-</style>
+    .mobile-nav__label {
+      font-size: 0.5rem; /* 8px */
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+  </style>
+</html>

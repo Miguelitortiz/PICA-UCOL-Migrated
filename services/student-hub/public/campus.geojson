@@ -8,7 +8,7 @@
         "building": "university",
         "building:levels": "1",
         "height": "3",
-        "name": "Dirección FAyD",
+        "name": "",
         "id": "way/1150811062"
       },
       "geometry": {
@@ -53,7 +53,7 @@
       "properties": {
         "amenity": "theatre",
         "building": "yes",
-        "name": "Auditorio FAyD",
+        "name": "",
         "id": "way/1154065674"
       },
       "geometry": {
@@ -91,7 +91,7 @@
         "building": "university",
         "building:levels": "1",
         "height": "3",
-        "name": "Aula 1",
+        "name": "",
         "id": "way/1154065675"
       },
       "geometry": {
@@ -127,7 +127,7 @@
       "id": "way/1154065676",
       "properties": {
         "building": "university",
-        "name": "Aula 2",
+        "name": "",
         "id": "way/1154065676"
       },
       "geometry": {
@@ -165,7 +165,7 @@
         "building": "university",
         "building:levels": "1",
         "height": "3",
-        "name": "Aula 3",
+        "name": "",
         "id": "way/1154065677"
       },
       "geometry": {
@@ -209,7 +209,7 @@
       "id": "way/1154065678",
       "properties": {
         "building": "university",
-        "name": "Aula 7",
+        "name": "",
         "id": "way/1154065678"
       },
       "geometry": {
@@ -249,7 +249,7 @@
       "id": "way/1154065679",
       "properties": {
         "building": "university",
-        "name": "Aula 4",
+        "name": "",
         "id": "way/1154065679"
       },
       "geometry": {
@@ -285,7 +285,7 @@
       "id": "way/1154065680",
       "properties": {
         "building": "university",
-        "name": "Aula 5",
+        "name": "",
         "id": "way/1154065680"
       },
       "geometry": {
@@ -321,7 +321,7 @@
       "id": "way/1154065681",
       "properties": {
         "building": "university",
-        "name": "Aula 6",
+        "name": "",
         "id": "way/1154065681"
       },
       "geometry": {
@@ -359,7 +359,7 @@
         "building": "university",
         "building:levels": "2",
         "layer": "-2",
-        "name": "Laboratorio de Cómputo",
+        "name": "",
         "id": "way/1154065682"
       },
       "geometry": {
@@ -413,7 +413,7 @@
         "access": "permissive",
         "building": "university",
         "layer": "-2",
-        "name": "Aula 8",
+        "name": "",
         "id": "way/1154065683"
       },
       "geometry": {
@@ -453,7 +453,7 @@
       "id": "way/1154065684",
       "properties": {
         "building": "university",
-        "name": "Cubículos PTC",
+        "name": "",
         "id": "way/1154065684"
       },
       "geometry": {
@@ -495,7 +495,8 @@
         "building": "roof",
         "height": "5",
         "layer": "2",
-        "id": "way/1154065685"
+        "id": "way/1154065685",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -556,7 +557,7 @@
         "building": "university",
         "building:levels": "1",
         "layer": "-1",
-        "name": "Dirección FIC",
+        "name": "",
         "id": "way/1154065706"
       },
       "geometry": {
@@ -592,7 +593,7 @@
       "id": "way/1154112595",
       "properties": {
         "building": "university",
-        "name": "Centro Universitario de Investigaciones en Ciencias del Ambiente (CUICA)",
+        "name": "",
         "id": "way/1154112595"
       },
       "geometry": {
@@ -628,7 +629,8 @@
       "id": "way/1154135204",
       "properties": {
         "building": "university",
-        "id": "way/1154135204"
+        "id": "way/1154135204",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -707,7 +709,8 @@
       "id": "way/1154135213",
       "properties": {
         "building": "ruins",
-        "id": "way/1154135213"
+        "id": "way/1154135213",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -743,8 +746,14 @@
       "properties": {
         "building": "university",
         "building:levels": "2",
-        "name": "Dirección FIME y FCQ",
-        "id": "way/1154135214"
+        "name": "Dirección",
+        "id": "way/1154135214",
+        "spaces": [
+          {
+            "name": "Dirección FIME",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -788,7 +797,7 @@
       "properties": {
         "building": "university",
         "building:levels": "2",
-        "name": "Edificio de Posgrado FAyD",
+        "name": "",
         "id": "way/1154135222"
       },
       "geometry": {
@@ -934,7 +943,8 @@
         "building": "university",
         "building:levels": "3",
         "height": "12",
-        "id": "way/1154289280"
+        "id": "way/1154289280",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -969,7 +979,7 @@
       "id": "way/1157965061",
       "properties": {
         "building": "school",
-        "name": "Bach. Téc. No. 18",
+        "name": "",
         "id": "way/1157965061"
       },
       "geometry": {
@@ -1010,7 +1020,7 @@
       "properties": {
         "building": "university",
         "id": "way/1157965063",
-        "name": "Aula 9"
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1046,7 +1056,7 @@
       "properties": {
         "building": "university",
         "id": "way/1157965064",
-        "name": "Aula 10"
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1082,7 +1092,7 @@
       "properties": {
         "building": "university",
         "id": "way/1157965065",
-        "name": "Laboratorio de Electrónica"
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1117,7 +1127,8 @@
       "id": "way/1157965066",
       "properties": {
         "building": "university",
-        "id": "way/1157965066"
+        "id": "way/1157965066",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1156,7 +1167,8 @@
       "id": "way/1157965067",
       "properties": {
         "building": "university",
-        "id": "way/1157965067"
+        "id": "way/1157965067",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1191,7 +1203,8 @@
       "id": "way/1157965068",
       "properties": {
         "building": "university",
-        "id": "way/1157965068"
+        "id": "way/1157965068",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1226,7 +1239,8 @@
       "id": "way/1157965069",
       "properties": {
         "building": "university",
-        "id": "way/1157965069"
+        "id": "way/1157965069",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1261,7 +1275,8 @@
       "id": "way/1157965070",
       "properties": {
         "building": "university",
-        "id": "way/1157965070"
+        "id": "way/1157965070",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1296,7 +1311,8 @@
       "id": "way/1157965071",
       "properties": {
         "building": "university",
-        "id": "way/1157965071"
+        "id": "way/1157965071",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1371,7 +1387,8 @@
       "id": "way/1157965072",
       "properties": {
         "building": "university",
-        "id": "way/1157965072"
+        "id": "way/1157965072",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1406,7 +1423,8 @@
       "id": "way/1157965073",
       "properties": {
         "building": "university",
-        "id": "way/1157965073"
+        "id": "way/1157965073",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1443,7 +1461,9 @@
         "amenity": "fast_food",
         "building": "yes",
         "fast_food": "cafeteria",
-        "id": "way/1157965077"
+        "id": "way/1157965077",
+        "name": "Plaza de Servicios Estudiantiles",
+        "spaces": []
       },
       "geometry": {
         "type": "Polygon",
@@ -1558,7 +1578,26 @@
       "id": "way/1157965081",
       "properties": {
         "building": "university",
-        "id": "way/1157965081"
+        "id": "way/1157965081",
+        "name": "Edificio C FIME",
+        "spaces": [
+          {
+            "name": "Aula C1",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula C2",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula C3",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula C4",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -1593,7 +1632,14 @@
       "id": "way/1157965082",
       "properties": {
         "building": "university",
-        "id": "way/1157965082"
+        "id": "way/1157965082",
+        "name": "Auditorio",
+        "spaces": [
+          {
+            "name": "Auditorio",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -1628,7 +1674,14 @@
       "id": "way/1157965083",
       "properties": {
         "building": "university",
-        "id": "way/1157965083"
+        "id": "way/1157965083",
+        "name": "Laboratorio de Electromagnetismo FIME",
+        "spaces": [
+          {
+            "name": "Laboratorio de Electromagnetismo",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -1663,7 +1716,22 @@
       "id": "way/1157965084",
       "properties": {
         "building": "university",
-        "id": "way/1157965084"
+        "id": "way/1157965084",
+        "name": "Laboratorio Telefonía/Robotica FIME",
+        "spaces": [
+          {
+            "name": "Laboratorio de Telefonía",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Laboratorio de Inteligancia Artificial",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Laboratorio de Robótica",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -1698,7 +1766,8 @@
       "id": "way/1157965085",
       "properties": {
         "building": "university",
-        "id": "way/1157965085"
+        "id": "way/1157965085",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1733,7 +1802,14 @@
       "id": "way/1157965086",
       "properties": {
         "building": "university",
-        "id": "way/1157965086"
+        "id": "way/1157965086",
+        "name": "Taller de Maquinas",
+        "spaces": [
+          {
+            "name": "Taller de Maquinas",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -1768,7 +1844,18 @@
       "id": "way/1157965087",
       "properties": {
         "building": "university",
-        "id": "way/1157965087"
+        "id": "way/1157965087",
+        "name": "Centro Computo FIME",
+        "spaces": [
+          {
+            "name": "Centro de Cómputo",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Cubículos PTC",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -1803,7 +1890,26 @@
       "id": "way/1157965088",
       "properties": {
         "building": "university",
-        "id": "way/1157965088"
+        "id": "way/1157965088",
+        "name": "Edificio de Matemáticas Aplicadas FIME",
+        "spaces": [
+          {
+            "name": "Laboratorio de Microelectrónica",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Laboratorio de Matemáticas",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Centro de Cómputo",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Laboratorio de Ciencia de Datos",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -1854,7 +1960,8 @@
       "id": "way/1157965089",
       "properties": {
         "building": "university",
-        "id": "way/1157965089"
+        "id": "way/1157965089",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1929,7 +2036,14 @@
       "id": "way/1157965090",
       "properties": {
         "building": "university",
-        "id": "way/1157965090"
+        "id": "way/1157965090",
+        "name": "Laboratorio de Mecatrónica",
+        "spaces": [
+          {
+            "name": "Laboratorio de Mecatrónica",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -1964,7 +2078,8 @@
       "id": "way/1157965091",
       "properties": {
         "building": "university",
-        "id": "way/1157965091"
+        "id": "way/1157965091",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -1999,7 +2114,14 @@
       "id": "way/1157965094",
       "properties": {
         "building": "university",
-        "id": "way/1157965094"
+        "id": "way/1157965094",
+        "name": "Laboratorio de Mecánica FIME",
+        "spaces": [
+          {
+            "name": "Laboratorio de Mecánica",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -2034,7 +2156,18 @@
       "id": "way/1157965095",
       "properties": {
         "building": "university",
-        "id": "way/1157965095"
+        "id": "way/1157965095",
+        "name": "Edificio E FIME",
+        "spaces": [
+          {
+            "name": "Laboratorio de Fisica",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula A1",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -2069,7 +2202,30 @@
       "id": "way/1157965096",
       "properties": {
         "building": "university",
-        "id": "way/1157965096"
+        "id": "way/1157965096",
+        "name": "Posgrado FIME",
+        "spaces": [
+          {
+            "name": "Aula P1",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula P2",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula P3",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula P4",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula P5",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -2104,7 +2260,8 @@
       "id": "way/1157965097",
       "properties": {
         "building": "university",
-        "id": "way/1157965097"
+        "id": "way/1157965097",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2139,7 +2296,8 @@
       "id": "way/1157965098",
       "properties": {
         "building": "university",
-        "id": "way/1157965098"
+        "id": "way/1157965098",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2174,7 +2332,8 @@
       "id": "way/1157965099",
       "properties": {
         "building": "university",
-        "id": "way/1157965099"
+        "id": "way/1157965099",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2209,7 +2368,8 @@
       "id": "way/1157965100",
       "properties": {
         "building": "university",
-        "id": "way/1157965100"
+        "id": "way/1157965100",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2244,7 +2404,9 @@
       "id": "way/1157965101",
       "properties": {
         "building": "university",
-        "id": "way/1157965101"
+        "id": "way/1157965101",
+        "name": "",
+        "spaces": []
       },
       "geometry": {
         "type": "Polygon",
@@ -2279,7 +2441,8 @@
       "id": "way/1157965102",
       "properties": {
         "building": "university",
-        "id": "way/1157965102"
+        "id": "way/1157965102",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2314,7 +2477,8 @@
       "id": "way/1157965103",
       "properties": {
         "building": "university",
-        "id": "way/1157965103"
+        "id": "way/1157965103",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2349,7 +2513,8 @@
       "id": "way/1157965104",
       "properties": {
         "building": "university",
-        "id": "way/1157965104"
+        "id": "way/1157965104",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2384,7 +2549,26 @@
       "id": "way/1157965105",
       "properties": {
         "building": "university",
-        "id": "way/1157965105"
+        "id": "way/1157965105",
+        "name": "Edificio B FIME",
+        "spaces": [
+          {
+            "name": "Aula B1",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula B2",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula B3",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula B4",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -2420,7 +2604,9 @@
       "properties": {
         "building": "roof",
         "layer": "2",
-        "id": "way/1157965106"
+        "id": "way/1157965106",
+        "name": "Explanada FIME",
+        "spaces": []
       },
       "geometry": {
         "type": "Polygon",
@@ -2463,7 +2649,14 @@
       "id": "way/1157965107",
       "properties": {
         "building": "university",
-        "id": "way/1157965107"
+        "id": "way/1157965107",
+        "name": "Laboratorio de Electrónica FIME",
+        "spaces": [
+          {
+            "name": "Laboratorio de Electrónica",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -2498,7 +2691,18 @@
       "id": "way/1157965108",
       "properties": {
         "building": "university",
-        "id": "way/1157965108"
+        "id": "way/1157965108",
+        "name": "Edificio D FIME",
+        "spaces": [
+          {
+            "name": "Aula D1",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula D2",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -2541,7 +2745,18 @@
       "id": "way/1157965109",
       "properties": {
         "building": "university",
-        "id": "way/1157965109"
+        "id": "way/1157965109",
+        "name": "Edificio D FIME",
+        "spaces": [
+          {
+            "name": "Aula D3",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula D4",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -2576,7 +2791,8 @@
       "id": "way/1157965139",
       "properties": {
         "building": "university",
-        "id": "way/1157965139"
+        "id": "way/1157965139",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2659,7 +2875,7 @@
       "id": "way/1157982263",
       "properties": {
         "building": "ruins",
-        "name": "Chacuaco Ex Ingenio San Rafael",
+        "name": "",
         "id": "way/1157982263"
       },
       "geometry": {
@@ -2755,7 +2971,8 @@
       "id": "way/1249933971",
       "properties": {
         "building": "yes",
-        "id": "way/1249933971"
+        "id": "way/1249933971",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2791,7 +3008,8 @@
       "properties": {
         "building": "roof",
         "layer": "1",
-        "id": "way/1371225102"
+        "id": "way/1371225102",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",
@@ -2826,7 +3044,8 @@
       "id": "way/1415744581",
       "properties": {
         "building": "chapel",
-        "id": "way/1415744581"
+        "id": "way/1415744581",
+        "name": ""
       },
       "geometry": {
         "type": "Polygon",

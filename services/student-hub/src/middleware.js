@@ -1,36 +1,31 @@
-import { decryptSession } from './lib/session.js';
-
 export const onRequest = async (context, next) => {
   const { url, cookies, redirect, locals } = context;
 
-  // Rutas públicas
-  if (url.pathname.startsWith('/login') || url.pathname.startsWith('/student-auth/') || url.pathname.startsWith('/auth/') || url.pathname.startsWith('/favicon.svg') || url.pathname.startsWith('/_astro')) {
+  // Rutas públicas y recursos estáticos
+  if (url.pathname.startsWith('/favicon.svg') || url.pathname.startsWith('/_astro') || url.pathname.startsWith('/student-auth/')) {
     return next();
   }
 
-  // Verificar cookie
-  const sessionCookie = cookies.get('pica_session');
-  if (!sessionCookie) {
-    // La raíz funciona como entrada inteligente: muestra login si no hay sesión.
-    if (url.pathname === '/') {
-      return next();
-    }
-    return redirect('/login', 302);
+  // Redirigir la antigua ruta de login a la raíz
+  if (url.pathname === '/login') {
+    return redirect('/', 302);
   }
 
-  try {
-    const student = decryptSession(sessionCookie.value);
-    if (!student) {
-      throw new Error('Failed to decrypt session');
-    }
-    locals.student = student;
-  } catch (error) {
-    // Si la cookie es inválida, borrarla y redirigir
-    cookies.delete('pica_session', { path: '/' });
-    if (url.pathname === '/') {
-      return next();
-    }
-    return redirect('/login', 302);
+  // Verificar la cookie de grupo seleccionado
+  const selectedGroupCookie = cookies.get('pica_selected_group');
+  if (selectedGroupCookie && selectedGroupCookie.value) {
+    locals.student = {
+      is_anonymous: true,
+      class_group_slug: selectedGroupCookie.value,
+      full_name: 'Estudiante',
+      email: 'estudiante@ucol.mx'
+    };
+    return next();
+  }
+
+  // Si no hay grupo seleccionado y no es la raíz, redirigir a la raíz para seleccionar uno (excepto el mapa y sus recursos)
+  if (url.pathname !== '/' && !url.pathname.startsWith('/mapa') && !url.pathname.startsWith('/api/') && url.pathname !== '/campus.geojson') {
+    return redirect('/', 302);
   }
 
   return next();

@@ -80,11 +80,46 @@ const schedulesJson = JSON.stringify(schedules);
           
           <hr class="rule" style="margin: 24px 0;" />
 
+          <!-- Vista de Aulas Internas para Estudiantes -->
+          <div id="panel-rooms-read-only" style="margin-bottom: 24px; display: none;">
+            <span class="overline" style="margin-bottom: 10px; display: block; color: var(--color-ink-2);">Aulas y Laboratorios</span>
+            <div id="panel-rooms-read-only-list" style="display: flex; flex-wrap: wrap; gap: 6px;">
+              <!-- Se insertan por JS -->
+            </div>
+            <hr class="rule" style="margin: 24px 0 0 0;" />
+          </div>
+
           <div>
             <span class="overline" style="margin-bottom: 12px; display: block; color: var(--color-primary);">Clases Programadas</span>
             <div id="panel-classes-list" style="display: flex; flex-direction: column; gap: 16px;">
               <!-- Se insertan por JS -->
             </div>
+          </div>
+
+          <div id="panel-editor-helper" style="display: none; margin-top: 24px; padding: 16px; background: var(--color-muted); border: 1px solid var(--color-rule-strong); font-size: 0.8125rem; font-family: var(--font-sans);">
+            <strong style="color: var(--color-ink); display: block; margin-bottom: 12px; font-size: 0.875rem;">✏️ Editor de Edificio</strong>
+            
+            <div style="margin-bottom: 16px;">
+              <label for="panel-space-name-input" class="overline" style="display: block; margin-bottom: 4px;">Nombre del Edificio</label>
+              <input type="text" id="panel-space-name-input" class="input" style="width: 100%; box-sizing: border-box;" placeholder="Ej. Edificio B..." />
+            </div>
+
+            <!-- Listado de Aulas / Laboratorios -->
+            <div style="margin-bottom: 16px;">
+              <label class="overline" style="display: block; margin-bottom: 8px;">Aulas y Laboratorios Internos</label>
+              <div id="panel-editor-rooms-list" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px;">
+                <!-- Dinámicamente insertado por JS -->
+              </div>
+              <button type="button" id="btn-add-room-editor" class="btn btn--ghost" style="width: 100%; font-size: 0.75rem; padding: 8px; border: 1px dashed var(--color-rule-strong);">+ Agregar Aula/Lab</button>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label class="overline" style="display: block; margin-bottom: 4px;">ID Único (GeoJSON)</label>
+              <input type="text" id="panel-space-id-input" readonly style="width: 100%; font-family: var(--font-mono); font-size: 0.6875rem; padding: 6px; border: 1px solid var(--color-rule-strong); background: var(--color-surface); color: var(--color-ink); box-sizing: border-box;" onclick="this.select();" />
+            </div>
+
+            <button id="btn-save-space" class="btn btn--primary" style="width: 100%; padding: 10px;">Guardar en GeoJSON</button>
+            <div id="save-status-msg" style="display: none; font-size: 0.75rem; font-weight: 700; margin-top: 8px; text-align: center; text-transform: uppercase;"></div>
           </div>
         </div>
       </div>
@@ -125,29 +160,198 @@ const schedulesJson = JSON.stringify(schedules);
       const pName = document.getElementById("panel-space-name");
       const pType = document.getElementById("panel-space-type");
       const pClassesList = document.getElementById("panel-classes-list");
+      const pSpaceIdInput = document.getElementById("panel-space-id-input");
+      const pSpaceNameInput = document.getElementById("panel-space-name-input");
+      const pRoomsListContainer = document.getElementById("panel-editor-rooms-list");
+      const pRoomsReadOnly = document.getElementById("panel-rooms-read-only");
+      const pRoomsReadOnlyList = document.getElementById("panel-rooms-read-only-list");
+      const btnSaveSpace = document.getElementById("btn-save-space");
+      const saveStatusMsg = document.getElementById("save-status-msg");
 
-      // Función para renderizar detalles
+      const faculties = ["FIME", "FIC", "FCQ", "FAYD"];
+      let clickedLayer = null;
+      let localSpaces = [];
+
+      // Renderizar listado de aulas internas en el editor
+      function renderEditorRooms() {
+        if (!pRoomsListContainer) return;
+        pRoomsListContainer.innerHTML = "";
+        
+        if (localSpaces.length === 0) {
+          pRoomsListContainer.innerHTML = '<span style="font-style: italic; color: var(--color-ink-3); font-size: 0.75rem; display: block; text-align: center; padding: 8px 0;">Sin aulas o laboratorios internos registrados</span>';
+        }
+
+        localSpaces.forEach((room, idx) => {
+          const row = document.createElement("div");
+          row.style.cssText = "display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px solid var(--color-rule-strong); background: var(--color-surface); margin-bottom: 8px;";
+          
+          const facultyIdx = faculties.indexOf(room.faculty);
+          const currentFacultyVal = facultyIdx >= 0 ? facultyIdx : 0;
+          
+          row.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="overline" style="font-size: 0.6rem; color: var(--color-ink-3);">Aula / Lab #${idx + 1}</span>
+              <button type="button" class="btn-remove-room" data-idx="${idx}" style="background: none; border: none; color: #ff3b30; font-size: 0.65rem; cursor: pointer; text-transform: uppercase; font-family: var(--font-mono); font-weight: 700; padding: 2px 4px;">Eliminar</button>
+            </div>
+            <input type="text" class="room-name-input input" style="padding: 6px; font-size: 0.75rem; width: 100%; box-sizing: border-box;" value="${room.name || ''}" placeholder="Nombre del Aula / Laboratorio" />
+            <div style="margin-top: 4px;">
+              <label class="overline" style="font-size: 0.55rem; display: block; margin-bottom: 2px;">Facultad</label>
+              <input type="range" class="room-faculty-slider" min="0" max="3" step="1" value="${currentFacultyVal}" style="width: 100%; cursor: pointer;" />
+              <div style="display: flex; justify-content: space-between; font-size: 0.5rem; color: var(--color-ink-3); margin-top: 2px;">
+                <span>FIME</span>
+                <span>FIC</span>
+                <span>FCQ</span>
+                <span>FAYD</span>
+              </div>
+              <div class="room-faculty-display" style="font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 700; color: var(--color-primary); margin-top: 4px; text-align: center; background: var(--color-muted); padding: 2px; border: 1px solid var(--color-rule-strong);">${room.faculty || 'FIME'}</div>
+            </div>
+          `;
+          
+          const slider = row.querySelector(".room-faculty-slider");
+          const display = row.querySelector(".room-faculty-display");
+          const nameInput = row.querySelector(".room-name-input");
+          
+          slider.addEventListener('input', () => {
+            const fac = faculties[slider.value];
+            display.textContent = fac;
+            localSpaces[idx].faculty = fac;
+          });
+          
+          nameInput.addEventListener('input', () => {
+            localSpaces[idx].name = nameInput.value;
+          });
+          
+          row.querySelector(".btn-remove-room").addEventListener('click', () => {
+            localSpaces.splice(idx, 1);
+            renderEditorRooms();
+          });
+
+          pRoomsListContainer.appendChild(row);
+        });
+      }
+
+      // Botón agregar aula en el editor
+      document.getElementById("btn-add-room-editor")?.addEventListener('click', () => {
+        localSpaces.push({ name: "", faculty: "FIME" });
+        renderEditorRooms();
+      });
+
+      // Guardar cambios a través de la API
+      btnSaveSpace?.addEventListener('click', async () => {
+        if (!clickedLayer) return;
+        const id = pSpaceIdInput.value;
+        const name = pSpaceNameInput.value.trim();
+
+        if (saveStatusMsg) {
+          saveStatusMsg.style.display = "block";
+          saveStatusMsg.style.color = "var(--color-ink-2)";
+          saveStatusMsg.textContent = "Guardando...";
+        }
+
+        try {
+          const res = await fetch('/api/save-space', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, name, spaces: localSpaces })
+          });
+
+          if (res.ok) {
+            if (saveStatusMsg) {
+              saveStatusMsg.style.color = "var(--color-primary)";
+              saveStatusMsg.textContent = "¡Guardado con éxito!";
+            }
+
+            // Actualizar propiedades locales en la capa de Leaflet
+            clickedLayer.feature.properties.name = name;
+            clickedLayer.feature.properties.spaces = JSON.parse(JSON.stringify(localSpaces));
+
+            // Refrescar el estilo y el tooltip de la capa
+            geojsonLayer.resetStyle(clickedLayer);
+            clickedLayer.unbindTooltip();
+            if (name) {
+              clickedLayer.bindTooltip(name, {
+                className: 'swiss-tooltip',
+                direction: 'top'
+              });
+            }
+
+            if (pName) pName.textContent = name || "Edificio sin nombre";
+
+            setTimeout(() => {
+              if (saveStatusMsg) saveStatusMsg.style.display = "none";
+            }, 2500);
+          } else {
+            const err = await res.json();
+            if (saveStatusMsg) {
+              saveStatusMsg.style.color = "red";
+              saveStatusMsg.textContent = "Error: " + err.error;
+            }
+          }
+        } catch (e) {
+          if (saveStatusMsg) {
+            saveStatusMsg.style.color = "red";
+            saveStatusMsg.textContent = "Error de conexión";
+          }
+        }
+      });
+
+      // Función para renderizar detalles del panel lateral
       function displaySpaceDetails(feature) {
         if (emptyState) emptyState.style.display = "none";
         if (contentState) contentState.style.display = "block";
 
         const props = feature.properties || {};
-        const spaceName = props.name || (props.building ? "Edificio (" + props.building + ")" : "Espacio Universitario");
+        const spaceId = props.id || feature.id || "N/A";
+        const spaceName = props.name || "Edificio sin nombre";
+        
+        localSpaces = props.spaces ? JSON.parse(JSON.stringify(props.spaces)) : [];
         
         if (pName) pName.textContent = spaceName;
+        if (pSpaceIdInput) pSpaceIdInput.value = spaceId;
+        if (pSpaceNameInput) pSpaceNameInput.value = props.name || "";
+        
+        renderEditorRooms();
+
+        // Renderizar vista de solo lectura de aulas internas
+        if (pRoomsReadOnly && pRoomsReadOnlyList) {
+          pRoomsReadOnlyList.innerHTML = "";
+          if (localSpaces.length > 0) {
+            localSpaces.forEach(room => {
+              const tag = document.createElement("span");
+              tag.style.cssText = `
+                display: inline-block;
+                padding: 4px 8px;
+                font-size: 0.75rem;
+                font-family: var(--font-sans);
+                font-weight: 700;
+                border-radius: 4px;
+                border: 1px solid ${getFacultyColor(room.faculty)};
+                background: ${getFacultyColor(room.faculty)}15;
+                color: ${getFacultyColor(room.faculty)};
+              `;
+              tag.textContent = `${room.name} (${room.faculty})`;
+              pRoomsReadOnlyList.appendChild(tag);
+            });
+            pRoomsReadOnly.style.display = "block";
+          } else {
+            pRoomsReadOnly.style.display = "none";
+          }
+        }
+
         if (pType) {
           const typeStr = props.amenity || props.building || 'general';
           pType.textContent = typeStr.charAt(0).toUpperCase() + typeStr.slice(1);
           pType.className = 'tag tag--primary';
         }
 
-        // Buscar clases programadas para este espacio
+        // Buscar clases programadas para cualquiera de los sub-espacios de este edificio
         if (pClassesList) {
           pClassesList.innerHTML = "";
-          const classes = window.__SCHEDULES__.filter(
-            s => s.classroom_name?.toLowerCase() === spaceName.toLowerCase() || 
-                 s.classroom?.toLowerCase() === spaceName.toLowerCase()
-          );
+          
+          const classes = window.__SCHEDULES__.filter(s => {
+            if (s.classroom_name?.toLowerCase() === spaceName.toLowerCase()) return true;
+            return localSpaces.some(r => r.name && s.classroom_name?.toLowerCase() === r.name.toLowerCase());
+          });
 
           if (classes && classes.length > 0) {
             classes.forEach(c => {
@@ -156,39 +360,43 @@ const schedulesJson = JSON.stringify(schedules);
               row.innerHTML = 
                 '<strong style="display: block; font-size: 1rem; color: var(--color-ink); margin-bottom: 4px;">' + c.subject_name + '</strong>' +
                 '<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem; color: var(--color-ink-2);">' +
-                  '<span>Grupo: <strong style="color: var(--color-ink);">' + c.group_name + '</strong></span>' +
-                  '<span style="font-family: var(--font-mono);">' + c.day_of_week + ' ' + c.start_time.substring(0,5) + '-' + c.end_time.substring(0,5) + '</span>' +
+                '<span>Grupo: <strong style="color: var(--color-ink);">' + c.group_name + '</strong></span>' +
+                '<span style="font-family: var(--font-mono);">' + c.day_of_week + ' ' + c.start_time.substring(0,5) + '-' + c.end_time.substring(0,5) + '</span>' +
                 '</div>' +
-                '<span style="display: block; font-size: 0.75rem; color: var(--color-ink-3); margin-top: 4px;">Docente: ' + (c.professor_name || "Sin asignar") + '</span>';
+                '<span style="display: block; font-size: 0.75rem; color: var(--color-ink-3); margin-top: 4px;">Espacio: <strong>' + (c.classroom_name || "N/A") + '</strong> | Docente: ' + (c.professor_name || "Sin asignar") + '</span>';
               pClassesList.appendChild(row);
             });
           } else {
             pClassesList.innerHTML = 
-              '<div style="padding: 16px; background: var(--color-muted); border: 1px dashed var(--color-rule-strong); margin-bottom: 12px;">' +
-                '<p style="font-size: 0.8125rem; color: var(--color-ink-2); margin-bottom: 8px;"><strong>Metadatos del Espacio:</strong></p>' +
-                '<ul style="list-style: none; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3);">' +
-                  Object.entries(props).filter(([k]) => !k.startsWith('@')).map(([k,v]) => '<li style="margin-bottom: 4px;"><strong>' + k + ':</strong> ' + v + '</li>').join('') +
-                '</ul>' +
-              '</div>' +
               '<p style="font-size: 0.875rem; color: var(--color-ink-3); font-style: italic;">No hay clases programadas académicamente en este momento.</p>';
           }
         }
       }
 
-      // 3. Estilos de los Polígonos GeoJSON (Swiss Style)
-      const baseStyle = {
-        color: "var(--color-ink)",       // Borde negro/oscuro
-        weight: 1,
-        fillColor: "var(--color-ink)",
-        fillOpacity: 0.05
-      };
+      // Colores de Facultades para el Swiss Map
+      function getFacultyColor(faculty) {
+        switch (faculty) {
+          case 'FIME': return '#4caf50'; // Verde
+          case 'FIC': return '#2196f3';  // Azul
+          case 'FCQ': return '#ff9800';  // Naranja
+          case 'FAYD': return '#e91e63'; // Rosa/Magente
+          default: return 'var(--color-ink)'; // Gris oscuro
+        }
+      }
 
-      const highlightStyle = {
-        color: "var(--color-primary)",   // Borde verde primario
-        weight: 2,
-        fillColor: "var(--color-primary)",
-        fillOpacity: 0.15
-      };
+      // Estilo de los Polígonos GeoJSON (pintado por la facultad de la primera aula registrada)
+      function baseStyle(feature) {
+        const props = feature.properties || {};
+        const spaces = props.spaces || [];
+        const faculty = spaces.length > 0 ? spaces[0].faculty : props.faculty;
+        const color = getFacultyColor(faculty);
+        return {
+          color: "var(--color-ink)",
+          weight: 1,
+          fillColor: color,
+          fillOpacity: faculty ? 0.35 : 0.05
+        };
+      }
 
       let geojsonLayer;
 
@@ -211,7 +419,11 @@ const schedulesJson = JSON.stringify(schedules);
               layer.on({
                 mouseover: (e) => {
                   const l = e.target;
-                  l.setStyle(highlightStyle);
+                  l.setStyle({
+                    color: "var(--color-primary)",
+                    weight: 2,
+                    fillOpacity: 0.5
+                  });
                   if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
                     l.bringToFront();
                   }
@@ -220,7 +432,7 @@ const schedulesJson = JSON.stringify(schedules);
                   geojsonLayer.resetStyle(e.target);
                 },
                 click: (e) => {
-                  // Ajustar el mapa al polígono
+                  clickedLayer = e.target;
                   map.fitBounds(e.target.getBounds(), { padding: [50, 50] });
                   displaySpaceDetails(feature);
                 }
@@ -239,18 +451,24 @@ const schedulesJson = JSON.stringify(schedules);
             map.setMinZoom(map.getBoundsZoom(bounds));
           }
 
-          // Checar URL Params para auto-selección
-          const urlParams = new URLSearchParams(window.location.search);
-          const highlightName = urlParams.get('highlight');
-          
-          if (highlightName) {
-            geojsonLayer.eachLayer(layer => {
-              if (layer.feature.properties.name?.toLowerCase() === highlightName.toLowerCase()) {
-                map.fitBounds(layer.getBounds(), { maxZoom: 20 });
-                layer.fire('click');
-              }
-            });
-          }
+           // Checar URL Params para auto-selección e indicación de edición
+           const urlParams = new URLSearchParams(window.location.search);
+           const highlightName = urlParams.get('highlight');
+           const isEditMode = urlParams.get('edit') === 'true';
+
+           const editorHelper = document.getElementById("panel-editor-helper");
+           if (editorHelper && isEditMode) {
+             editorHelper.style.display = "block";
+           }
+           
+           if (highlightName) {
+             geojsonLayer.eachLayer(layer => {
+               if (layer.feature.properties.name?.toLowerCase() === highlightName.toLowerCase()) {
+                 map.fitBounds(layer.getBounds(), { maxZoom: 20 });
+                 layer.fire('click');
+               }
+             });
+           }
 
           // ── Search & Filter Logic ──
           const searchInput = document.getElementById("map-search-input");

@@ -59,6 +59,7 @@ CREATE TABLE schedules (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     is_laboratory BOOLEAN DEFAULT FALSE,
+    is_hti BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 

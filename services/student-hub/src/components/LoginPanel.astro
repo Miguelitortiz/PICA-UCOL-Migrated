@@ -1,40 +1,57 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Iniciar Sesión | StudentHUB PICA-UCOL</title>
+    <title>Iniciar Sesión | StudentHUB</title>
   </head>
-  <body style="display: flex; min-height: 100vh; background-color: var(--color-bg); margin: 0; font-family: var(--font-sans);">
-    
+  <body
+    style="display: flex; min-height: 100vh; background-color: var(--color-bg); margin: 0; font-family: var(--font-sans);"
+  >
     <!-- Lado Izquierdo: Formulario -->
-    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px; max-width: 500px; margin: 0 auto;">
+    <div
+      style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px; max-width: 500px; margin: 0 auto;"
+    >
       <div style="margin-bottom: 48px;">
         <span class="overline overline--primary">Portal Académico</span>
-        <h1 style="font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; color: var(--color-ink); margin-top: 8px; line-height: 1;">
+        <h1
+          style="font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; color: var(--color-ink); margin-top: 8px; line-height: 1;"
+        >
           StudentHUB
         </h1>
-        <p style="font-size: 0.875rem; color: var(--color-ink-2); margin-top: 16px; line-height: 1.5;">
-          Acceso centralizado al ecosistema digital de la Universidad de Colima. Por favor, identifícate con tus credenciales institucionales.
+        <p
+          style="font-size: 0.875rem; color: var(--color-ink-2); margin-top: 16px; line-height: 1.5;"
+        >
+          Acceso centralizado al ecosistema digital de la Universidad de Colima.
+          Por favor, identifícate con tus credenciales institucionales.
         </p>
       </div>
 
-      <form id="login-form" autocomplete="off" style="display: flex; flex-direction: column; gap: 24px;">
-        
-        <div id="error-message" aria-live="polite" style="display: none; padding: 12px; background: var(--color-ink); color: var(--color-surface); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
+      <form
+        id="login-form"
+        autocomplete="off"
+        style="display: flex; flex-direction: column; gap: 24px;"
+      >
+        <div
+          id="error-message"
+          aria-live="polite"
+          style="display: none; padding: 12px; background: var(--color-ink); color: var(--color-surface); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;"
+        >
           <!-- Mensaje de error -->
         </div>
 
         <div>
-          <label for="enrollment_id" class="field-label">Matrícula Estudiantil</label>
-          <input 
-            type="text" 
-            id="enrollment_id" 
-            name="student_enrollment_id" 
-            class="input" 
+          <label for="enrollment_id" class="field-label"
+            >Matrícula Estudiantil</label
+          >
+          <input
+            type="text"
+            id="enrollment_id"
+            name="student_enrollment_id"
+            class="input"
             placeholder="Ej. 20180000"
             required
             autocomplete="username"
@@ -47,11 +64,11 @@ import '../styles/global.css';
         <div>
           <label for="password" class="field-label">Contraseña</label>
           <div style="position: relative; width: 100%;">
-            <input 
-              type="password" 
-              id="password" 
-              name="student_password" 
-              class="input" 
+            <input
+              type="password"
+              id="password"
+              name="student_password"
+              class="input"
               placeholder="••••••••"
               required
               autocomplete="current-password"
@@ -59,37 +76,61 @@ import '../styles/global.css';
               spellcheck="false"
               style="width: 100%; box-sizing: border-box; padding-right: 48px;"
             />
-            <button 
-              type="button" 
-              id="toggle-password" 
+            <button
+              type="button"
+              id="toggle-password"
               aria-label="Mostrar contraseña"
               style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 0.8125rem; font-family: var(--font-mono); font-weight: 700; color: var(--color-ink-2); text-transform: uppercase; letter-spacing: 0.05em; padding: 4px;"
-            >Ver</button>
+              >Ver</button
+            >
           </div>
         </div>
 
-        <button type="submit" class="btn btn--primary" style="margin-top: 8px; padding: 16px; font-size: 1rem; width: 100%;">
+        <button
+          type="submit"
+          class="btn btn--primary"
+          style="margin-top: 8px; padding: 16px; font-size: 1rem; width: 100%;"
+        >
           Acceder al Sistema
         </button>
       </form>
 
-      <div style="margin-top: 64px; border-top: 1px solid var(--color-rule); padding-top: 24px;">
-        <p style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3);">
-          &copy; 2026 Universidad de Colima. Dirección General de Educación Superior.<br/>
+      <div
+        style="margin-top: 64px; border-top: 1px solid var(--color-rule); padding-top: 24px;"
+      >
+        <p
+          style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-ink-3);"
+        >
+          &copy; 2026 Universidad de Colima. Dirección General de Educación
+          Superior.<br />
           Estilo de diseño tipográfico inspirado en la escuela Suiza.
         </p>
       </div>
     </div>
 
     <!-- Lado Derecho: Imagen abstracta arquitectónica o color sólido (Desktop) -->
-    <div style="flex: 1; background: var(--color-ink); display: none; position: relative; overflow: hidden;" id="login-hero">
-      <div style="position: absolute; inset: 0; opacity: 0.2; background-image: radial-gradient(circle at 20% 50%, var(--color-surface) 0%, transparent 50%); mix-blend-mode: overlay;"></div>
-      <div style="position: absolute; bottom: 40px; right: 40px; text-align: right; color: var(--color-surface);">
-        <h2 style="font-size: 4rem; font-weight: 900; letter-spacing: -0.05em; line-height: 0.9; margin: 0;">PICA<br/>UCOL</h2>
-        <span style="font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; opacity: 0.7; display: block; margin-top: 16px;">PLATAFORMA INTEGRAL</span>
+    <div
+      style="flex: 1; background: var(--color-ink); display: none; position: relative; overflow: hidden;"
+      id="login-hero"
+    >
+      <div
+        style="position: absolute; inset: 0; opacity: 0.2; background-image: radial-gradient(circle at 20% 50%, var(--color-surface) 0%, transparent 50%); mix-blend-mode: overlay;"
+      >
+      </div>
+      <div
+        style="position: absolute; bottom: 40px; right: 40px; text-align: right; color: var(--color-surface);"
+      >
+        <h2
+          style="font-size: 4rem; font-weight: 900; letter-spacing: -0.05em; line-height: 0.9; margin: 0;"
+        >
+          <br />UCOL
+        </h2>
+        <span
+          style="font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; opacity: 0.7; display: block; margin-top: 16px;"
+          >PLATAFORMA INTEGRAL</span
+        >
       </div>
     </div>
-
   </body>
 </html>
 
@@ -110,7 +151,7 @@ import '../styles/global.css';
     color: var(--color-ink-2);
     margin-bottom: 8px;
   }
-  
+
   .input {
     background: var(--color-surface);
     border: 1px solid var(--color-rule-strong);
@@ -121,7 +162,7 @@ import '../styles/global.css';
     border-radius: 0;
     transition: border-color 150ms;
   }
-  
+
   .input:focus {
     outline: none;
     border-color: var(--color-ink);
@@ -136,12 +177,12 @@ import '../styles/global.css';
     transition: opacity 150ms;
     text-align: center;
   }
-  
+
   .btn--primary {
     background-color: var(--color-ink);
     color: var(--color-surface);
   }
-  
+
   .btn--primary:hover {
     opacity: 0.85;
   }
@@ -149,54 +190,62 @@ import '../styles/global.css';
 
 <script>
   // Toggle password visibility
-  const togglePassBtn = document.getElementById('toggle-password');
-  togglePassBtn?.addEventListener('click', () => {
-    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
+  const togglePassBtn = document.getElementById("toggle-password");
+  togglePassBtn?.addEventListener("click", () => {
+    const passwordInput = document.getElementById(
+      "password",
+    ) as HTMLInputElement | null;
     if (passwordInput && togglePassBtn) {
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        togglePassBtn.textContent = 'Ocultar';
-        togglePassBtn.setAttribute('aria-label', 'Ocultar contraseña');
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        togglePassBtn.textContent = "Ocultar";
+        togglePassBtn.setAttribute("aria-label", "Ocultar contraseña");
       } else {
-        passwordInput.type = 'password';
-        togglePassBtn.textContent = 'Ver';
-        togglePassBtn.setAttribute('aria-label', 'Mostrar contraseña');
+        passwordInput.type = "password";
+        togglePassBtn.textContent = "Ver";
+        togglePassBtn.setAttribute("aria-label", "Mostrar contraseña");
       }
     }
   });
 
-  document.getElementById('login-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const enrollmentInput = document.getElementById('enrollment_id') as HTMLInputElement | null;
-    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
-    const errorMsg = document.getElementById('error-message');
-    
-    if (errorMsg) errorMsg.style.display = 'none';
+  document
+    .getElementById("login-form")
+    ?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const enrollmentInput = document.getElementById(
+        "enrollment_id",
+      ) as HTMLInputElement | null;
+      const passwordInput = document.getElementById(
+        "password",
+      ) as HTMLInputElement | null;
+      const errorMsg = document.getElementById("error-message");
 
-    const formData = new FormData();
-    formData.set('enrollment_id', enrollmentInput?.value.trim() || '');
-    formData.set('password', passwordInput?.value.trim() || '');
+      if (errorMsg) errorMsg.style.display = "none";
 
-    try {
-      const res = await fetch('/student-auth/login', {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
-      
-      if (res.ok) {
-        window.location.href = '/';
-      } else {
+      const formData = new FormData();
+      formData.set("enrollment_id", enrollmentInput?.value.trim() || "");
+      formData.set("password", passwordInput?.value.trim() || "");
+
+      try {
+        const res = await fetch("/student-auth/login", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          window.location.href = "/";
+        } else {
+          if (errorMsg) {
+            errorMsg.textContent = data.error || "Error al iniciar sesión";
+            errorMsg.style.display = "block";
+          }
+        }
+      } catch (err) {
         if (errorMsg) {
-          errorMsg.textContent = data.error || 'Error al iniciar sesión';
-          errorMsg.style.display = 'block';
+          errorMsg.textContent = "Error de conexión";
+          errorMsg.style.display = "block";
         }
       }
-    } catch (err) {
-      if (errorMsg) {
-        errorMsg.textContent = 'Error de conexión';
-        errorMsg.style.display = 'block';
-      }
-    }
-  });
+    });
 </script>

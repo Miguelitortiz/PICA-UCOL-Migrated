@@ -1,36 +1,49 @@
 ---
 // login.astro — Página de autenticación del AdminHUB
 ---
+
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="description" content="Acceso al Panel de Administración Académica PICA-UCOL" />
-    <title>Iniciar Sesión — AdminHUB PICA-UCOL</title>
+    <meta
+      name="description"
+      content="Acceso al Panel de Administración Académica"
+    />
+    <title>Iniciar Sesión — AdminHUB</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
       :root {
         --primary: #527630;
         --primary-dark: #3d5923;
         --primary-light: #6a9940;
         --secondary: #006096;
-        --bg: #F5F4F0;
-        --bg-card: #FFFFFF;
-        --text: #1A1A1A;
-        --text-sub: #4E4D4D;
-        --border: #B4B4B4;
+        --bg: #f5f4f0;
+        --bg-card: #ffffff;
+        --text: #1a1a1a;
+        --text-sub: #4e4d4d;
+        --border: #b4b4b4;
         --border-focus: #527630;
         --error: #990000;
-        --error-bg: #FFF5F5;
+        --error-bg: #fff5f5;
         --success: #527630;
-        --font: 'Inter', system-ui, sans-serif;
-        --mono: 'JetBrains Mono', monospace;
+        --font: "Inter", system-ui, sans-serif;
+        --mono: "JetBrains Mono", monospace;
       }
 
       body {
@@ -46,7 +59,12 @@
       /* Banda institucional */
       .top-bar {
         height: 4px;
-        background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
+        background: linear-gradient(
+          90deg,
+          var(--primary) 0%,
+          var(--primary-light) 50%,
+          var(--secondary) 100%
+        );
         width: 100%;
         flex-shrink: 0;
       }
@@ -111,11 +129,13 @@
         border: 1px solid var(--border);
         border-radius: 4px;
         overflow: hidden;
-        box-shadow: 0 2px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+        box-shadow:
+          0 2px 16px rgba(0, 0, 0, 0.07),
+          0 1px 4px rgba(0, 0, 0, 0.04);
       }
 
       .card-header {
-        background: #F9F9F7;
+        background: #f9f9f7;
         border-bottom: 1px solid var(--border);
         padding: 0.875rem 1.5rem;
         display: flex;
@@ -169,7 +189,9 @@
         font-size: 0.875rem;
         color: var(--text);
         background: white;
-        transition: border-color 150ms ease, box-shadow 150ms ease;
+        transition:
+          border-color 150ms ease,
+          box-shadow 150ms ease;
         outline: none;
         -webkit-appearance: none;
       }
@@ -185,7 +207,7 @@
       }
 
       .form-input::placeholder {
-        color: #BBBBBB;
+        color: #bbbbbb;
         font-size: 0.8125rem;
       }
 
@@ -213,7 +235,9 @@
         transition: color 150ms;
       }
 
-      .pass-toggle:hover { color: var(--primary); }
+      .pass-toggle:hover {
+        color: var(--primary);
+      }
 
       /* Error message */
       .error-msg {
@@ -221,7 +245,7 @@
         align-items: center;
         gap: 0.5rem;
         background: var(--error-bg);
-        border: 1px solid rgba(153,0,0,0.2);
+        border: 1px solid rgba(153, 0, 0, 0.2);
         border-radius: 2px;
         padding: 0.625rem 0.875rem;
         margin-bottom: 1.125rem;
@@ -230,7 +254,9 @@
         font-family: var(--mono);
       }
 
-      .error-msg.visible { display: flex; }
+      .error-msg.visible {
+        display: flex;
+      }
 
       /* Submit button */
       .btn-login {
@@ -246,7 +272,9 @@
         letter-spacing: 0.1em;
         text-transform: uppercase;
         cursor: pointer;
-        transition: background 150ms ease, transform 100ms ease;
+        transition:
+          background 150ms ease,
+          transform 100ms ease;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -254,38 +282,64 @@
         margin-top: 0.375rem;
       }
 
-      .btn-login:hover:not(:disabled) { background: var(--primary-dark); }
-      .btn-login:active:not(:disabled) { transform: scale(0.99); }
-      .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+      .btn-login:hover:not(:disabled) {
+        background: var(--primary-dark);
+      }
+      .btn-login:active:not(:disabled) {
+        transform: scale(0.99);
+      }
+      .btn-login:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
 
       /* Loader en botón */
       .btn-loader {
         width: 16px;
         height: 16px;
-        border: 2px solid rgba(255,255,255,0.4);
+        border: 2px solid rgba(255, 255, 255, 0.4);
         border-top-color: white;
         border-radius: 50%;
         animation: spin 0.7s linear infinite;
         display: none;
       }
 
-      .btn-login.loading .btn-loader { display: block; }
-      .btn-login.loading .btn-text { display: none; }
+      .btn-login.loading .btn-loader {
+        display: block;
+      }
+      .btn-login.loading .btn-text {
+        display: none;
+      }
 
       @keyframes spin {
-        to { transform: rotate(360deg); }
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       /* Shake animation */
       @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20% { transform: translateX(-8px); }
-        40% { transform: translateX(8px); }
-        60% { transform: translateX(-5px); }
-        80% { transform: translateX(5px); }
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-8px);
+        }
+        40% {
+          transform: translateX(8px);
+        }
+        60% {
+          transform: translateX(-5px);
+        }
+        80% {
+          transform: translateX(5px);
+        }
       }
 
-      .shake { animation: shake 0.4s ease; }
+      .shake {
+        animation: shake 0.4s ease;
+      }
 
       /* Divider */
       .divider {
@@ -297,7 +351,7 @@
       /* Demo credentials table */
       .demo-section {
         padding: 1rem 1.5rem 1.25rem;
-        background: #F9F9F7;
+        background: #f9f9f7;
         border-top: 1px solid var(--border);
       }
 
@@ -324,13 +378,15 @@
         border-radius: 2px;
         padding: 0.375rem 0.5rem;
         cursor: pointer;
-        transition: border-color 150ms, background 150ms;
+        transition:
+          border-color 150ms,
+          background 150ms;
         text-align: left;
       }
 
       .demo-item:hover {
         border-color: var(--primary);
-        background: rgba(82,118,48,0.04);
+        background: rgba(82, 118, 48, 0.04);
       }
 
       .demo-item-role {
@@ -367,7 +423,10 @@
       }
 
       @media (prefers-reduced-motion: reduce) {
-        * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        * {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
       }
     </style>
   </head>
@@ -387,7 +446,7 @@
         <div class="login-card">
           <div class="card-header">
             <div class="card-header-dot"></div>
-            <span>Autenticación de Acceso — PICA-UCOL</span>
+            <span>Autenticación de Acceso</span>
           </div>
 
           <div class="card-body">
@@ -399,7 +458,9 @@
 
             <form id="login-form" novalidate>
               <div class="form-group">
-                <label class="form-label" for="username">Usuario o Correo Institucional</label>
+                <label class="form-label" for="username"
+                  >Usuario o Correo Institucional</label
+                >
                 <input
                   type="text"
                   id="username"
@@ -425,7 +486,12 @@
                     autocomplete="current-password"
                     required
                   />
-                  <button type="button" class="pass-toggle" id="pass-toggle" aria-label="Mostrar contraseña">
+                  <button
+                    type="button"
+                    class="pass-toggle"
+                    id="pass-toggle"
+                    aria-label="Mostrar contraseña"
+                  >
                     👁
                   </button>
                 </div>
@@ -440,29 +506,55 @@
 
           <!-- Demo credentials -->
           <div class="demo-section">
-            <span class="demo-label">🔑 Accesos de prueba (contraseña: prueba123, admin: admin_pass)</span>
+            <span class="demo-label"
+              >🔑 Accesos de prueba (contraseña: prueba123, admin: admin_pass)</span
+            >
             <div class="demo-grid" id="demo-grid">
-              <button class="demo-item" data-user="carlos.navarro_2@ucol.mx" data-role="Docente">
+              <button
+                class="demo-item"
+                data-user="carlos.navarro_2@ucol.mx"
+                data-role="Docente"
+              >
                 <div class="demo-item-role">Docente</div>
                 <div class="demo-item-user">carlos.navarro_2</div>
               </button>
-              <button class="demo-item" data-user="ana.pérez_6@ucol.mx" data-role="Docente">
+              <button
+                class="demo-item"
+                data-user="ana.pérez_6@ucol.mx"
+                data-role="Docente"
+              >
                 <div class="demo-item-role">Docente</div>
                 <div class="demo-item-user">ana.pérez_6</div>
               </button>
-              <button class="demo-item" data-user="jefe.computacio" data-role="Jefe de Carrera">
+              <button
+                class="demo-item"
+                data-user="jefe.computacio"
+                data-role="Jefe de Carrera"
+              >
                 <div class="demo-item-role">Jefe de Carrera</div>
                 <div class="demo-item-user">jefe.computacio</div>
               </button>
-              <button class="demo-item" data-user="coord.fime" data-role="Coordinador FIME">
+              <button
+                class="demo-item"
+                data-user="coord.fime"
+                data-role="Coordinador FIME"
+              >
                 <div class="demo-item-role">Coordinador</div>
                 <div class="demo-item-user">coord.fime</div>
               </button>
-              <button class="demo-item" data-user="admin.dir" data-role="Admin Dirección">
+              <button
+                class="demo-item"
+                data-user="admin.dir"
+                data-role="Admin Dirección"
+              >
                 <div class="demo-item-role">Admin Dirección</div>
                 <div class="demo-item-user">admin.dir</div>
               </button>
-              <button class="demo-item" data-user="admin" data-role="Admin General">
+              <button
+                class="demo-item"
+                data-user="admin"
+                data-role="Admin General"
+              >
                 <div class="demo-item-role">Admin General</div>
                 <div class="demo-item-user">admin (admin_pass)</div>
               </button>
@@ -471,55 +563,56 @@
         </div>
 
         <p class="login-footer">
-          AdminHUB PICA-UCOL · Plataforma Académica Integrada · Universidad de Colima
+          AdminHUB· Plataforma Académica Integrada · Universidad de Colima
         </p>
       </div>
     </div>
 
     <script>
       // Redirigir si ya hay sesión activa
-      const existingToken = localStorage.getItem('pica_jwt');
+      const existingToken = localStorage.getItem("pica_jwt");
       if (existingToken) {
         // Verificar que el token no haya expirado
         try {
-          const payload = JSON.parse(atob(existingToken.split('.')[1]));
+          const payload = JSON.parse(atob(existingToken.split(".")[1]));
           if (payload.exp * 1000 > Date.now()) {
-            window.location.href = '/admin';
+            window.location.href = "/admin";
           } else {
-            localStorage.removeItem('pica_jwt');
-            localStorage.removeItem('pica_user');
+            localStorage.removeItem("pica_jwt");
+            localStorage.removeItem("pica_user");
           }
         } catch {
-          localStorage.removeItem('pica_jwt');
-          localStorage.removeItem('pica_user');
+          localStorage.removeItem("pica_jwt");
+          localStorage.removeItem("pica_user");
         }
       }
 
-      const form = document.getElementById('login-form');
-      const btnLogin = document.getElementById('btn-login');
-      const errorMsg = document.getElementById('error-msg');
-      const errorText = document.getElementById('error-text');
-      const usernameInput = document.getElementById('username');
-      const passwordInput = document.getElementById('password');
-      const passToggle = document.getElementById('pass-toggle');
-      const demoGrid = document.getElementById('demo-grid');
+      const form = document.getElementById("login-form");
+      const btnLogin = document.getElementById("btn-login");
+      const errorMsg = document.getElementById("error-msg");
+      const errorText = document.getElementById("error-text");
+      const usernameInput = document.getElementById("username");
+      const passwordInput = document.getElementById("password");
+      const passToggle = document.getElementById("pass-toggle");
+      const demoGrid = document.getElementById("demo-grid");
 
       // Toggle contraseña
-      passToggle?.addEventListener('click', () => {
-        const isPassword = passwordInput.type === 'password';
-        passwordInput.type = isPassword ? 'text' : 'password';
-        passToggle.textContent = isPassword ? '🙈' : '👁';
+      passToggle?.addEventListener("click", () => {
+        const isPassword = passwordInput.type === "password";
+        passwordInput.type = isPassword ? "text" : "password";
+        passToggle.textContent = isPassword ? "🙈" : "👁";
       });
 
       // Click en tarjetas de demo
-      demoGrid?.querySelectorAll('.demo-item').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const username = btn.getAttribute('data-user') || '';
+      demoGrid?.querySelectorAll(".demo-item").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const username = btn.getAttribute("data-user") || "";
           usernameInput.value = username;
-          passwordInput.value = username === 'admin' ? 'admin_pass' : 'prueba123';
-          usernameInput.classList.remove('error');
-          passwordInput.classList.remove('error');
-          errorMsg.classList.remove('visible');
+          passwordInput.value =
+            username === "admin" ? "admin_pass" : "prueba123";
+          usernameInput.classList.remove("error");
+          passwordInput.classList.remove("error");
+          errorMsg.classList.remove("visible");
           usernameInput.focus();
         });
       });
@@ -527,68 +620,72 @@
       // Mostrar error con animación
       function showError(msg) {
         errorText.textContent = msg;
-        errorMsg.classList.add('visible');
-        usernameInput.classList.add('error');
-        passwordInput.classList.add('error');
+        errorMsg.classList.add("visible");
+        usernameInput.classList.add("error");
+        passwordInput.classList.add("error");
 
-        const card = document.querySelector('.login-card');
-        card.classList.remove('shake');
+        const card = document.querySelector(".login-card");
+        card.classList.remove("shake");
         void card.offsetWidth; // Reflow para reiniciar animación
-        card.classList.add('shake');
+        card.classList.add("shake");
       }
 
       // Limpiar error
-      [usernameInput, passwordInput].forEach(input => {
-        input?.addEventListener('input', () => {
-          input.classList.remove('error');
-          if (!usernameInput.classList.contains('error') && !passwordInput.classList.contains('error')) {
-            errorMsg.classList.remove('visible');
+      [usernameInput, passwordInput].forEach((input) => {
+        input?.addEventListener("input", () => {
+          input.classList.remove("error");
+          if (
+            !usernameInput.classList.contains("error") &&
+            !passwordInput.classList.contains("error")
+          ) {
+            errorMsg.classList.remove("visible");
           }
         });
       });
 
       // Submit del formulario
-      form?.addEventListener('submit', async (e) => {
+      form?.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const username = usernameInput.value.trim();
         const password = passwordInput.value;
 
         if (!username || !password) {
-          showError('Por favor ingresa tu usuario y contraseña.');
+          showError("Por favor ingresa tu usuario y contraseña.");
           return;
         }
 
         // Estado de carga
         btnLogin.disabled = true;
-        btnLogin.classList.add('loading');
+        btnLogin.classList.add("loading");
 
         try {
-          const res = await fetch('/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+          const res = await fetch("/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
           });
 
           const data = await res.json();
 
           if (!res.ok) {
-            showError(data.error || 'Credenciales incorrectas.');
+            showError(data.error || "Credenciales incorrectas.");
             return;
           }
 
           // Guardar token y datos de usuario
-          localStorage.setItem('pica_jwt', data.token);
-          localStorage.setItem('pica_user', JSON.stringify(data.user));
+          localStorage.setItem("pica_jwt", data.token);
+          localStorage.setItem("pica_user", JSON.stringify(data.user));
 
           // Redirigir al panel principal
-          window.location.href = '/admin';
-
+          window.location.href = "/admin";
         } catch (err) {
-          showError('Error de conexión. Verifica que el servidor esté disponible.');
+          showError(
+            "Error de conexión. Verifica que el servidor esté disponible.",
+          );
         } finally {
           btnLogin.disabled = false;
-          btnLogin.classList.remove('loading');
+          btnLogin.classList.remove("loading");
         }
       });
     </script>
