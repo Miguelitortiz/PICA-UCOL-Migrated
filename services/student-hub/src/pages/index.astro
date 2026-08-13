@@ -28,6 +28,7 @@ if (activeGroupSlug) {
 const timeSlots = [
   { start: "07:00:00", end: "07:50:00", label: "07:00–07:50" },
   { start: "07:50:00", end: "08:40:00", label: "07:50–08:40" },
+  { isRecess: true, start: "08:40:00", end: "09:10:00", label: "08:40–09:10", title: "Receso" },
   { start: "09:10:00", end: "10:00:00", label: "09:10–10:00" },
   { start: "10:00:00", end: "10:50:00", label: "10:00–10:50" },
   { start: "10:50:00", end: "11:40:00", label: "10:50–11:40" },
@@ -35,12 +36,33 @@ const timeSlots = [
   { start: "12:30:00", end: "13:20:00", label: "12:30–13:20" },
   { start: "13:20:00", end: "14:10:00", label: "13:20–14:10" },
   { start: "14:10:00", end: "15:00:00", label: "14:10–15:00" },
+  { isRecess: true, start: "15:00:00", end: "15:30:00", label: "15:00–15:30", title: "Receso" },
   { start: "15:30:00", end: "16:20:00", label: "15:30–16:20" },
   { start: "16:20:00", end: "17:10:00", label: "16:20–17:10" },
   { start: "17:10:00", end: "18:00:00", label: "17:10–18:00" },
   { start: "18:00:00", end: "18:50:00", label: "18:00–18:50" },
   { start: "18:50:00", end: "19:40:00", label: "18:50–19:40" },
 ];
+
+let minStartTime = "23:59:59";
+let maxEndTime = "00:00:00";
+if (schedules && schedules.length > 0) {
+  schedules.forEach(s => {
+    if (s.start_time < minStartTime) {
+      minStartTime = s.start_time;
+    }
+    if (s.end_time > maxEndTime) {
+      maxEndTime = s.end_time;
+    }
+  });
+} else {
+  minStartTime = "07:00:00";
+  maxEndTime = "14:10:00";
+}
+
+const visibleTimeSlots = timeSlots.filter(slot => {
+  return slot.start >= minStartTime && slot.start < maxEndTime;
+});
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
@@ -50,6 +72,41 @@ function findScheduleItems(day: string, timeStart: string, timeEnd: string) {
     return s.start_time < timeEnd && s.end_time > timeStart;
   });
 }
+
+const gridCells = [];
+visibleTimeSlots.forEach((slot, slotIdx) => {
+  gridCells[slotIdx] = [];
+  daysOfWeek.forEach((day, dayIdx) => {
+    gridCells[slotIdx][dayIdx] = { render: true, rowspan: 1, items: [] };
+  });
+});
+
+daysOfWeek.forEach((day, dayIdx) => {
+  for (let slotIdx = 0; slotIdx < visibleTimeSlots.length; slotIdx++) {
+    const slot = visibleTimeSlots[slotIdx];
+    if (slot.isRecess) continue;
+    if (!gridCells[slotIdx][dayIdx].render) continue;
+
+    const items = findScheduleItems(day, slot.start, slot.end);
+    gridCells[slotIdx][dayIdx].items = items;
+
+    if (slotIdx + 1 < visibleTimeSlots.length) {
+      const nextSlot = visibleTimeSlots[slotIdx + 1];
+      if (!nextSlot.isRecess) {
+        const nextItems = findScheduleItems(day, nextSlot.start, nextSlot.end);
+        if (items.length === 1 && nextItems.length === 1) {
+          const item1 = items[0];
+          const item2 = nextItems[0];
+          if (item1.subject_name === item2.subject_name && item1.professor_id === item2.professor_id) {
+            gridCells[slotIdx][dayIdx].rowspan = 2;
+            gridCells[slotIdx + 1][dayIdx].render = false;
+            item1.end_time = item2.end_time;
+          }
+        }
+      }
+    }
+  }
+});
 
 function getSyllabusSlug(subjectName: string): string {
   const s = syllabusList.find(s =>
@@ -188,8 +245,9 @@ function getDailySchedule(day: string) {
             semBtn.style.cursor = 'pointer';
             semBtn.style.transition = 'all 120ms';
             semBtn.style.textAlign = 'center';
+            semBtn.style.whiteSpace = 'nowrap';
             semBtn.className = 'sem-btn';
-            semBtn.textContent = `${sem}°  Semestre`;
+            semBtn.textContent = `${sem}° Semestre`;
             semBtn.addEventListener('click', () => {
               selectedSemester = sem;
               selectedCareerSemLabel.textContent = `${selectedCareerName} — Semestre ${selectedSemester}°`;
@@ -401,61 +459,79 @@ function getDailySchedule(day: string) {
             </tr>
           </thead>
           <tbody>
-            {timeSlots.map((slot) => (
-              <tr class="schedule-table__row">
-                <td class="schedule-table__time-cell">
-                  <span class="time-label">{slot.label}</span>
-                </td>
-                {daysOfWeek.map(day => {
-                  const items = findScheduleItems(day, slot.start, slot.end);
-                  return (
-                    <td class="schedule-table__cell">
-                       <div style="display: flex; flex-direction: column; gap: 4px;">
-                        {items.map(item => {
-                        const syllabusSlug = item ? getSyllabusSlug(item.subject_name) : "#";
-                        const syllabusDesc = item ? getSyllabusDesc(item.subject_name) : "";
-                        const isHtiEntry = item.is_hti || (item.subject_name && item.subject_name.toUpperCase().includes('HTI'));
-                        return (
-                          <button
-                            class={`class-entry class-card-btn ${isHtiEntry ? 'independent-work' : ''}`}
-                            aria-label={`${item.subject_name}${isHtiEntry ? ' (HTI)' : ''}, ${item.professor_name}`}
-                            data-subject={item.subject_name}
-                            data-professor={item.professor_name}
-                            data-professor-email={item.professor_email}
-                            data-professor-slug={item.professor_slug}
-                            data-professor-phone={item.professor_phone || ""}
-                            data-professor-office={item.professor_office || ""}
-                            data-professor-hours={item.professor_office_hours || ""}
-                            data-professor-image={item.professor_image || ""}
-                            data-classroom={item.classroom_name || ""}
-                            data-is-lab={item.is_lab ? "Sí" : "No"}
-                            data-syllabus-slug={syllabusSlug}
-                            data-description={syllabusDesc}
-                            data-exams={JSON.stringify(examDates.filter(e => e.subject_name === item.subject_name))}
-                          >
-                            <span class="class-entry__subject">{item.subject_name}</span>
-                            <span class="class-entry__time" style="font-size: 0.65rem; opacity: 0.8; display: block; font-family: monospace;">{item.start_time.substring(0, 5)} - {item.end_time.substring(0, 5)}</span>
-                            {item.professor_name && (
-                              <span class="class-entry__professor">{item.professor_name}</span>
-                            )}
-                            {item.classroom_name && (
-                              <span class="class-entry__room">
-                                {item.classroom_name}
-                                {item.is_lab && <span class="class-entry__lab-tag">LAB</span>}
-                              </span>
-                            )}
-                            {isHtiEntry && (
-                              <span class="class-entry__hti-tag">HTI</span>
-                            )}
-                          </button>
-                        );
-                      })}
-                      </div>
+            {visibleTimeSlots.map((slot, slotIdx) => {
+              if (slot.isRecess) {
+                return (
+                  <tr class="schedule-table__row recess-row" style="background: rgba(var(--color-primary-rgb), 0.04); font-weight: bold; border-top: 1px solid var(--color-rule-strong); border-bottom: 1px solid var(--color-rule-strong);">
+                    <td class="schedule-table__time-cell" style="height: 38px; padding: 8px 16px 8px 0; vertical-align: middle;">
+                      <span class="time-label" style="padding-top: 0;">{slot.label}</span>
                     </td>
-                  );
-                })}
-              </tr>
-            ))}
+                    <td colspan="5" class="schedule-table__cell recess-cell" style="height: 38px; text-align: center; color: var(--color-primary); letter-spacing: 0.15em; text-transform: uppercase; font-size: 0.72rem; padding: 0; font-family: var(--font-sans); font-weight: 800; background: var(--color-surface-2); vertical-align: middle;">
+                      Receso
+                    </td>
+                  </tr>
+                );
+              }
+
+              return (
+                <tr class="schedule-table__row">
+                  <td class="schedule-table__time-cell">
+                    <span class="time-label">{slot.label}</span>
+                  </td>
+                  {daysOfWeek.map((day, dayIdx) => {
+                    const cell = gridCells[slotIdx][dayIdx];
+                    if (!cell.render) return null;
+
+                    return (
+                      <td class="schedule-table__cell" rowspan={cell.rowspan} style={cell.rowspan > 1 ? "vertical-align: middle;" : ""}>
+                         <div style={`display: flex; flex-direction: column; gap: 4px; height: 100%; ${cell.rowspan > 1 ? 'justify-content: center;' : ''}`}>
+                          {cell.items.map(item => {
+                          const syllabusSlug = item ? getSyllabusSlug(item.subject_name) : "#";
+                          const syllabusDesc = item ? getSyllabusDesc(item.subject_name) : "";
+                          const isHtiEntry = item.is_hti || (item.subject_name && item.subject_name.toUpperCase().includes('HTI'));
+                          return (
+                            <button
+                              class={`class-entry class-card-btn ${isHtiEntry ? 'independent-work' : ''}`}
+                              style={cell.rowspan > 1 ? "min-height: 95px; display: flex; flex-direction: column; justify-content: center;" : ""}
+                              aria-label={`${item.subject_name}${isHtiEntry ? ' (HTI)' : ''}, ${item.professor_name}`}
+                              data-subject={item.subject_name}
+                              data-professor={item.professor_name}
+                              data-professor-email={item.professor_email}
+                              data-professor-slug={item.professor_slug}
+                              data-professor-phone={item.professor_phone || ""}
+                              data-professor-office={item.professor_office || ""}
+                              data-professor-hours={item.professor_office_hours || ""}
+                              data-professor-image={item.professor_image || ""}
+                              data-classroom={item.classroom_name || ""}
+                              data-is-lab={item.is_lab ? "Sí" : "No"}
+                              data-syllabus-slug={syllabusSlug}
+                              data-description={syllabusDesc}
+                              data-exams={JSON.stringify(examDates.filter(e => e.subject_name === item.subject_name))}
+                            >
+                              <span class="class-entry__subject">{item.subject_name}</span>
+                              <span class="class-entry__time" style="font-size: 0.65rem; opacity: 0.8; display: block; font-family: monospace;">{item.start_time.substring(0, 5)} - {item.end_time.substring(0, 5)}</span>
+                              {item.professor_name && (
+                                <span class="class-entry__professor">{item.professor_name}</span>
+                              )}
+                              {item.classroom_name && (
+                                <span class="class-entry__room">
+                                  {item.classroom_name}
+                                  {item.is_lab && <span class="class-entry__lab-tag">LAB</span>}
+                                </span>
+                              )}
+                              {isHtiEntry && (
+                                <span class="class-entry__hti-tag">HTI</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -970,6 +1046,8 @@ function getDailySchedule(day: string) {
     padding: 12px 12px 12px 0;
     vertical-align: top;
     min-width: 100px;
+    height: 96px;
+    box-sizing: border-box;
   }
 
   /* Entrada de clase — botón sin estilos de botón */

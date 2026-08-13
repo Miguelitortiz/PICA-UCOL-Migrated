@@ -297,20 +297,45 @@ app.post('/syllabus', jwtAuth, async (req, res) => {
 
     let parsedCriteria = typeof evaluation_criteria === 'string' ? JSON.parse(evaluation_criteria) : evaluation_criteria;
 
-    let totalPct = 0;
-    const cleanCriteria = {};
-
-    for (const [key, val] of Object.entries(parsedCriteria)) {
-      const numStr = String(val).replace(/[^0-9.-]/g, '');
-      const numVal = Math.round(parseFloat(numStr) || 0);
-      cleanCriteria[key] = `${numVal}%`;
-      totalPct += numVal;
-    }
-
-    if (totalPct !== 100) {
-      return res.status(400).json({
-        error: `La suma de los criterios de evaluación debe ser exactamente del 100%. Suma actual: ${totalPct}%.`
-      });
+    let cleanCriteria;
+    if (Array.isArray(parsedCriteria)) {
+      cleanCriteria = [];
+      for (const partial of parsedCriteria) {
+        if (!partial.partial_name || !partial.criteria) {
+          return res.status(400).json({ error: 'Formato de criterios de parcial inválido.' });
+        }
+        let partialPct = 0;
+        const cleanPartialCriteria = {};
+        for (const [key, val] of Object.entries(partial.criteria)) {
+          const numStr = String(val).replace(/[^0-9.-]/g, '');
+          const numVal = Math.round(parseFloat(numStr) || 0);
+          cleanPartialCriteria[key] = `${numVal}%`;
+          partialPct += numVal;
+        }
+        if (partialPct !== 100) {
+          return res.status(400).json({
+            error: `La suma de los criterios para "${partial.partial_name}" debe ser exactamente del 100%. Suma actual: ${partialPct}%.`
+          });
+        }
+        cleanCriteria.push({
+          partial_name: partial.partial_name,
+          criteria: cleanPartialCriteria
+        });
+      }
+    } else {
+      let totalPct = 0;
+      cleanCriteria = {};
+      for (const [key, val] of Object.entries(parsedCriteria)) {
+        const numStr = String(val).replace(/[^0-9.-]/g, '');
+        const numVal = Math.round(parseFloat(numStr) || 0);
+        cleanCriteria[key] = `${numVal}%`;
+        totalPct += numVal;
+      }
+      if (totalPct !== 100) {
+        return res.status(400).json({
+          error: `La suma de los criterios de evaluación debe ser exactamente del 100%. Suma actual: ${totalPct}%.`
+        });
+      }
     }
 
     const slug = slugify(`${subject_name}-${career_id}`);
@@ -327,8 +352,8 @@ app.post('/syllabus', jwtAuth, async (req, res) => {
       subject_name,
       parseInt(career_id, 10),
       program_description || '',
-      cleanCriteria,
-      typeof resources === 'string' ? JSON.parse(resources) : resources,
+      typeof cleanCriteria === 'string' ? cleanCriteria : JSON.stringify(cleanCriteria),
+      typeof resources === 'string' ? resources : JSON.stringify(resources),
       created_by ? parseInt(created_by, 10) : null
     ]);
     return res.status(201).json(result.rows[0]);

@@ -119,8 +119,8 @@ const schedulesJson = JSON.stringify(schedules);
             </div>
 
             <button id="btn-save-space" class="btn btn--primary" style="width: 100%; padding: 10px;">Guardar en GeoJSON</button>
-            <div id="save-status-msg" style="display: none; font-size: 0.75rem; font-weight: 700; margin-top: 8px; text-align: center; text-transform: uppercase;"></div>
-          </div>
+            <button id="btn-delete-space" class="btn btn--danger" style="width: 100%; padding: 10px; margin-top: 8px; background-color: #ff3b30; color: white; border: none; cursor: pointer; font-family: var(--font-sans); font-weight: 700; transition: all 120ms;">Borrar Edificio Completo</button>
+            <div id="save-status-msg" style="display: none; font-size: 0.75rem; font-weight: 700; margin-top: 8px; text-align: center; text-transform: uppercase;"></div>          </div>
         </div>
       </div>
     </div>
@@ -166,6 +166,7 @@ const schedulesJson = JSON.stringify(schedules);
       const pRoomsReadOnly = document.getElementById("panel-rooms-read-only");
       const pRoomsReadOnlyList = document.getElementById("panel-rooms-read-only-list");
       const btnSaveSpace = document.getElementById("btn-save-space");
+      const btnDeleteSpace = document.getElementById("btn-delete-space");
       const saveStatusMsg = document.getElementById("save-status-msg");
 
       const faculties = ["FIME", "FIC", "FCQ", "FAYD"];
@@ -280,6 +281,62 @@ const schedulesJson = JSON.stringify(schedules);
             setTimeout(() => {
               if (saveStatusMsg) saveStatusMsg.style.display = "none";
             }, 2500);
+          } else {
+            const err = await res.json();
+            if (saveStatusMsg) {
+              saveStatusMsg.style.color = "red";
+              saveStatusMsg.textContent = "Error: " + err.error;
+            }
+          }
+        } catch (e) {
+          if (saveStatusMsg) {
+            saveStatusMsg.style.color = "red";
+            saveStatusMsg.textContent = "Error de conexión";
+          }
+        }
+      });
+
+      // Borrar edificio completo
+      btnDeleteSpace?.addEventListener('click', async () => {
+        if (!clickedLayer) return;
+        const id = pSpaceIdInput.value;
+
+        if (!confirm("¿Estás seguro de que deseas eliminar este edificio por completo del GeoJSON?")) {
+          return;
+        }
+
+        if (saveStatusMsg) {
+          saveStatusMsg.style.display = "block";
+          saveStatusMsg.style.color = "var(--color-ink-2)";
+          saveStatusMsg.textContent = "Eliminando...";
+        }
+
+        try {
+          const res = await fetch('/api/delete-space', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+          });
+
+          if (res.ok) {
+            if (saveStatusMsg) {
+              saveStatusMsg.style.color = "var(--color-primary)";
+              saveStatusMsg.textContent = "¡Edificio eliminado con éxito!";
+            }
+
+            // Remover la capa del mapa
+            if (geojsonLayer && clickedLayer) {
+              geojsonLayer.removeLayer(clickedLayer);
+            }
+
+            clickedLayer = null;
+
+            // Limpiar panel lateral
+            setTimeout(() => {
+              if (saveStatusMsg) saveStatusMsg.style.display = "none";
+              if (emptyState) emptyState.style.display = "block";
+              if (contentState) contentState.style.display = "none";
+            }, 1500);
           } else {
             const err = await res.json();
             if (saveStatusMsg) {

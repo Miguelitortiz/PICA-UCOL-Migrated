@@ -333,30 +333,24 @@ import Layout from "../layouts/Layout.astro";
 
                 <div class="divider-suizo"></div>
 
-                <!-- Criterios de Evaluación -->
-                <div class="space-y-3">
+                <!-- Criterios de Evaluación por Parcial -->
+                <div class="space-y-4">
                   <div class="flex justify-between items-center">
                     <h4 class="font-bold text-xs text-primary uppercase">
-                      Criterios de Evaluación y Calificación (%)
+                      Criterios de Evaluación y Calificación por Parcial
                     </h4>
-                    <span
-                      id="crit-total-indicator"
-                      class="font-mono text-xs font-bold text-text-secondary bg-bg-piedra px-2 py-0.5 border border-border-sutil rounded-sm"
-                      >Suma: 0%</span
+                    <button
+                      type="button"
+                      id="btn-add-partial-section"
+                      class="px-4 h-9 border border-secondary hover:bg-secondary/10 font-mono text-[9px] uppercase font-bold rounded-sm transition-suiza flex items-center justify-center gap-2 cursor-pointer text-secondary"
                     >
+                      + Agregar Parcial / Sección
+                    </button>
                   </div>
                   
-                  <div id="criteria-items-container" class="space-y-2">
-                    <!-- Filas dinámicas cargadas por JS -->
+                  <div id="partials-sections-container" class="space-y-4">
+                    <!-- Parciales cargados por JS -->
                   </div>
-
-                  <button
-                    type="button"
-                    id="btn-add-criteria-item"
-                    class="px-4 h-11 border border-border-sutil hover:bg-bg-piedra font-mono text-[10px] uppercase font-bold rounded-sm transition-suiza flex items-center justify-center gap-2 cursor-pointer text-text-primary"
-                  >
-                    + Agregar Parámetro de Evaluación
-                  </button>
                 </div>
 
                 <div class="divider-suizo"></div>
@@ -1485,86 +1479,161 @@ import Layout from "../layouts/Layout.astro";
       }
 
       function populateDocenteSelectors() {
-        // Criterios de evaluación dinámicos (definidos arriba para scope)
-        const criteriaContainer = document.getElementById("criteria-items-container");
-        const btnAddCriteria = document.getElementById("btn-add-criteria-item");
-        const totalIndicator = document.getElementById("crit-total-indicator");
+        const partialsContainer = document.getElementById("partials-sections-container");
+        const btnAddPartial = document.getElementById("btn-add-partial-section");
 
-        const updatePctTotal = () => {
-          const pctInputs = document.querySelectorAll(".crit-input-pct");
-          let sum = 0;
-          pctInputs.forEach((input) => {
-            const val = parseInt((input as HTMLInputElement).value, 10) || 0;
-            sum += val;
-          });
-          if (totalIndicator) {
-            totalIndicator.textContent = `Suma: ${sum}%`;
-            if (sum === 100) {
-              totalIndicator.className =
-                "font-mono text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 border border-primary/20 rounded-sm";
-            } else {
-              totalIndicator.className =
-                "font-mono text-xs font-bold text-error bg-error/10 px-2 py-0.5 border border-error/20 rounded-sm animate-pulse";
-            }
-          }
-        };
-
-        const createCriteriaRow = (desc = "", pct = "") => {
-          if (!criteriaContainer) return;
+        const createCriteriaRow = (card: HTMLElement, desc = "", pct = "", updateCallback: () => void) => {
+          const rowsContainer = card.querySelector(".partial-criteria-rows");
+          if (!rowsContainer) return;
           const row = document.createElement("div");
           row.className = "flex gap-2 items-center criteria-row";
           row.innerHTML = `
             <input
               type="text"
-              placeholder="Descripción del parámetro (Ej: Exámenes Teóricos)"
-              class="flex-grow border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-11 font-bold crit-desc-input text-text-primary"
+              placeholder="Descripción (Ej: Examen)"
+              class="flex-grow border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-9 font-bold crit-desc-input text-text-primary bg-bg-piedra"
               value="${desc}"
               required
             />
-            <div class="w-24 relative">
+            <div class="w-20 relative">
               <input
                 type="number"
                 min="0"
                 max="100"
                 placeholder="Ej: 50"
-                class="w-full border border-border-sutil rounded-sm pl-3 pr-6 outline-none focus:border-secondary font-bold h-11 crit-input-pct text-text-primary"
+                class="w-full border border-border-sutil rounded-sm pl-3 pr-5 outline-none focus:border-secondary font-bold h-9 crit-input-pct text-text-primary bg-bg-piedra"
                 value="${pct}"
                 required
               />
-              <span class="absolute right-3 top-3.5 font-mono text-[10px] text-text-secondary">%</span>
+              <span class="absolute right-2 top-2.5 font-mono text-[9px] text-text-secondary">%</span>
             </div>
             <button
               type="button"
-              class="btn-delete-criteria px-3 h-11 bg-error/10 hover:bg-error/20 text-error font-mono text-[10px] uppercase font-bold border border-error/20 rounded-sm transition-suiza cursor-pointer"
+              class="btn-delete-criteria px-2 h-9 bg-error/10 hover:bg-error/20 text-error font-mono text-[9px] uppercase font-bold border border-error/20 rounded-sm transition-suiza cursor-pointer"
             >
-              Eliminar
+              X
             </button>
           `;
-          
-          row.querySelector(".crit-input-pct")?.addEventListener("input", updatePctTotal);
+          row.querySelector(".crit-input-pct")?.addEventListener("input", updateCallback);
           row.querySelector(".btn-delete-criteria")?.addEventListener("click", () => {
             row.remove();
-            updatePctTotal();
+            updateCallback();
           });
-          
-          criteriaContainer.appendChild(row);
-          updatePctTotal();
+          rowsContainer.appendChild(row);
+          updateCallback();
         };
 
-        if (btnAddCriteria) {
-          const newBtnAdd = btnAddCriteria.cloneNode(true);
-          btnAddCriteria.parentNode?.replaceChild(newBtnAdd, btnAddCriteria);
+        const createPartialCard = (name = "", criteria: any = null) => {
+          if (!partialsContainer) return;
+          const card = document.createElement("div");
+          card.className = "partial-card p-4 border border-border-sutil bg-bg-piedra/30 rounded-sm space-y-3 relative";
+          
+          card.innerHTML = `
+            <div class="flex justify-between items-center gap-4">
+              <div class="flex-grow">
+                <input
+                  type="text"
+                  placeholder="Nombre de la sección (Ej: 1er Parcial, Ordinario)"
+                  class="w-full border border-border-sutil rounded-sm px-3 outline-none focus:border-secondary h-9 font-bold partial-name-input text-text-primary bg-bg-piedra"
+                  value="${name}"
+                  required
+                />
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="partial-total-indicator font-mono text-[10px] font-bold text-text-secondary bg-bg-piedra px-2 py-0.5 border border-border-sutil rounded-sm">Suma: 0%</span>
+                <button
+                  type="button"
+                  class="btn-duplicate-partial px-3 h-9 bg-secondary/10 hover:bg-secondary/20 text-secondary font-mono text-[9px] uppercase font-bold border border-secondary/20 rounded-sm transition-suiza cursor-pointer"
+                >
+                  Duplicar
+                </button>
+                <button
+                  type="button"
+                  class="btn-delete-partial px-3 h-9 bg-error/10 hover:bg-error/20 text-error font-mono text-[9px] uppercase font-bold border border-error/20 rounded-sm transition-suiza cursor-pointer"
+                >
+                  Eliminar Sección
+                </button>
+              </div>
+            </div>
+            <div class="partial-criteria-rows space-y-2 border-t border-dashed border-border-sutil pt-3">
+              <!-- Filas de criterios de este parcial -->
+            </div>
+            <button
+              type="button"
+              class="btn-add-partial-crit px-3 h-9 border border-border-sutil hover:bg-bg-piedra font-mono text-[9px] uppercase font-bold rounded-sm transition-suiza flex items-center justify-center gap-1 cursor-pointer text-text-primary"
+            >
+              + Agregar Parámetro
+            </button>
+          `;
+
+          const totalIndicator = card.querySelector(".partial-total-indicator") as HTMLElement;
+          const btnAddCrit = card.querySelector(".btn-add-partial-crit") as HTMLButtonElement;
+
+          const updatePartialTotal = () => {
+            const pctInputs = card.querySelectorAll(".crit-input-pct");
+            let sum = 0;
+            pctInputs.forEach((input) => {
+              const val = parseInt((input as HTMLInputElement).value, 10) || 0;
+              sum += val;
+            });
+            if (totalIndicator) {
+              totalIndicator.textContent = `Suma: ${sum}%`;
+              if (sum === 100) {
+                totalIndicator.className = "partial-total-indicator font-mono text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 border border-primary/20 rounded-sm";
+              } else {
+                totalIndicator.className = "partial-total-indicator font-mono text-[10px] font-bold text-error bg-error/10 px-2 py-0.5 border border-error/20 rounded-sm animate-pulse";
+              }
+            }
+          };
+
+          card.querySelector(".btn-delete-partial")?.addEventListener("click", () => {
+            card.remove();
+          });
+
+          card.querySelector(".btn-duplicate-partial")?.addEventListener("click", () => {
+            const currentName = (card.querySelector(".partial-name-input") as HTMLInputElement).value.trim();
+            const currentCriteria: Record<string, string> = {};
+            card.querySelectorAll(".criteria-row").forEach((row) => {
+              const desc = (row.querySelector(".crit-desc-input") as HTMLInputElement).value.trim();
+              const pct = (row.querySelector(".crit-input-pct") as HTMLInputElement).value;
+              if (desc) {
+                currentCriteria[desc] = pct;
+              }
+            });
+            createPartialCard(currentName ? `${currentName} (Copia)` : "Copia de Parcial", currentCriteria);
+          });
+
+          btnAddCrit?.addEventListener("click", () => {
+            createCriteriaRow(card, "", "", updatePartialTotal);
+          });
+
+          if (criteria) {
+            Object.keys(criteria).forEach((desc) => {
+              const pctVal = String(criteria[desc]).replace("%", "");
+              createCriteriaRow(card, desc, pctVal, updatePartialTotal);
+            });
+          }
+
+          partialsContainer.appendChild(card);
+          updatePartialTotal();
+        };
+
+        const createDefaultPartials = () => {
+          if (partialsContainer) partialsContainer.innerHTML = "";
+          // Iniciamos completamente vacío por solicitud del usuario
+        };
+
+        if (btnAddPartial) {
+          const newBtnAdd = btnAddPartial.cloneNode(true);
+          btnAddPartial.parentNode?.replaceChild(newBtnAdd, btnAddPartial);
           newBtnAdd.addEventListener("click", () => {
-            createCriteriaRow();
+            createPartialCard("Nuevo Parcial", null);
           });
         }
 
         // Guardar la función en window para poder reconstruir después de resetear
         (window as any).rebuildDefaultCriteria = () => {
-          if (criteriaContainer) criteriaContainer.innerHTML = "";
-          createCriteriaRow("Exámenes", "50");
-          createCriteriaRow("Proyecto Integrador", "30");
-          createCriteriaRow("Tareas", "20");
+          createDefaultPartials();
         };
 
         // Materias asignadas para syllabus
@@ -1633,20 +1702,25 @@ import Layout from "../layouts/Layout.astro";
               if (resLinkInput) resLinkInput.value = "";
             }
 
-            // Cargar criterios de evaluación dinámicos
-            if (criteriaContainer) {
-              criteriaContainer.innerHTML = "";
-              const criteria = matchedSyllabus.evaluation_criteria || {};
-              const keys = Object.keys(criteria);
-              if (keys.length > 0) {
-                keys.forEach((key) => {
-                  const pctVal = String(criteria[key]).replace("%", "");
-                  createCriteriaRow(key, pctVal);
+            // Cargar criterios de evaluación dinámicos por parciales
+            if (partialsContainer) {
+              partialsContainer.innerHTML = "";
+              const criteriaData = matchedSyllabus.evaluation_criteria || {};
+              if (Array.isArray(criteriaData)) {
+                criteriaData.forEach((partial) => {
+                  createPartialCard(partial.partial_name, partial.criteria);
                 });
               } else {
-                createCriteriaRow("Exámenes", "50");
-                createCriteriaRow("Proyecto Integrador", "30");
-                createCriteriaRow("Tareas", "20");
+                const keys = Object.keys(criteriaData);
+                if (keys.length > 0) {
+                  const flatCriteria: Record<string, string> = {};
+                  keys.forEach((k) => {
+                    flatCriteria[k] = String(criteriaData[k]).replace("%", "");
+                  });
+                  createPartialCard("Evaluación General", flatCriteria);
+                } else {
+                  createDefaultPartials();
+                }
               }
             }
           } else {
@@ -1656,12 +1730,7 @@ import Layout from "../layouts/Layout.astro";
             if (resAuthorInput) resAuthorInput.value = "";
             if (resLinkInput) resLinkInput.value = "";
             
-            if (criteriaContainer) {
-              criteriaContainer.innerHTML = "";
-              createCriteriaRow("Exámenes", "50");
-              createCriteriaRow("Proyecto Integrador", "30");
-              createCriteriaRow("Tareas", "20");
-            }
+            createDefaultPartials();
           }
         };
 
@@ -2001,27 +2070,51 @@ import Layout from "../layouts/Layout.astro";
             document.getElementById("res-link-1") as HTMLInputElement
           ).value.trim();
 
-          // Recopilar criterios dinámicos
-          const criteriaRows = document.querySelectorAll(".criteria-row");
-          const evaluation_criteria: Record<string, string> = {};
-          let totalPct = 0;
-          
-          criteriaRows.forEach((row) => {
-            const descInput = row.querySelector(".crit-desc-input") as HTMLInputElement;
-            const pctInput = row.querySelector(".crit-input-pct") as HTMLInputElement;
-            const desc = descInput ? descInput.value.trim() : "";
-            const pctVal = pctInput ? parseInt(pctInput.value, 10) || 0 : 0;
-            if (desc) {
-              evaluation_criteria[desc] = `${pctVal}%`;
-              totalPct += pctVal;
+          // Recopilar criterios dinámicos agrupados por parcial
+          const partialCards = document.querySelectorAll(".partial-card");
+          const evaluation_criteria: any[] = [];
+          let validationError = null;
+
+          partialCards.forEach((card) => {
+            const nameInput = card.querySelector(".partial-name-input") as HTMLInputElement;
+            const partialName = nameInput ? nameInput.value.trim() : "";
+            if (!partialName) {
+              validationError = "Error: Todos los parciales/secciones deben tener un nombre.";
+              return;
             }
+
+            const criteria: Record<string, string> = {};
+            let partialSum = 0;
+
+            card.querySelectorAll(".criteria-row").forEach((row) => {
+              const descInput = row.querySelector(".crit-desc-input") as HTMLInputElement;
+              const pctInput = row.querySelector(".crit-input-pct") as HTMLInputElement;
+              const desc = descInput ? descInput.value.trim() : "";
+              const pctVal = pctInput ? parseInt(pctInput.value, 10) || 0 : 0;
+              if (desc) {
+                criteria[desc] = `${pctVal}%`;
+                partialSum += pctVal;
+              }
+            });
+
+            if (partialSum !== 100) {
+              validationError = `Error: La suma de los criterios para "${partialName}" debe ser exactamente 100%. Suma actual: ${partialSum}%`;
+              return;
+            }
+
+            evaluation_criteria.push({
+              partial_name: partialName,
+              criteria
+            });
           });
 
-          // Validar suma 100%
-          if (totalPct !== 100) {
-            alert(
-              `Error: La suma de los criterios de evaluación debe ser exactamente del 100%. Suma actual: ${totalPct}%`,
-            );
+          if (validationError) {
+            alert(validationError);
+            return;
+          }
+
+          if (evaluation_criteria.length === 0) {
+            alert("Error: Debes agregar al menos un parcial o sección de evaluación.");
             return;
           }
 

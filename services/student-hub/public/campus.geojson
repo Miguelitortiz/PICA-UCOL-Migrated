@@ -1767,7 +1767,13 @@
       "properties": {
         "building": "university",
         "id": "way/1157965085",
-        "name": ""
+        "name": "Cubiculos PTC FIME",
+        "spaces": [
+          {
+            "name": "Cubiculos PTC",
+            "faculty": "FIME"
+          }
+        ]
       },
       "geometry": {
         "type": "Polygon",
@@ -1891,7 +1897,7 @@
       "properties": {
         "building": "university",
         "id": "way/1157965088",
-        "name": "Edificio de Matemáticas Aplicadas FIME",
+        "name": "Edificio de Usos Multiples FIME",
         "spaces": [
           {
             "name": "Laboratorio de Microelectrónica",
@@ -2997,79 +3003,6 @@
             [
               -103.8032552,
               19.2122905
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "way/1371225102",
-      "properties": {
-        "building": "roof",
-        "layer": "1",
-        "id": "way/1371225102",
-        "name": ""
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -103.8041765,
-              19.2150169
-            ],
-            [
-              -103.8040324,
-              19.2149152
-            ],
-            [
-              -103.803981,
-              19.2149802
-            ],
-            [
-              -103.8041251,
-              19.2150818
-            ],
-            [
-              -103.8041765,
-              19.2150169
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "way/1415744581",
-      "properties": {
-        "building": "chapel",
-        "id": "way/1415744581",
-        "name": ""
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -103.8037939,
-              19.2086403
-            ],
-            [
-              -103.8036989,
-              19.2086245
-            ],
-            [
-              -103.8036664,
-              19.2087987
-            ],
-            [
-              -103.8037613,
-              19.2088145
-            ],
-            [
-              -103.8037939,
-              19.2086403
             ]
           ]
         ]

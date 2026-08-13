@@ -68,23 +68,29 @@ const initials = (fullName || 'P A')
 
   <!-- Detalles -->
   <dl class="space-y-4 text-left">
-    <div>
-      <dt class="field-label">Adscripción</dt>
-      <dd class="field-value">{department}</dd>
-    </div>
-    <div>
-      <dt class="field-label">Contacto</dt>
-      <dd>
-        <a href={`mailto:${institutionalEmail}`} class="link field-value font-mono" style="font-size: 0.8125rem;">
-          {institutionalEmail}
-        </a>
-      </dd>
-    </div>
-    <div>
-      <dt class="field-label">Año de Ingreso</dt>
-      <dd class="field-value font-mono">
-        {admissionYear} <span class="font-sans text-xs text-ink-3 font-normal ml-1">({yearsOfService} años de antigüedad)</span>
-      </dd>
-    </div>
+    {department && (
+      <div>
+        <dt class="field-label">Adscripción</dt>
+        <dd class="field-value">{department}</dd>
+      </div>
+    )}
+    {institutionalEmail && (
+      <div>
+        <dt class="field-label">Contacto</dt>
+        <dd>
+          <a href={`mailto:${institutionalEmail}`} class="link field-value font-mono" style="font-size: 0.8125rem;">
+            {institutionalEmail}
+          </a>
+        </dd>
+      </div>
+    )}
+    {admissionYear && (
+      <div>
+        <dt class="field-label">Año de Ingreso</dt>
+        <dd class="field-value font-mono">
+          {admissionYear} <span class="font-sans text-xs text-ink-3 font-normal ml-1">({yearsOfService} años de antigüedad)</span>
+        </dd>
+      </div>
+    )}
   </dl>
 </div>

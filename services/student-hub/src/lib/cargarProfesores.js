@@ -36,8 +36,8 @@ export async function cargarProfesor(slug) {
       profile.slug = prof.slug;
       profile.fullName = profile.fullName || prof.full_name;
       profile.institutionalEmail = profile.institutionalEmail || prof.email;
-      profile.department = profile.department || 'FIME'; // fallback if not in JSON
-      profile.admissionYear = profile.admissionYear || 1997; // fallback
+      profile.department = profile.department || null;
+      profile.admissionYear = profile.admissionYear || null;
       return profile;
     }
     return null;

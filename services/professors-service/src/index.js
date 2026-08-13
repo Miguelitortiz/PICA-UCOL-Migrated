@@ -25,6 +25,20 @@ function slugify(text) {
     .replace(/-+/g, '-');
 }
 
+// Helper for loose name matching (Levenshtein/overlap based)
+function looseNameMatch(name1, name2) {
+  if (!name1 || !name2) return false;
+  const normalize = (n) => n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ' ').split(/\s+/).filter(w => w.length > 1 && !['dr', 'dra', 'mtro', 'mtra', 'lic', 'ing', 'de', 'la', 'el', 'y', 'del', 'las', 'los'].includes(w));
+  const w1 = normalize(name1);
+  const w2 = normalize(name2);
+  if (w1.length === 0 || w2.length === 0) return false;
+  const set2 = new Set(w2);
+  const intersection = w1.filter(w => set2.has(w));
+  const minLen = Math.min(w1.length, w2.length);
+  return (intersection.length / minLen) >= 0.75;
+}
+
+
 // GET /health
 app.get('/health', async (req, res) => {
   try {
@@ -109,7 +123,12 @@ async function purgeCache(slug) {
 }
 
 // GET /professors
-app.get('/professors', jwtAuth, async (req, res) => {
+app.get('/professors', (req, res, next) => {
+  if (req.headers.authorization) {
+    return jwtAuth(req, res, next);
+  }
+  return next();
+}, async (req, res) => {
   try {
     let query = `
       SELECT p.id, p.slug, p.full_name, p.email, p.delegation_id, p.profile_data,
@@ -204,15 +223,43 @@ app.post('/professors', jwtAuth, async (req, res) => {
     try {
       await client.query('BEGIN');
 
-      const profQuery = `
-        INSERT INTO professors (slug, full_name, email, delegation_id, profile_data, updated_at)
-        VALUES ($1, $2, $3, $4, $5, NOW())
-        ON CONFLICT (slug)
-        DO UPDATE SET full_name = EXCLUDED.full_name, email = EXCLUDED.email, delegation_id = EXCLUDED.delegation_id, profile_data = EXCLUDED.profile_data, updated_at = NOW()
-        RETURNING id;
-      `;
-      const profRes = await client.query(profQuery, [slug, fullName, email, finalDelegationId || null, formattedProfile]);
-      const professorId = profRes.rows[0].id;
+      // Check if professor already exists by email or loose name matching
+      const allProfsRes = await client.query('SELECT id, slug, full_name, email FROM professors');
+      let existingProf = null;
+
+      if (email) {
+        existingProf = allProfsRes.rows.find(p => p.email && p.email.toLowerCase() === email.toLowerCase());
+      }
+
+      if (!existingProf) {
+        existingProf = allProfsRes.rows.find(p => looseNameMatch(p.full_name, fullName));
+      }
+
+      let professorId;
+      let finalSlug = slug;
+
+      if (existingProf) {
+        professorId = existingProf.id;
+        finalSlug = existingProf.slug; // Keep original slug to avoid breaking links
+
+        const updateQuery = `
+          UPDATE professors 
+          SET full_name = $1, email = $2, delegation_id = $3, profile_data = $4, updated_at = NOW()
+          WHERE id = $5;
+        `;
+        formattedProfile.slug = finalSlug;
+        await client.query(updateQuery, [fullName, email, finalDelegationId || null, formattedProfile, professorId]);
+      } else {
+        const insertQuery = `
+          INSERT INTO professors (slug, full_name, email, delegation_id, profile_data, updated_at)
+          VALUES ($1, $2, $3, $4, $5, NOW())
+          ON CONFLICT (slug)
+          DO UPDATE SET full_name = EXCLUDED.full_name, email = EXCLUDED.email, delegation_id = EXCLUDED.delegation_id, profile_data = EXCLUDED.profile_data, updated_at = NOW()
+          RETURNING id;
+        `;
+        const profRes = await client.query(insertQuery, [slug, fullName, email, finalDelegationId || null, formattedProfile]);
+        professorId = profRes.rows[0].id;
+      }
 
       await client.query('DELETE FROM professor_groups WHERE professor_id = $1', [professorId]);
 
@@ -228,9 +275,9 @@ app.post('/professors', jwtAuth, async (req, res) => {
       }
 
       await client.query('COMMIT');
-      purgeCache(slug);
+      purgeCache(finalSlug);
 
-      return res.status(200).json({ success: true, message: 'Perfil guardado correctamente.', id: professorId, slug });
+      return res.status(200).json({ success: true, message: 'Perfil guardado correctamente.', id: professorId, slug: finalSlug });
     } catch (dbErr) {
       await client.query('ROLLBACK');
       throw dbErr;

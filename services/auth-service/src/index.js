@@ -151,6 +151,84 @@ app.post('/student/login', async (req, res) => {
   }
 });
 
+// POST /bypass-login
+app.post('/bypass-login', async (req, res) => {
+  try {
+    const { professor_id } = req.body;
+    if (!professor_id) {
+      return res.status(400).json({ error: 'professor_id es requerido.' });
+    }
+
+    // Check if the professor exists
+    const profResult = await pool.query(
+      `SELECT id, full_name, slug, profile_data FROM professors WHERE id = $1`,
+      [professor_id]
+    );
+
+    if (profResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Profesor no encontrado.' });
+    }
+
+    const prof = profResult.rows[0];
+
+    // Check if an admin_user already exists for this professor
+    let userResult = await pool.query(
+      `SELECT * FROM admin_users WHERE professor_id = $1 LIMIT 1`,
+      [professor_id]
+    );
+
+    let user;
+    if (userResult.rows.length === 0) {
+      // If not, let's create a temporary admin_user entry on the fly so DB constraints/queries match!
+      const tempUsername = `docente_${prof.id}`;
+      const tempEmail = `${prof.slug}@ucol.mx`;
+      const insertResult = await pool.query(
+        `INSERT INTO admin_users (username, email, password_hash, role, professor_id)
+         VALUES ($1, $2, $3, 'docente', $4)
+         RETURNING *`,
+        [tempUsername, tempEmail, 'bypass', prof.id]
+      );
+      user = insertResult.rows[0];
+    } else {
+      user = userResult.rows[0];
+    }
+
+    const tokenPayload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: 'docente',
+      professor_id: prof.id,
+      professor_name: prof.full_name,
+      professor_slug: prof.slug,
+      career_id: null,
+      faculty_id: null
+    };
+
+    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+    return res.json({
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: 'docente',
+        professor_id: prof.id,
+        professor_name: prof.full_name,
+        professor_slug: prof.slug,
+        professor_profile: prof.profile_data,
+        career_id: null,
+        faculty_id: null
+      }
+    });
+  } catch (err) {
+    console.error('[AUTH-SERVICE] Error en /bypass-login:', err);
+    return res.status(500).json({ error: 'Error interno de bypass login.' });
+  }
+});
+
+
 app.listen(PORT, () => {
   console.log(`🚀 Microservicio de Autenticación corriendo en el puerto ${PORT}`);
 });

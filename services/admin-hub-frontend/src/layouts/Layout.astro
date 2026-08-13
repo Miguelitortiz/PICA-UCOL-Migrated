@@ -55,6 +55,7 @@ const { title, description = 'Panel de Administración y Gestión Curricular PIC
           <!-- Botón Cerrar Sesión -->
           <button
             id="btn-logout"
+            type="button"
             class="hidden text-[10px] font-mono border border-error/30 bg-error/5 hover:bg-error/10 text-error px-3 h-9 rounded-sm transition-suiza font-bold cursor-pointer"
           >
             Salir
@@ -145,7 +146,9 @@ const { title, description = 'Panel de Administración y Gestión Curricular PIC
       }
 
       // Cerrar sesión
-      document.getElementById('btn-logout')?.addEventListener('click', () => {
+      document.getElementById('btn-logout')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
           localStorage.removeItem('pica_jwt');
           localStorage.removeItem('pica_user');

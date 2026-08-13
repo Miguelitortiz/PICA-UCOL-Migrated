@@ -11,13 +11,14 @@ if (!syllabus) {
   return Astro.redirect("/404");
 }
 
-const careers = cargarCarreras();
+const careers = await cargarCarreras();
 const career = careers.find(c => c.id === syllabus.career_id);
 const careerName = career ? career.name : "Carrera Desconocida";
 
 // Formatear criterios de evaluación
-const criteria = syllabus.evaluation_criteria || {};
-const criteriaKeys = Object.keys(criteria);
+const criteriaData = syllabus.evaluation_criteria || {};
+const isPartialsArray = Array.isArray(criteriaData);
+const criteriaKeys = isPartialsArray ? [] : Object.keys(criteriaData);
 
 // Formatear recursos
 const resources = Array.isArray(syllabus.resources) ? syllabus.resources : [];
@@ -69,42 +70,66 @@ const contactInfo = professorProfile.contactInfo || {};
         </div>
 
         <!-- Criterios de Evaluación -->
-        <div class="space-y-4">
+        <div class="space-y-6">
           <h2 class="section-title border-b border-rule pb-2 mb-3">
             Métodos de Evaluación y Calificación
           </h2>
           
-          {criteriaKeys.length > 0 ? (
-            <div class="space-y-4">
-              <p class="text-xs text-ink-2">
-                Los criterios oficiales establecidos por el docente para calificar el desempeño del alumno durante el período escolar son:
-              </p>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {criteriaKeys.map(key => {
-                  const labelMap: any = {
-                    exams: "Exámenes Teóricos",
-                    project: "Proyecto Integrador",
-                    assignments: "Tareas y Tareas Cortas",
-                    practicalExams: "Exámenes Prácticos",
-                    teamProject: "Proyecto en Equipo",
-                    portfolio: "Portafolio de Evidencias",
-                    quizzes: "Quizzes / Exámenes Rápidos",
-                    finalProject: "Proyecto Final"
-                  };
-                  const label = labelMap[key] || key.charAt(0).toUpperCase() + key.slice(1);
-                  const percentage = criteria[key];
-
-                  return (
-                    <div class="p-3 border border-rule bg-muted/40">
-                      <span class="block text-xs font-bold text-ink">{label}</span>
-                      <span class="block text-2xl font-black text-primary mt-1 font-mono">{percentage}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+          {isPartialsArray ? (
+            criteriaData.map((partial: any) => {
+              const partialKeys = Object.keys(partial.criteria || {});
+              return (
+                <div class="space-y-3 p-4 border border-rule bg-muted/10 rounded-sm">
+                  <h3 class="text-xs font-mono uppercase tracking-wider text-primary font-bold">
+                    {partial.partial_name}
+                  </h3>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {partialKeys.map(key => {
+                      const percentage = partial.criteria[key];
+                      return (
+                        <div class="p-3 border border-rule bg-muted/40 rounded-sm">
+                          <span class="block text-xs font-bold text-ink">{key}</span>
+                          <span class="block text-2xl font-black text-primary mt-1 font-mono">{percentage}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })
           ) : (
-            <p class="text-xs text-ink-2 italic">No se han definido criterios detallados.</p>
+            criteriaKeys.length > 0 ? (
+              <div class="space-y-4">
+                <p class="text-xs text-ink-2">
+                  Los criterios oficiales establecidos por el docente para calificar el desempeño del alumno durante el período escolar son:
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {criteriaKeys.map(key => {
+                    const labelMap: any = {
+                      exams: "Exámenes Teóricos",
+                      project: "Proyecto Integrador",
+                      assignments: "Tareas y Tareas Cortas",
+                      practicalExams: "Exámenes Prácticos",
+                      teamProject: "Proyecto en Equipo",
+                      portfolio: "Portafolio de Evidencias",
+                      quizzes: "Quizzes / Exámenes Rápidos",
+                      finalProject: "Proyecto Final"
+                    };
+                    const label = labelMap[key] || key.charAt(0).toUpperCase() + key.slice(1);
+                    const percentage = criteriaData[key];
+
+                    return (
+                      <div class="p-3 border border-rule bg-muted/40 rounded-sm">
+                        <span class="block text-xs font-bold text-ink">{label}</span>
+                        <span class="block text-2xl font-black text-primary mt-1 font-mono">{percentage}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <p class="text-xs text-ink-2 italic">No se han definido criterios detallados.</p>
+            )
           )}
         </div>
 

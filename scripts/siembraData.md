@@ -13,10 +13,21 @@ git pull origin main
 
 ---
 
-## Pasos para la Siembra de Datos
+## Pasos para la Siembra de Datos (Método Recomendado)
+
+### 1. Ejecutar la Limpieza y Siembra Directa
+Este script limpia todas las tablas de forma segura y carga el catálogo completo de profesores, clases, asignaturas y horarios directamente desde la carpeta `db_horarios/`:
+```bash
+node scripts/seed-from-csvs.js
+```
+
+---
+
+## Método Alternativo (Generación e Importación de SQL)
+
+Si por alguna razón necesitas generar un archivo SQL estático e importarlo manualmente:
 
 ### 1. Limpiar la Base de Datos
-Este script se conecta de forma segura a través de `pg` y trunca todas las tablas requeridas.
 ```bash
 node scripts/clear-db.js
 ```
@@ -27,21 +38,7 @@ Procesa los archivos CSV de horarios y regenera el script `import_horarios.sql` 
 node scripts/generate-sql-from-csv.js
 ```
 
-### 3. Verificar y Migrar el Esquema (Solo si es necesario)
-Si hubo actualizaciones recientes en el esquema (por ejemplo, nuevas columnas como `is_hti` en la tabla `schedules`), asegúrate de que existan en la base de datos antes de importar. Puedes ejecutar consultas rápidas en línea mediante Node:
-```bash
-node -e "
-const { Pool } = require('pg');
-require('dotenv').config();
-const pool = new Pool({ connectionString: process.env.DATABASE_URL || 'postgres://admin:admin_pass@localhost:5432/pica_db' });
-pool.query('ALTER TABLE schedules ADD COLUMN IF NOT EXISTS is_hti BOOLEAN DEFAULT FALSE;')
-  .then(() => { console.log('Esquema verificado'); process.exit(0); });
-"
-```
-
-### 4. Importar los Datos a PostgreSQL
-Para evitar problemas de permisos usando `docker exec` (especialmente para usuarios sin acceso al socket de Docker y donde `sudo` interactivo es un problema), puedes insertar el archivo SQL directamente usando Node.js, ya que la aplicación tiene acceso a la base de datos por el puerto TCP:
-
+### 3. Importar los Datos a PostgreSQL vía Node
 ```bash
 node -e "
 const fs = require('fs');
