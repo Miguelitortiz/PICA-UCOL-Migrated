@@ -81,29 +81,71 @@ visibleTimeSlots.forEach((slot, slotIdx) => {
   });
 });
 
+function mergeOverlappingItems(items) {
+  const bySubject = {};
+  items.forEach(item => {
+    const key = item.subject_name;
+    if (!bySubject[key]) {
+      bySubject[key] = { ...item };
+    } else {
+      const existing = bySubject[key];
+      if (item.professor_name && (!existing.professor_name || !existing.professor_name.includes(item.professor_name))) {
+        existing.professor_name = existing.professor_name ? existing.professor_name + " / " + item.professor_name : item.professor_name;
+      }
+      if (item.classroom_name && (!existing.classroom_name || !existing.classroom_name.includes(item.classroom_name))) {
+        existing.classroom_name = existing.classroom_name ? existing.classroom_name + " / " + item.classroom_name : item.classroom_name;
+      }
+      existing.is_hti = existing.is_hti || item.is_hti;
+      existing.is_lab = existing.is_lab || item.is_lab;
+    }
+  });
+  return Object.values(bySubject);
+}
+
 daysOfWeek.forEach((day, dayIdx) => {
   for (let slotIdx = 0; slotIdx < visibleTimeSlots.length; slotIdx++) {
     const slot = visibleTimeSlots[slotIdx];
     if (slot.isRecess) continue;
     if (!gridCells[slotIdx][dayIdx].render) continue;
 
-    const items = findScheduleItems(day, slot.start, slot.end);
-    gridCells[slotIdx][dayIdx].items = items;
+    const rawItems = findScheduleItems(day, slot.start, slot.end);
+    const mergedItems = mergeOverlappingItems(rawItems);
+    gridCells[slotIdx][dayIdx].items = mergedItems;
 
-    if (slotIdx + 1 < visibleTimeSlots.length) {
-      const nextSlot = visibleTimeSlots[slotIdx + 1];
-      if (!nextSlot.isRecess) {
-        const nextItems = findScheduleItems(day, nextSlot.start, nextSlot.end);
-        if (items.length === 1 && nextItems.length === 1) {
-          const item1 = items[0];
-          const item2 = nextItems[0];
-          if (item1.subject_name === item2.subject_name && item1.professor_id === item2.professor_id) {
-            gridCells[slotIdx][dayIdx].rowspan = 2;
-            gridCells[slotIdx + 1][dayIdx].render = false;
-            item1.end_time = item2.end_time;
+    if (mergedItems.length > 0) {
+      let currentSpan = 1;
+      let nextSlotIdx = slotIdx + 1;
+      
+      while (nextSlotIdx < visibleTimeSlots.length) {
+        const nextSlot = visibleTimeSlots[nextSlotIdx];
+        if (nextSlot.isRecess) break;
+        
+        const nextRawItems = findScheduleItems(day, nextSlot.start, nextSlot.end);
+        const nextMerged = mergeOverlappingItems(nextRawItems);
+        
+        if (mergedItems.length === nextMerged.length && mergedItems.length > 0) {
+          let allMatch = true;
+          for (let i = 0; i < mergedItems.length; i++) {
+            if (mergedItems[i].subject_name !== nextMerged[i].subject_name || mergedItems[i].professor_name !== nextMerged[i].professor_name) {
+              allMatch = false;
+              break;
+            }
           }
+          if (allMatch) {
+            currentSpan++;
+            gridCells[nextSlotIdx][dayIdx].render = false;
+            mergedItems.forEach((item, idx) => {
+                item.end_time = nextMerged[idx].end_time;
+            });
+            nextSlotIdx++;
+          } else {
+            break;
+          }
+        } else {
+          break;
         }
       }
+      gridCells[slotIdx][dayIdx].rowspan = currentSpan;
     }
   }
 });
@@ -123,13 +165,30 @@ function getSyllabusDesc(subjectName: string): string {
 }
 
 function getDailySchedule(day: string) {
-  return schedules
+  const dayItems = schedules
     .filter(s => s.day_of_week === day)
     .sort((a, b) => a.start_time.localeCompare(b.start_time))
     .map(item => ({
       ...item,
       isHti: item.is_hti || item.subject_name?.toUpperCase().includes('HTI')
     }));
+
+  const byTimeAndSubject = {};
+  dayItems.forEach(item => {
+    const key = `${item.start_time}-${item.end_time}-${item.subject_name}`;
+    if (!byTimeAndSubject[key]) {
+      byTimeAndSubject[key] = { ...item };
+    } else {
+      const existing = byTimeAndSubject[key];
+      if (item.professor_name && (!existing.professor_name || !existing.professor_name.includes(item.professor_name))) {
+        existing.professor_name = existing.professor_name ? existing.professor_name + " / " + item.professor_name : item.professor_name;
+      }
+      if (item.classroom_name && (!existing.classroom_name || !existing.classroom_name.includes(item.classroom_name))) {
+        existing.classroom_name = existing.classroom_name ? existing.classroom_name + " / " + item.classroom_name : item.classroom_name;
+      }
+    }
+  });
+  return Object.values(byTimeAndSubject).sort((a, b) => a.start_time.localeCompare(b.start_time));
 }
 ---
 
@@ -1046,7 +1105,8 @@ function getDailySchedule(day: string) {
     padding: 12px 12px 12px 0;
     vertical-align: top;
     min-width: 100px;
-    height: 96px;
+    height: auto;
+    min-height: 96px;
     box-sizing: border-box;
   }
 
