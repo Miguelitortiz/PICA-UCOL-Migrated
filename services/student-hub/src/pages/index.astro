@@ -546,12 +546,12 @@ function getDailySchedule(day: string) {
             let dayStart = "23:59:59";
             let dayEnd = "00:00:00";
             rawDayItems.forEach(i => {
-              if (i.start_time < dayStart) dayStart = i.start_time;
+              if (dayStart > i.start_time) dayStart = i.start_time;
               if (i.end_time > dayEnd) dayEnd = i.end_time;
             });
 
             timeSlots.filter(s => s.isRecess).forEach(r => {
-              if (r.start >= dayStart && r.end <= dayEnd) {
+              if (r.start >= dayStart && dayEnd >= r.end) {
                 rawDayItems.push({
                   isRecessCard: true,
                   start_time: r.start,
@@ -564,10 +564,10 @@ function getDailySchedule(day: string) {
           }
 
           const dayItems = [];
-          for (let i = 0; i < rawDayItems.length; i++) {
+          for (let i = 0; rawDayItems.length > i; i++) {
             const currentItem = { ...rawDayItems[i], span: 1 };
             while (
-              i + 1 < rawDayItems.length &&
+              rawDayItems.length > i + 1 &&
               rawDayItems[i + 1].subject_name === currentItem.subject_name &&
               rawDayItems[i + 1].professor_name === currentItem.professor_name &&
               rawDayItems[i + 1].start_time === currentItem.end_time
