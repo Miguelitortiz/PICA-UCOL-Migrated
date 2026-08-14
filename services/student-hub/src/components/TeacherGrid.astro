@@ -17,21 +17,25 @@ interface Props {
 
 const { profesores = [] } = Astro.props;
 
-function getAcademicDegree(name: string) {
-  const lower = name.toLowerCase().trim();
-  if (lower.startsWith('dr.') || lower.startsWith('dra.')) return 'DOC';
-  if (lower.startsWith('mtro.')) return 'MTO';
-  if (lower.startsWith('mtra.')) return 'MTA';
-  if (lower.startsWith('lic.')) return 'LIC';
-  if (lower.startsWith('ing.')) return 'ING';
-  if (lower.startsWith('arq.')) return 'ARQ';
-  return 'DOC'; // Fallback genérico
+function cleanName(name: string) {
+  return name.replace(/^(dr\.|dra\.|mtro\.|mtra\.|lic\.|ing\.|arq\.)\s*/i, '');
+}
+
+function getInitials(name: string) {
+  return (name || 'P A')
+    .split(' ')
+    .filter(word => word.length > 2 && !['del', 'de', 'las', 'los'].includes(word.toLowerCase()))
+    .slice(0, 2)
+    .map(word => word[0])
+    .join('')
+    .toUpperCase();
 }
 ---
 
 <div class="teachers-grid">
   {profesores.map((prof) => {
-    const initials = getAcademicDegree(prof.fullName);
+    const cleanFullName = cleanName(prof.fullName);
+    const initials = getInitials(cleanFullName);
     return (
       <div
         class="teacher-card"
@@ -115,7 +119,7 @@ function getAcademicDegree(name: string) {
                 style="color: inherit; text-decoration: none; transition: color 150ms;"
                 onmouseover="this.style.color='var(--color-primary)';"
                 onmouseout="this.style.color='var(--color-text-primary)';"
-              >{prof.fullName}</a>
+              >{cleanFullName}</a>
             </h2>
             <span class="swiss-label swiss-label--primary" style="display: block; margin-bottom: 6px;">
               {prof.title}

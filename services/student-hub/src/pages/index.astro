@@ -937,12 +937,26 @@ function getDailySchedule(day: string) {
         if (modal) {
           modal.style.display = "flex";
           document.body.style.overflow = "hidden";
+          history.pushState({ modalOpen: true }, "");
         }
       });
     });
 
+    window.addEventListener("popstate", (e) => {
+      if (modal && modal.style.display === "flex") {
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+      }
+    });
+
     function closeModal() {
-      if (modal) { modal.style.display = "none"; document.body.style.overflow = ""; }
+      if (modal) { 
+        modal.style.display = "none"; 
+        document.body.style.overflow = ""; 
+        if (history.state && history.state.modalOpen) {
+          history.back();
+        }
+      }
     }
 
     btnClose?.addEventListener("click", closeModal);
