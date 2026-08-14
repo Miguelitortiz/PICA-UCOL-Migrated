@@ -913,7 +913,7 @@ function getDailySchedule(day: string) {
   /* ══════════════════════════════════════════════════
      SELECTION WIZARD STYLES
      ══════════════════════════════════════════════════ */
-  .selection-card-btn {
+  :global(.selection-card-btn) {
     background: transparent;
     border: none;
     border-left: 3px solid var(--color-primary);
@@ -932,29 +932,29 @@ function getDailySchedule(day: string) {
     width: 100%;
   }
 
-  .selection-card-btn:hover {
+  :global(.selection-card-btn:hover) {
     opacity: 0.7;
   }
 
-  .selection-card-btn:focus-visible {
+  :global(.selection-card-btn:focus-visible) {
     outline: 2px solid var(--color-focus);
     outline-offset: 4px;
   }
 
-  .selection-grid {
+  :global(.selection-grid) {
     display: grid;
     grid-template-columns: 1fr;
     gap: 24px;
   }
 
   @media (min-width: 768px) {
-    .selection-grid {
+    :global(.selection-grid) {
       grid-template-columns: repeat(2, 1fr);
       gap: 32px;
     }
   }
   @media (min-width: 1024px) {
-    .selection-grid {
+    :global(.selection-grid) {
       grid-template-columns: repeat(3, 1fr);
     }
   }
