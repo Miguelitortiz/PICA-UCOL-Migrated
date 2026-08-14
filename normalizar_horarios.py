@@ -64,75 +64,16 @@ def normalizar_horarios(input_file, output_dir):
     dict_asig_abrev = dict(zip(df_asig['Abreviatura'], df_asig['id_asignatura']))
     dict_asig_nombre = dict(zip(df_asig['Asignatura'], df_asig['id_asignatura']))
     
-    def get_id_asignatura(nombre_o_abrev):
+    dict_id_to_abrev = dict(zip(df_asig['id_asignatura'], df_asig['Abreviatura']))
+
+    def get_id_asignatura_fallback(nombre_o_abrev):
         base = nombre_o_abrev.replace('HTI ', '').replace('HTI', '').strip()
         return dict_asig_abrev.get(base, dict_asig_nombre.get(base, None))
 
-    # 5. Lecciones
-    print("Procesando Lecciones...")
-    df_lecc = pd.read_excel(xl, sheet_name="Lecciones")
-    df_lecc = df_lecc.dropna(subset=['Profesor', 'Clase', 'Asignatura'], how='all')
-    
-    # Función auxiliar para arreglar el bug de Excel que convierte "3 A" a hora "03:00:00"
-    def fix_clase_name(c_str):
-        c_str = c_str.strip()
-        time_map = {
-            "01:00:00": "1 A", "03:00:00": "3 A", "05:00:00": "5 A",
-            "07:00:00": "7 A", "09:00:00": "9 A", "11:00:00": "11 A"
-        }
-        return time_map.get(c_str, c_str)
-    
-    lecciones_records = []
-    for idx, row in df_lecc.iterrows():
-        prof_str = str(row.get('Profesor', '')).strip()
-        clase_str = str(row.get('Clase', '')).strip()
-        asig_str = str(row.get('Asignatura', '')).strip()
-        
-        if not prof_str and not clase_str and not asig_str: continue
-        
-        # Un registro de Lección puede tener múltiples profesores o clases separados por comas
-        profesores = [p.strip() for p in prof_str.split(',')] if prof_str else ['']
-        clases = [fix_clase_name(c.strip()) for c in clase_str.split(',')] if clase_str else ['']
-        
-        id_a = get_id_asignatura(asig_str)
-        es_hti = 1 if asig_str.startswith('HTI') else 0
-        
-        grupo = row.get('Grupo', '')
-        duracion = row.get('Duración', '')
-        sesiones_semana = row.get('Sesiones/semana', '')
-        
-        # Producto cartesiano para normalizar a 3FN (1 registro por combinación prof-clase)
-        for prof in profesores:
-            for clase in clases:
-                id_p = dict_prof.get(prof, None)
-                id_c = dict_clase.get(clase, None)
-                
-                lecciones_records.append({
-                    'id_profesor': id_p,
-                    'id_clase': id_c,
-                    'id_asignatura': id_a,
-                    'es_hti': es_hti,
-                    'grupo': grupo,
-                    'duracion': duracion,
-                    'sesiones_semana': sesiones_semana
-                })
-        
-    df_lecciones = pd.DataFrame(lecciones_records)
-    df_lecciones = df_lecciones.dropna(subset=['id_clase', 'id_asignatura'], how='all').reset_index(drop=True)
-    df_lecciones['id_leccion'] = df_lecciones.index + 1
-    
-    # Convertir IDs a Int64 para evitar el sufijo .0
-    for col in ['id_profesor', 'id_clase', 'id_asignatura', 'es_hti']:
-        if col in df_lecciones.columns:
-            df_lecciones[col] = df_lecciones[col].astype('Int64')
-    
-    cols = ['id_leccion', 'id_profesor', 'id_clase', 'id_asignatura', 'es_hti', 'grupo', 'duracion', 'sesiones_semana']
-    df_lecciones = df_lecciones[[c for c in cols if c in df_lecciones.columns]]
-    df_lecciones.to_csv(os.path.join(output_dir, 'lecciones.csv'), index=False, encoding='utf-8-sig')
-    
-    # 6. Horarios Detalle
+    # 5. Horarios Detalle (Primero para aprender el contexto de las clases)
     print("Procesando Horarios Detalle (desde hojas de asignaturas)...")
     horarios_records = []
+    dict_clase_abrev_to_id = {} # (id_clase, abreviatura) -> id_asignatura
     
     def find_id_asignatura_sheet(sheet_name):
         sn = sheet_name.strip()
@@ -174,6 +115,10 @@ def normalizar_horarios(input_file, output_dir):
             continue
             
         id_asig, es_hti = find_id_asignatura_sheet(sheet)
+        if id_asig is not None:
+            abrev_asig = dict_id_to_abrev.get(id_asig)
+        else:
+            abrev_asig = None
         
         for idx in range(start_row, len(df_sheet)):
             row = df_sheet.iloc[idx]
@@ -188,13 +133,16 @@ def normalizar_horarios(input_file, output_dir):
                 clase_str = row[col]
                 if pd.notna(clase_str) and str(clase_str).strip() != "":
                     id_clase = dict_clase.get(str(clase_str).strip(), None)
-                    horarios_records.append({
-                        'id_clase': id_clase,
-                        'id_asignatura': id_asig,
-                        'es_hti': es_hti,
-                        'dia': dia,
-                        'periodo': leccion
-                    })
+                    if id_clase is not None:
+                        horarios_records.append({
+                            'id_clase': id_clase,
+                            'id_asignatura': id_asig,
+                            'es_hti': es_hti,
+                            'dia': dia,
+                            'periodo': leccion
+                        })
+                        if abrev_asig:
+                            dict_clase_abrev_to_id[(id_clase, abrev_asig)] = id_asig
 
     df_horarios = pd.DataFrame(horarios_records)
     if not df_horarios.empty:
@@ -210,7 +158,75 @@ def normalizar_horarios(input_file, output_dir):
         print(f"Total registros horarios_detalle: {len(df_horarios)}")
     else:
         print("No se encontraron registros de horarios_detalle.")
+
+    # 6. Lecciones
+    print("Procesando Lecciones...")
+    df_lecc = pd.read_excel(xl, sheet_name="Lecciones")
+    df_lecc = df_lecc.dropna(subset=['Profesor', 'Clase', 'Asignatura'], how='all')
+    
+    # Función auxiliar para arreglar el bug de Excel que convierte "3 A" a hora "03:00:00"
+    def fix_clase_name(c_str):
+        c_str = c_str.strip()
+        time_map = {
+            "01:00:00": "1 A", "03:00:00": "3 A", "05:00:00": "5 A",
+            "07:00:00": "7 A", "09:00:00": "9 A", "11:00:00": "11 A"
+        }
+        return time_map.get(c_str, c_str)
+    
+    lecciones_records = []
+    for idx, row in df_lecc.iterrows():
+        prof_str = str(row.get('Profesor', '')).strip()
+        clase_str = str(row.get('Clase', '')).strip()
+        asig_str = str(row.get('Asignatura', '')).strip()
         
+        if not prof_str and not clase_str and not asig_str: continue
+        
+        # Un registro de Lección puede tener múltiples profesores o clases separados por comas
+        profesores = [p.strip() for p in prof_str.split(',')] if prof_str else ['']
+        clases = [fix_clase_name(c.strip()) for c in clase_str.split(',')] if clase_str else ['']
+        
+        es_hti = 1 if asig_str.startswith('HTI') else 0
+        asig_base_str = asig_str.replace('HTI ', '').replace('HTI', '').strip()
+        
+        grupo = row.get('Grupo', '')
+        duracion = row.get('Duración', '')
+        sesiones_semana = row.get('Sesiones/semana', '')
+        
+        # Producto cartesiano para normalizar a 3FN (1 registro por combinación prof-clase)
+        for prof in profesores:
+            for clase in clases:
+                id_p = dict_prof.get(prof, None)
+                id_c = dict_clase.get(clase, None)
+                
+                id_a = None
+                if id_c is not None:
+                    id_a = dict_clase_abrev_to_id.get((id_c, asig_base_str))
+                if id_a is None:
+                    id_a = get_id_asignatura_fallback(asig_str)
+                
+                lecciones_records.append({
+                    'id_profesor': id_p,
+                    'id_clase': id_c,
+                    'id_asignatura': id_a,
+                    'es_hti': es_hti,
+                    'grupo': grupo,
+                    'duracion': duracion,
+                    'sesiones_semana': sesiones_semana
+                })
+        
+    df_lecciones = pd.DataFrame(lecciones_records)
+    df_lecciones = df_lecciones.dropna(subset=['id_clase', 'id_asignatura'], how='all').reset_index(drop=True)
+    df_lecciones['id_leccion'] = df_lecciones.index + 1
+    
+    # Convertir IDs a Int64 para evitar el sufijo .0
+    for col in ['id_profesor', 'id_clase', 'id_asignatura', 'es_hti']:
+        if col in df_lecciones.columns:
+            df_lecciones[col] = df_lecciones[col].astype('Int64')
+    
+    cols = ['id_leccion', 'id_profesor', 'id_clase', 'id_asignatura', 'es_hti', 'grupo', 'duracion', 'sesiones_semana']
+    df_lecciones = df_lecciones[[c for c in cols if c in df_lecciones.columns]]
+    df_lecciones.to_csv(os.path.join(output_dir, 'lecciones.csv'), index=False, encoding='utf-8-sig')
+    
     print(f"Normalización completada. Archivos guardados en '{output_dir}/'")
 
 if __name__ == "__main__":
