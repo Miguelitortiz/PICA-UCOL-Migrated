@@ -90,11 +90,11 @@ function cleanName(name: string) {
         <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
           <div>
             <h2 style="
-              font-size: 0.9375rem;
-              font-weight: 700;
+              font-size: 1.25rem;
+              font-weight: 800;
               color: var(--color-text-primary);
-              line-height: 1.2;
-              margin-bottom: 4px;
+              line-height: 1.1;
+              margin-bottom: 6px;
             ">
               <a
                 href={`/profesores/${prof.slug}`}
@@ -103,9 +103,6 @@ function cleanName(name: string) {
                 onmouseout="this.style.color='var(--color-text-primary)';"
               >{cleanFullName}</a>
             </h2>
-            <span class="swiss-label swiss-label--primary" style="display: block; margin-bottom: 6px;">
-              {prof.title}
-            </span>
             <p style="
               font-size: 0.75rem;
               color: var(--color-text-secondary);
