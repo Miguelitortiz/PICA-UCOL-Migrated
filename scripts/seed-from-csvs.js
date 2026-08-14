@@ -104,6 +104,17 @@ async function seed() {
 
     const dbHorariosDir = path.join(process.cwd(), 'db_horarios');
     
+    // Cargar semblanzas
+    console.log('📖 Cargando semblanzas desde semblanzas.json...');
+    let semblanzasSlugMap = new Map();
+    const semblanzasPath = path.join(dbHorariosDir, 'semblanzas.json');
+    if (fs.existsSync(semblanzasPath)) {
+      const semblanzasRaw = JSON.parse(fs.readFileSync(semblanzasPath, 'utf8'));
+      for (const [name, text] of Object.entries(semblanzasRaw)) {
+        semblanzasSlugMap.set(slugify(name), text);
+      }
+    }
+
     // 2. Cargar Profesores
     console.log('👥 Cargando profesores desde profesores.csv...');
     const profesoresRows = readCSV(path.join(dbHorariosDir, 'profesores.csv'));
@@ -119,6 +130,7 @@ async function seed() {
         slug,
         fullName,
         photoUrl: null,
+        biography: semblanzasSlugMap.get(baseSlug) || null,
         title: null,
         department: null,
         institutionalEmail: null,

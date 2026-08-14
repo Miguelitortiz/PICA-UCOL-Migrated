@@ -65,6 +65,16 @@ async function run() {
   const subjectList = Array.from(cleanSubjects);
   const profList = Array.from(cleanProfs);
 
+  console.log('📖 Cargando semblanzas desde db_horarios/semblanzas.json...');
+  let semblanzasSlugMap = new Map();
+  const semblanzasPath = path.join(__dirname, '..', 'db_horarios', 'semblanzas.json');
+  if (fs.existsSync(semblanzasPath)) {
+    const semblanzasRaw = JSON.parse(fs.readFileSync(semblanzasPath, 'utf8'));
+    for (const [name, text] of Object.entries(semblanzasRaw)) {
+      semblanzasSlugMap.set(slugify(name), text);
+    }
+  }
+
   console.log('📖 Leyendo CSV corregido...');
   const newContent = fs.readFileSync(newCsvPath, 'utf-8');
   const newLines = newContent.split(/\r?\n/).filter(line => line.trim().length > 0).slice(1);
@@ -259,7 +269,9 @@ async function run() {
           slug,
           full_name: matchedProf,
           email: null,
-          profile_data: {}
+          profile_data: {
+            biography: semblanzasSlugMap.get(slug) || null
+          }
         });
       }
       teacherId = professorsMap.get(slug).id;
