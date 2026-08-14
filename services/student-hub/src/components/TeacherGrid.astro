@@ -20,22 +20,11 @@ const { profesores = [] } = Astro.props;
 function cleanName(name: string) {
   return name.replace(/^(dr\.|dra\.|mtro\.|mtra\.|lic\.|ing\.|arq\.)\s*/i, '');
 }
-
-function getInitials(name: string) {
-  return (name || 'P A')
-    .split(' ')
-    .filter(word => word.length > 2 && !['del', 'de', 'las', 'los'].includes(word.toLowerCase()))
-    .slice(0, 2)
-    .map(word => word[0])
-    .join('')
-    .toUpperCase();
-}
 ---
 
 <div class="teachers-grid">
   {profesores.map((prof) => {
     const cleanFullName = cleanName(prof.fullName);
-    const initials = getInitials(cleanFullName);
     return (
       <div
         class="teacher-card"
@@ -77,29 +66,22 @@ function getInitials(name: string) {
                   alt={`Fotografía de ${prof.fullName}`}
                   loading="lazy"
                   style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.1);"
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
                 />
                 <div style="
                   display: none;
                   position: absolute;
                   inset: 0;
-                  align-items: center;
-                  justify-content: center;
-                  font-family: var(--font-sans);
-                  font-size: 1.25rem;
-                  font-weight: 700;
-                  letter-spacing: 0.04em;
-                  color: var(--color-border);
-                ">{initials}</div>
+                  background-color: var(--color-bg-piedra);
+                "></div>
               </>
             ) : (
               <span style="
-                font-family: var(--font-sans);
-                font-size: 1.25rem;
-                font-weight: 700;
-                letter-spacing: 0.04em;
-                color: var(--color-border);
-              ">{initials}</span>
+                display: block;
+                width: 100%;
+                height: 100%;
+                background-color: var(--color-bg-piedra);
+              "></span>
             )}
           </div>
         </div>

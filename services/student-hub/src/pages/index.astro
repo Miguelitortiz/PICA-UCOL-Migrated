@@ -206,13 +206,12 @@ function getDailySchedule(day: string) {
           Elige tu carrera académica para comenzar a visualizar tu horario.
         </p>
 
-        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+        <div class="selection-grid">
           {careers.map(career => (
             <button 
-              class="career-btn" 
+              class="career-btn selection-card-btn" 
               data-id={career.id}
               data-name={career.name}
-              style="text-align: left; padding: 20px; border: 1px solid var(--color-rule-strong); background: var(--color-surface); font-family: var(--font-sans); font-size: 1rem; font-weight: 700; color: var(--color-ink); cursor: pointer; transition: all 120ms;"
             >
               {career.name}
             </button>
@@ -228,7 +227,7 @@ function getDailySchedule(day: string) {
         </h1>
         <p id="selected-career-label" style="font-size: 1.125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 36px;"></p>
 
-        <div id="semesters-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 40px;"></div>
+        <div id="semesters-grid" class="selection-grid" style="margin-bottom: 40px;"></div>
         
         <button 
           id="btn-back-to-career" 
@@ -246,7 +245,7 @@ function getDailySchedule(day: string) {
         </h1>
         <p id="selected-career-sem-label" style="font-size: 1.125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 36px;"></p>
 
-        <div id="groups-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-bottom: 40px;"></div>
+        <div id="groups-grid" class="selection-grid" style="margin-bottom: 40px;"></div>
         
         <button 
           id="btn-back-to-semester" 
@@ -294,18 +293,7 @@ function getDailySchedule(day: string) {
           semestersGrid.innerHTML = '';
           semesters.forEach(sem => {
             const semBtn = document.createElement('button');
-            semBtn.style.padding = '18px';
-            semBtn.style.border = '1px solid var(--color-rule-strong)';
-            semBtn.style.backgroundColor = 'var(--color-surface)';
-            semBtn.style.fontFamily = 'var(--font-sans)';
-            semBtn.style.fontSize = '1.1rem';
-            semBtn.style.fontWeight = '700';
-            semBtn.style.color = 'var(--color-ink)';
-            semBtn.style.cursor = 'pointer';
-            semBtn.style.transition = 'all 120ms';
-            semBtn.style.textAlign = 'center';
-            semBtn.style.whiteSpace = 'nowrap';
-            semBtn.className = 'sem-btn';
+            semBtn.className = 'sem-btn selection-card-btn';
             semBtn.textContent = `${sem}° Semestre`;
             semBtn.addEventListener('click', () => {
               selectedSemester = sem;
@@ -315,31 +303,12 @@ function getDailySchedule(day: string) {
               groupsGrid.innerHTML = '';
               finalGroups.forEach(grp => {
                 const grpBtn = document.createElement('button');
-                grpBtn.style.padding = '18px';
-                grpBtn.style.border = '1px solid var(--color-rule-strong)';
-                grpBtn.style.backgroundColor = 'var(--color-surface)';
-                grpBtn.style.fontFamily = 'var(--font-sans)';
-                grpBtn.style.fontSize = '1.1rem';
-                grpBtn.style.fontWeight = '700';
-                grpBtn.style.color = 'var(--color-ink)';
-                grpBtn.style.cursor = 'pointer';
-                grpBtn.style.transition = 'all 120ms';
-                grpBtn.style.textAlign = 'center';
-                grpBtn.className = 'grp-btn';
+                grpBtn.className = 'grp-btn selection-card-btn';
                 grpBtn.textContent = grp.name;
                 grpBtn.addEventListener('click', () => {
                   selectedGroupSlug = grp.slug;
                   document.cookie = `pica_selected_group=${selectedGroupSlug}; path=/; max-age=${60 * 60 * 24 * 365}`;
                   window.location.href = '/';
-                });
-
-                grpBtn.addEventListener('mouseenter', () => {
-                  grpBtn.style.borderColor = 'var(--color-ink)';
-                  grpBtn.style.backgroundColor = 'var(--color-muted)';
-                });
-                grpBtn.addEventListener('mouseleave', () => {
-                  grpBtn.style.borderColor = 'var(--color-rule-strong)';
-                  grpBtn.style.backgroundColor = 'var(--color-surface)';
                 });
 
                 groupsGrid.appendChild(grpBtn);
@@ -349,29 +318,11 @@ function getDailySchedule(day: string) {
               stepGroup.style.display = 'block';
             });
 
-            semBtn.addEventListener('mouseenter', () => {
-              semBtn.style.borderColor = 'var(--color-ink)';
-              semBtn.style.backgroundColor = 'var(--color-muted)';
-            });
-            semBtn.addEventListener('mouseleave', () => {
-              semBtn.style.borderColor = 'var(--color-rule-strong)';
-              semBtn.style.backgroundColor = 'var(--color-surface)';
-            });
-
             semestersGrid.appendChild(semBtn);
           });
 
           stepCareer.style.display = 'none';
           stepSemester.style.display = 'block';
-        });
-
-        btn.addEventListener('mouseenter', () => {
-          btn.style.borderColor = 'var(--color-ink)';
-          btn.style.backgroundColor = 'var(--color-muted)';
-        });
-        btn.addEventListener('mouseleave', () => {
-          btn.style.borderColor = 'var(--color-rule-strong)';
-          btn.style.backgroundColor = 'var(--color-surface)';
         });
       });
 
@@ -968,6 +919,55 @@ function getDailySchedule(day: string) {
 )}
 
 <style>
+  /* ══════════════════════════════════════════════════
+     SELECTION WIZARD STYLES
+     ══════════════════════════════════════════════════ */
+  .selection-card-btn {
+    background: transparent;
+    border: none;
+    border-top: 2px solid var(--color-ink);
+    padding: 20px 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    transition: opacity 120ms;
+    font-family: var(--font-sans);
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+    line-height: 1.1;
+    width: 100%;
+  }
+
+  .selection-card-btn:hover {
+    opacity: 0.7;
+  }
+
+  .selection-card-btn:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 4px;
+  }
+
+  .selection-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  @media (min-width: 768px) {
+    .selection-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .selection-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
   /* ══════════════════════════════════════════════════
      PAGE HEADER — asimétrico, tipografía dominante
      ══════════════════════════════════════════════════ */

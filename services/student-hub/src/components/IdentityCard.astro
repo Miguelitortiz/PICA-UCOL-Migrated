@@ -20,15 +20,6 @@ const {
 // Calcular años de antigüedad
 const currentYear = new Date().getFullYear();
 const yearsOfService = currentYear - admissionYear;
-
-// Obtener iniciales para el placeholder de foto
-const initials = (fullName || 'P A')
-  .split(' ')
-  .filter(word => word.length > 2 && !['del', 'de', 'las', 'los'].includes(word.toLowerCase()))
-  .slice(0, 2)
-  .map(word => word[0])
-  .join('')
-  .toUpperCase();
 ---
 
 <div class="py-2">
@@ -42,14 +33,12 @@ const initials = (fullName || 'P A')
         width="300"
         height="300"
         class="w-full h-full object-cover filter grayscale contrast-125 brightness-95"
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
       />
-      <div class="hidden absolute inset-0 flex items-center justify-center font-mono text-3xl font-bold text-ink-3 tracking-widest bg-muted select-none">
-        {initials}
+      <div class="hidden absolute inset-0 bg-muted select-none">
       </div>
     ) : (
-      <div class="flex items-center justify-center font-mono text-3xl font-bold text-ink-3 tracking-widest bg-muted w-full h-full select-none">
-        {initials}
+      <div class="bg-muted w-full h-full select-none">
       </div>
     )}
   </div>
