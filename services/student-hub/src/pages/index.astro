@@ -540,7 +540,44 @@ function getDailySchedule(day: string) {
       <!-- ── VISTA LISTA (Móvil) ── -->
       <div class="schedule-mobile" aria-label="Horario semanal por día">
         {daysOfWeek.map(day => {
-          const dayItems = getDailySchedule(day);
+          const rawDayItems = getDailySchedule(day);
+          
+          if (rawDayItems.length > 0) {
+            let dayStart = "23:59:59";
+            let dayEnd = "00:00:00";
+            rawDayItems.forEach(i => {
+              if (i.start_time < dayStart) dayStart = i.start_time;
+              if (i.end_time > dayEnd) dayEnd = i.end_time;
+            });
+
+            timeSlots.filter(s => s.isRecess).forEach(r => {
+              if (r.start >= dayStart && r.end <= dayEnd) {
+                rawDayItems.push({
+                  isRecessCard: true,
+                  start_time: r.start,
+                  end_time: r.end,
+                  subject_name: r.title || "Receso"
+                });
+              }
+            });
+            rawDayItems.sort((a, b) => a.start_time.localeCompare(b.start_time));
+          }
+
+          const dayItems = [];
+          for (let i = 0; i < rawDayItems.length; i++) {
+            const currentItem = { ...rawDayItems[i], span: 1 };
+            while (
+              i + 1 < rawDayItems.length &&
+              rawDayItems[i + 1].subject_name === currentItem.subject_name &&
+              rawDayItems[i + 1].professor_name === currentItem.professor_name &&
+              rawDayItems[i + 1].start_time === currentItem.end_time
+            ) {
+              currentItem.end_time = rawDayItems[i + 1].end_time;
+              currentItem.span++;
+              i++;
+            }
+            dayItems.push(currentItem);
+          }
           return (
             <div class="mobile-day">
               <div class="mobile-day__header">
@@ -554,12 +591,26 @@ function getDailySchedule(day: string) {
               ) : (
                 <div class="mobile-day__list">
                   {dayItems.map(item => {
+                    if (item.isRecessCard) {
+                      return (
+                        <div
+                          class="mobile-class"
+                          style="min-height: 48px; background: var(--color-muted); justify-content: center; align-items: center; border-left: 3px solid var(--color-primary); border-bottom: 1px solid var(--color-rule-strong); cursor: default;"
+                        >
+                          <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.1em;">
+                            {item.start_time.substring(0, 5)} – {item.end_time.substring(0, 5)} &nbsp;&nbsp; Receso
+                          </span>
+                        </div>
+                      );
+                    }
+
                     const syllabusSlug = getSyllabusSlug(item.subject_name);
                     const syllabusDesc = getSyllabusDesc(item.subject_name);
                     const isHtiEntry = item.isHti || item.subject_name?.toUpperCase().includes('HTI');
                     return (
                       <button
                         class={`mobile-class class-card-btn ${isHtiEntry ? 'independent-work' : ''}`}
+                        style={`min-height: ${item.span * 72}px; padding-top: ${item.span * 12}px; padding-bottom: ${item.span * 12}px;`}
                         aria-label={`${item.subject_name}${isHtiEntry ? ' (HTI)' : ''}, ${item.professor_name}`}
                         data-subject={item.subject_name}
                         data-professor={item.professor_name}
