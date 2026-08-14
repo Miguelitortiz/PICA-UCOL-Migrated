@@ -116,6 +116,12 @@ const student = Astro.locals.student;
               <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--color-ink-2); text-transform: uppercase; background: var(--color-muted); padding: 4px 8px;">
                 Grupo: {student.class_group_slug.toUpperCase()}
               </span>
+              <button
+                id="btn-change-group-header"
+                style="background: none; border: 1px solid var(--color-rule-strong); font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 700; color: var(--color-ink-2); cursor: pointer; text-transform: uppercase; padding: 4px 8px; transition: all 120ms;"
+              >
+                Cambiar
+              </button>
             </div>
           )
         }
@@ -349,6 +355,14 @@ const student = Astro.locals.student;
             "btn-change-group-mobile",
           );
           btnChangeGroupMobile?.addEventListener("click", () => {
+            document.cookie = "pica_selected_group=; path=/; max-age=0;";
+            window.location.href = "/";
+          });
+
+          const btnChangeGroupHeader = document.getElementById(
+            "btn-change-group-header",
+          );
+          btnChangeGroupHeader?.addEventListener("click", () => {
             document.cookie = "pica_selected_group=; path=/; max-age=0;";
             window.location.href = "/";
           });
