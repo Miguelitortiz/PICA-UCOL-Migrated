@@ -70,6 +70,27 @@ def normalizar_horarios(input_file, output_dir):
         base = nombre_o_abrev.replace('HTI ', '').replace('HTI', '').strip()
         return dict_asig_abrev.get(base, dict_asig_nombre.get(base, None))
 
+    import re
+    def expand_classes(clase_str):
+        if pd.isna(clase_str) or str(clase_str).strip() == '':
+            return []
+        parts = [p.strip() for p in str(clase_str).split(',')]
+        expanded = []
+        last_prefix = ''
+        for p in parts:
+            has_digit = any(c.isdigit() for c in p)
+            if has_digit:
+                m = re.match(r'^(\d+\s*)(.*)', p)
+                if m:
+                    last_prefix = m.group(1)
+                expanded.append(p)
+            else:
+                if last_prefix:
+                    expanded.append(last_prefix + p)
+                else:
+                    expanded.append(p)
+        return expanded
+
     # 5. Horarios Detalle (Primero para aprender el contexto de las clases)
     print("Procesando Horarios Detalle (desde hojas de asignaturas)...")
     horarios_records = []
@@ -130,19 +151,21 @@ def normalizar_horarios(input_file, output_dir):
                 
             class_cols = [c for c in df_sheet.columns if c not in [dia_col, leccion_col] and c != df_sheet.columns[0]]
             for col in class_cols:
-                clase_str = row[col]
-                if pd.notna(clase_str) and str(clase_str).strip() != "":
-                    id_clase = dict_clase.get(str(clase_str).strip(), None)
-                    if id_clase is not None:
-                        horarios_records.append({
-                            'id_clase': id_clase,
-                            'id_asignatura': id_asig,
-                            'es_hti': es_hti,
-                            'dia': dia,
-                            'periodo': leccion
-                        })
-                        if abrev_asig:
-                            dict_clase_abrev_to_id[(id_clase, abrev_asig)] = id_asig
+                clase_str_raw = row[col]
+                clases = expand_classes(clase_str_raw)
+                for c_str in clases:
+                    if pd.notna(c_str) and str(c_str).strip() != "":
+                        id_clase = dict_clase.get(str(c_str).strip(), None)
+                        if id_clase is not None:
+                            horarios_records.append({
+                                'id_clase': id_clase,
+                                'id_asignatura': id_asig,
+                                'es_hti': es_hti,
+                                'dia': dia,
+                                'periodo': leccion
+                            })
+                            if abrev_asig:
+                                dict_clase_abrev_to_id[(id_clase, abrev_asig)] = id_asig
 
     df_horarios = pd.DataFrame(horarios_records)
     if not df_horarios.empty:
@@ -183,7 +206,8 @@ def normalizar_horarios(input_file, output_dir):
         
         # Un registro de Lección puede tener múltiples profesores o clases separados por comas
         profesores = [p.strip() for p in prof_str.split(',')] if prof_str else ['']
-        clases = [fix_clase_name(c.strip()) for c in clase_str.split(',')] if clase_str else ['']
+        expanded_clases = expand_classes(clase_str)
+        clases = [fix_clase_name(c.strip()) for c in expanded_clases] if expanded_clases else ['']
         
         es_hti = 1 if asig_str.startswith('HTI') else 0
         asig_base_str = asig_str.replace('HTI ', '').replace('HTI', '').strip()

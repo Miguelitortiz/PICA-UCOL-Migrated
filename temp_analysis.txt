@@ -17,7 +17,7 @@ id_asignatura: 1 nulls
 No nulls found.
 
 --- Clases en horarios sin profesor asignado en lecciones ---
-Encontrados 183 casos:
+Encontrados 193 casos:
 - Clase: 5 C, Asignatura: Emprendimieno, es_hti: 1
 - Clase: 5 J, Asignatura: Máquinas eléctricas I, es_hti: 0
 - Clase: 5 I, Asignatura: Máquinas eléctricas I, es_hti: 0
@@ -44,6 +44,8 @@ Encontrados 183 casos:
 - Clase: 7 G, Asignatura: Liderazgo y misión de servicio, es_hti: 1
 - Clase: 7 G, Asignatura: Ingeniería económica, es_hti: 1
 - Clase: 7 A, Asignatura: Ingeniería económica, es_hti: 1
+- Clase: 7 A, Asignatura: Optativa I, es_hti: 1
+- Clase: 7 G, Asignatura: Optativa I, es_hti: 1
 - Clase: 7 A, Asignatura: Uso eficiente de la energía, es_hti: 1
 - Clase: 7 G, Asignatura: Uso eficiente de la energía, es_hti: 1
 - Clase: 7 G, Asignatura: Análisis de sistemas de potencia, es_hti: 1
@@ -94,6 +96,8 @@ Encontrados 183 casos:
 - Clase: 1 A, Asignatura: Física experimental, es_hti: 1
 - Clase: 7 C, Asignatura: Inglés V, es_hti: 1
 - Clase: 7 C, Asignatura: Opt. V, es_hti: 1
+- Clase: 9 A, Asignatura: Opt. V, es_hti: 1
+- Clase: 9 G, Asignatura: Opt. V, es_hti: 1
 - Clase: 7 C, Asignatura: Opt. IV, es_hti: 1
 - Clase: 7 C, Asignatura: Opt. II, es_hti: 1
 - Clase: 7 C, Asignatura: Controladores lógicos programables, es_hti: 1
@@ -105,6 +109,10 @@ Encontrados 183 casos:
 - Clase: 7 D, Asignatura: Seguridad de la información, es_hti: 1
 - Clase: 7 D, Asignatura: Seguridad de redes, es_hti: 1
 - Clase: 7 B, Asignatura: Seguridad de redes, es_hti: 1
+- Clase: 7 B, Asignatura: Opt. II, es_hti: 1
+- Clase: 7 D, Asignatura: Opt. II, es_hti: 1
+- Clase: 7 A, Asignatura: Opt. II, es_hti: 1
+- Clase: 7 G, Asignatura: Opt. II, es_hti: 1
 - Clase: 7 B, Asignatura: Programación para dispositivos móviles, es_hti: 1
 - Clase: 7 D, Asignatura: Programación para dispositivos móviles, es_hti: 1
 - Clase: 7 B, Asignatura: Innovación y emprendimiento, es_hti: 1
@@ -197,13 +205,15 @@ Encontrados 183 casos:
 - Clase: 3 I, Asignatura: Inglés I, es_hti: 0
 - Clase: 1 I, Asignatura: Inglés I, es_hti: 0
 - Clase: 1 J, Asignatura: Inglés I, es_hti: 0
+- Clase: 7 I, Asignatura: Opt. II, es_hti: 0
+- Clase: 7 J, Asignatura: Opt. II, es_hti: 0
 - Clase: 5 J, Asignatura: Métodos numéricos, es_hti: 0
 - Clase: 5 I, Asignatura: Métodos numéricos, es_hti: 0
 - Clase: 1 J, Asignatura: Precálculo, es_hti: 0
 - Clase: 1 I, Asignatura: Precálculo, es_hti: 0
 
 --- Lecciones sin horario programado ---
-Encontradas 227 lecciones que no aparecen en el horario:
+Encontradas 203 lecciones que no aparecen en el horario:
 - Profesor: Benavides Sánchez  Luis Daniel, Clase: 1 C, Asignatura: Inglés I
 - Profesor: Navarro Márquez Gabriel, Clase: 3 C, Asignatura: Proyectos de ingeniería III
 - Profesor: Galvez Martell  Alicia Armantina, Clase: 3 C, Asignatura: Inglés III
@@ -377,23 +387,7 @@ Encontradas 227 lecciones que no aparecen en el horario:
 - Profesor: Martínez Sánchez Gregorio Josué, Clase: 7 G, Asignatura: Opt. II
 - Profesor: Venegas Trujillo Tiberio, Clase: 7 A, Asignatura: Opt. II
 - Profesor: Venegas Trujillo Tiberio, Clase: 7 G, Asignatura: Opt. II
-- Profesor: Martínez Sánchez Gregorio Josué, Clase: 7 A, Asignatura: Optativa I
-- Profesor: Martínez Sánchez Gregorio Josué, Clase: 7 G, Asignatura: Optativa I
-- Profesor: Venegas Trujillo Tiberio, Clase: 7 A, Asignatura: Optativa I
-- Profesor: Venegas Trujillo Tiberio, Clase: 7 G, Asignatura: Optativa I
-- Profesor: Santillán Mata Tomás Adalberto, Clase: 7 A, Asignatura: Optativa I
-- Profesor: Santillán Mata Tomás Adalberto, Clase: 7 G, Asignatura: Optativa I
-- Profesor: Vázquez Fernández  Erik Eduardo, Clase: 7 A, Asignatura: Optativa I
-- Profesor: Vázquez Fernández  Erik Eduardo, Clase: 7 G, Asignatura: Optativa I
-- Profesor: Santillán Mata Tomás Adalberto, Clase: 7 A, Asignatura: Opt I
-- Profesor: Santillán Mata Tomás Adalberto, Clase: 7 G, Asignatura: Opt I
-- Profesor: Vázquez Fernández  Erik Eduardo, Clase: 7 A, Asignatura: Opt I
-- Profesor: Vázquez Fernández  Erik Eduardo, Clase: 7 G, Asignatura: Opt I
 - Profesor: Moya Mendoza Miguel Ángel, Clase: 7 G, Asignatura: Uso eficiente de la energía
-- Profesor: Díaz Álvarez  Juan Pablo, Clase: 9 A, Asignatura: Opt. VI
-- Profesor: Díaz Álvarez  Juan Pablo, Clase: 9 G, Asignatura: Opt. VI
-- Profesor: Vázquez Fernández  Erik Eduardo, Clase: 9 A, Asignatura: Opt. VI
-- Profesor: Vázquez Fernández  Erik Eduardo, Clase: 9 G, Asignatura: Opt. VI
 - Profesor: Díaz Álvarez  Juan Pablo, Clase: 9 A, Asignatura: Opt. VI
 - Profesor: Díaz Álvarez  Juan Pablo, Clase: 9 G, Asignatura: Opt. VI
 - Profesor: Vázquez Fernández  Erik Eduardo, Clase: 9 A, Asignatura: Opt. VI
@@ -402,10 +396,6 @@ Encontradas 227 lecciones que no aparecen en el horario:
 - Profesor: Jardines González Arturo Iván, Clase: 9 A, Asignatura: Legislación y financiamiento en materia energética
 - Profesor: Ramírez Arceo Guillermo Alejandro, Clase: 9 A, Asignatura: Seminario de investigación II
 - Profesor: Ramírez Arceo Guillermo Alejandro, Clase: 9 G, Asignatura: Seminario de investigación II
-- Profesor: Jardines González Arturo Iván, Clase: 9 A, Asignatura: Opt. VI
-- Profesor: Jardines González Arturo Iván, Clase: 9 G, Asignatura: Opt. VI
-- Profesor: Martínez Pérez Noé, Clase: 9 A, Asignatura: Opt. VI
-- Profesor: Martínez Pérez Noé, Clase: 9 G, Asignatura: Opt. VI
 - Profesor: Jardines González Arturo Iván, Clase: 9 A, Asignatura: Opt. V
 - Profesor: Jardines González Arturo Iván, Clase: 9 G, Asignatura: Opt. V
 - Profesor: Martínez Pérez Noé, Clase: 9 A, Asignatura: Opt. V
@@ -422,10 +412,6 @@ Encontradas 227 lecciones que no aparecen en el horario:
 - Profesor: Maciel Barboza  Fermín Marcelo Rubén, Clase: 7 D, Asignatura: Opt. II
 - Profesor: Plascencia Manzo Imelda, Clase: 7 B, Asignatura: Opt. II
 - Profesor: Plascencia Manzo Imelda, Clase: 7 D, Asignatura: Opt. II
-- Profesor: Maciel Barboza  Fermín Marcelo Rubén, Clase: 7 B, Asignatura: Optativa I
-- Profesor: Maciel Barboza  Fermín Marcelo Rubén, Clase: 7 D, Asignatura: Optativa I
-- Profesor: Plascencia Manzo Imelda, Clase: 7 B, Asignatura: Optativa I
-- Profesor: Plascencia Manzo Imelda, Clase: 7 D, Asignatura: Optativa I
 - Profesor: Sierra Andrade David Alejandro, Clase: 1 I, Asignatura: Precálculo
 - Profesor: Torres Cantero Carlos Alberto, Clase: 7 J, Asignatura: Seminario de investigación I
 - Profesor: Soriano Equigua  Leonel, Clase: 7 C, Asignatura: Opt. VI
