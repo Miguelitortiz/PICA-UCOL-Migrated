@@ -1,8 +1,8 @@
 const BASE_URLS = {
-  auth: process.env.AUTH_SERVICE_URL || 'http://auth-service:6770',
-  professors: process.env.PROFESSORS_SERVICE_URL || 'http://professors-service:6771',
-  academic: process.env.ACADEMIC_SERVICE_URL || 'http://academic-service:6772',
-  reference: process.env.REFERENCE_SERVICE_URL || 'http://reference-service:6773',
+  auth: process.env.AUTH_SERVICE_URL || 'http://pica-auth-service:6770',
+  professors: process.env.PROFESSORS_SERVICE_URL || 'http://pica-professors-service:6771',
+  academic: process.env.ACADEMIC_SERVICE_URL || 'http://pica-academic-service:6772',
+  reference: process.env.REFERENCE_SERVICE_URL || 'http://pica-reference-service:6773',
 };
 
 // Simple basic credentials for internal microservice calls if needed

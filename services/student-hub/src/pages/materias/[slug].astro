@@ -2,13 +2,21 @@
 import InstitutionalLayout from "../../layouts/InstitutionalLayout.astro";
 import {
   cargarCarreras,
+  cargarGrupoConProfesores,
   cargarSyllabusPorSlug,
 } from "../../lib/cargarDatos.js";
 
 const { slug } = Astro.params;
+const student = Astro.locals.student;
+const activeGroupSlug = student?.class_group_slug || Astro.url.searchParams.get("group");
+let activeGroupId = null;
+if (activeGroupSlug) {
+  const grp = await cargarGrupoConProfesores(activeGroupSlug);
+  if (grp) activeGroupId = grp.id;
+}
 
 // Cargar datos de la base de datos para este plan de estudios
-const syllabus = await cargarSyllabusPorSlug(slug);
+const syllabus = await cargarSyllabusPorSlug(slug, activeGroupId);
 
 if (!syllabus) {
   return Astro.redirect("/404");
@@ -211,12 +219,18 @@ const contactInfo = professorProfile.contactInfo || {};
 
           <div class="space-y-4">
             <div>
-              <a
-                href={`/profesores/${syllabus.creatorSlug}`}
-                class="font-bold text-primary hover:text-ink transition-colors duration-120 text-base block hover:underline"
-              >
-                {syllabus.creatorName}
-              </a>
+              {syllabus.creatorSlug ? (
+                <a
+                  href={`/profesores/${syllabus.creatorSlug}`}
+                  class="font-bold text-primary hover:text-ink transition-colors duration-120 text-base block hover:underline"
+                >
+                  {syllabus.creatorName}
+                </a>
+              ) : (
+                <span class="font-bold text-ink text-base block">
+                  {syllabus.creatorName || "Docente no asignado"}
+                </span>
+              )}
               <span class="block text-[10px] text-ink-3 mt-1 font-mono"
                 >{syllabus.creatorEmail || "Sin email registrado"}</span
               >
@@ -248,12 +262,21 @@ const contactInfo = professorProfile.contactInfo || {};
             </div>
 
             <div class="pt-4">
-              <a
-                href={`/profesores/${syllabus.creatorSlug}`}
-                class="btn btn--primary w-full text-center no-underline"
-              >
-                Ver Perfil de Docente &rarr;
-              </a>
+              {syllabus.creatorSlug ? (
+                <a
+                  href={`/profesores/${syllabus.creatorSlug}`}
+                  class="btn btn--primary w-full text-center no-underline"
+                >
+                  Ver Perfil de Docente &rarr;
+                </a>
+              ) : (
+                <button
+                  disabled
+                  class="btn w-full text-center opacity-50 cursor-not-allowed bg-muted text-ink-3 border-rule"
+                >
+                  Perfil no disponible
+                </button>
+              )}
             </div>
           </div>
         </div>

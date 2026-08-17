@@ -1,4 +1,6 @@
 import { fetchFromService } from './api-client.js';
+import fs from 'fs';
+import path from 'path';
 
 export async function cargarProfesores() {
   try {
@@ -10,6 +12,11 @@ export async function cargarProfesores() {
       profile.fullName = row.full_name;
       profile.institutionalEmail = row.email;
       profile.delegation_id = row.delegation_id;
+      const baseImageSlug = row.slug.replace(/-\d+$/, '');
+      const photoPath = path.join(process.cwd(), 'services', 'student-hub', 'public', 'images', 'profesores', `${baseImageSlug}.jpg`);
+      if (!profile.photoUrl && fs.existsSync(photoPath)) {
+        profile.photoUrl = `/images/profesores/${baseImageSlug}.jpg`;
+      }
       
       const careerIdsFromAssignments = row.group_assignments ? row.group_assignments.map(a => a.career_id).filter(Boolean) : [];
       const combinedCareers = new Set(careerIdsFromAssignments);
@@ -28,8 +35,17 @@ export async function cargarProfesores() {
 
 export async function cargarProfesor(slug) {
   try {
+    const decodedSlug = decodeURIComponent(slug);
     const rows = await fetchFromService('professors', '/professors');
-    const prof = rows.find(p => p.slug === slug);
+    
+    // Exact match first
+    let prof = rows.find(p => p.slug === decodedSlug);
+    
+    // If not found, try matching base slug without number
+    if (!prof) {
+      prof = rows.find(p => p.slug.replace(/-\d+$/, '') === decodedSlug.replace(/-\d+$/, ''));
+    }
+
     if (prof) {
       const profile = prof.profile_data || {};
       profile.id = prof.id;
@@ -38,6 +54,12 @@ export async function cargarProfesor(slug) {
       profile.institutionalEmail = profile.institutionalEmail || prof.email;
       profile.department = profile.department || null;
       profile.admissionYear = profile.admissionYear || null;
+      const baseImageSlug = prof.slug.replace(/-\d+$/, '');
+      const photoPath = path.join(process.cwd(), 'services', 'student-hub', 'public', 'images', 'profesores', `${baseImageSlug}.jpg`);
+      if (!profile.photoUrl && fs.existsSync(photoPath)) {
+        profile.photoUrl = `/images/profesores/${baseImageSlug}.jpg`;
+      }
+      
       return profile;
     }
     return null;

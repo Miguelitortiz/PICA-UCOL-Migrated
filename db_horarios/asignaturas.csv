@@ -63,11 +63,11 @@
 62,Circuitos eléctricos y electrónicos,CEE
 63,Circuitos digitales,CD
 64,Proyecto profesional I,PP-I
-65,Emprendimiento,E
+65,Emprendimiento,E1
 66,Diseño de experimentos,DE
 67,Instrumentación industrial,II
 68,Fundamentos de comunicaciones móviles,FdCM
-69,Aquitectura de microprocesadores,AdM
+69,Aquitectura de microprocesadores,AdM1
 70,Seminario de investigación I,SI-I
 71,Telefonía IP,Tel IP
 72,Controladores lógicos programables,CLP
@@ -89,7 +89,7 @@
 88,Estructura de datos,HEdd
 89,Interconexión de redes,HIdr
 90,Sistemas digitales y embebidos,HSdye
-91,Inglés III,HII
+91,Inglés III,HII1
 92,Interacción humano-computadora,HIh
 93,Aprendizaje de máquina,HAdm
 94,Programación Web,HPW
@@ -107,11 +107,11 @@
 106,Seminario de investigación I,HSdiI
 107,Telefonía IP,HTI
 108,Controladores lógicos programables,HClp
-109,Opt. III,HOI
-110,Opt. IV,HOI
+109,Opt. III,HOI1
+110,Opt. IV,HOI2
 111,Opt. V,HOV
-112,Opt. VI,HOV
-113,Inglés VII,HIV
+112,Opt. VI,HOV1
+113,Inglés VII,HIV1
 114,Física experimental,HFe
 115,Dibujo en ingeniería,HDei
 116,Taller de instalaciones eléctricas,HTdie
@@ -129,7 +129,7 @@
 128,Modelado y control,HMyc
 129,Análisis de sistemas de potencia,HAysdp
 130,Uso eficiente de la energía,HUedle
-131,Optativa I,HOI
+131,Optativa I,HOI3
 132,Ingeniería económica,HIe
 133,Liderazgo y misión de servicio,HLymds
 134,Sistemas de distribución,HSdd
@@ -137,7 +137,7 @@
 136,Legislación y financiamiento en materia energética,HLyfeme
 137,Sistemas de distribución,Sdd
 138,Administración de proyectos,Adp
-139,Seminario de investigación II,HSdiI
+139,Seminario de investigación II,HSdiI1
 140,Legislación y financiamiento en materia energética,Lyfeme
 141,Seminario de investigación II,SdiI
 142,Opt. VI: Diseño de sistemas energéticos / Sistemas de manufactura avanzada,OVM/Ri
@@ -155,7 +155,7 @@
 154,Mecánica de materiales,MdM
 155,Electrónica analógica,EA
 156,Legislación y normatividad,LyN
-157,Teoría de control,TdC
+157,Teoría de control,TdC1
 158,Robótica,R
 159,Taller de emprendedores,TdE
 160,Mecánica de Materiales,HMdM
@@ -164,7 +164,7 @@
 163,Circuitos Electromecánicos,HCE
 164,Robótica,HR
 165,Taller de Emprendedores,HTdE
-166,Circuitos Electromecánicos,CE
+166,Circuitos Electromecánicos,CE1
 167,Inglés IX,HI IX
 168,Arquitectura de microprocesadores,AM
 169,Interconexión de redes,IR
@@ -173,6 +173,6 @@
 172,Termofluidos,T
 173,Diseño de elementos mecánicos,DdEM
 174,Emprendimieno,HTIE
-175,Control digital,CD
-176,Controlador lógico programable,CLP
-177,Introducción a la electrónica,IE
+175,Control digital,CD1
+176,Controlador lógico programable,CLP1
+177,Introducción a la electrónica,IE1

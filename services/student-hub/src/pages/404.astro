@@ -1,0 +1,63 @@
+---
+import InstitutionalLayout from "../layouts/InstitutionalLayout.astro";
+---
+
+<div title="Página no encontrada">
+  <div class="not-found-container">
+    <div class="not-found-content">
+      <h1>404</h1>
+      <h2>Página no encontrada</h2>
+      <p>Lo sentimos, la página que buscas no existe o ha sido movida.</p>
+      <a href="/" class="btn-home">Volver al inicio</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .not-found-container {
+    min-height: calc(100vh - 150px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("/images/404.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+    color: white;
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 6rem;
+    margin: 0;
+    color: #4caf50;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .btn-home {
+    display: inline-block;
+    background-color: #4caf50;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .btn-home:hover {
+    background-color: #45a049;
+  }
+</style>

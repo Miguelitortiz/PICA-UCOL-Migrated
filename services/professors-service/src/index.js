@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
 import pool from './config/db.js';
 import { jwtAuth } from './middleware/jwt.js';
 import { matchFaculty } from './services/faculty-matcher.js';
@@ -224,7 +226,7 @@ app.post('/professors', jwtAuth, async (req, res) => {
       await client.query('BEGIN');
 
       // Check if professor already exists by email or loose name matching
-      const allProfsRes = await client.query('SELECT id, slug, full_name, email FROM professors');
+      const allProfsRes = await client.query('SELECT id, slug, full_name, email, profile_data FROM professors');
       let existingProf = null;
 
       if (email) {
@@ -238,9 +240,45 @@ app.post('/professors', jwtAuth, async (req, res) => {
       let professorId;
       let finalSlug = slug;
 
+      const incomingPhotoUrl = req.body.professorData?.photoUrl || req.body.professorData?.professorData?.photoUrl;
+      const incomingPortraitUrl = req.body.professorData?.portraitUrl || req.body.professorData?.professorData?.portraitUrl;
+      const incomingBiography = req.body.professorData?.biography || req.body.professorData?.professorData?.biography;
+      const incomingShowOnlyBio = req.body.professorData?.showOnlyBiography ?? req.body.professorData?.professorData?.showOnlyBiography;
+
       if (existingProf) {
         professorId = existingProf.id;
         finalSlug = existingProf.slug; // Keep original slug to avoid breaking links
+        
+        const oldData = existingProf.profile_data || {};
+
+        // 1. Photo handling: Ensure photoUrl comes from explicitly uploaded photo or existing DB photo;
+        // otherwise null so student-hub resolves from public/images/profesores using baseImageSlug
+        if (incomingPhotoUrl) {
+          formattedProfile.photoUrl = incomingPhotoUrl;
+        } else if (oldData.photoUrl) {
+          formattedProfile.photoUrl = oldData.photoUrl;
+        } else {
+          formattedProfile.photoUrl = null;
+        }
+
+        if (incomingPortraitUrl) {
+          formattedProfile.portraitUrl = incomingPortraitUrl;
+        } else if (oldData.portraitUrl) {
+          formattedProfile.portraitUrl = oldData.portraitUrl;
+        }
+
+        // 2. Semblanza handling: Preserve existing biography (semblanza) & showOnlyBiography
+        if (incomingBiography) {
+          formattedProfile.biography = incomingBiography;
+        } else if (oldData.biography) {
+          formattedProfile.biography = oldData.biography;
+        }
+
+        if (incomingShowOnlyBio !== undefined) {
+          formattedProfile.showOnlyBiography = incomingShowOnlyBio;
+        } else if (oldData.showOnlyBiography !== undefined) {
+          formattedProfile.showOnlyBiography = oldData.showOnlyBiography;
+        }
 
         const updateQuery = `
           UPDATE professors 
@@ -250,6 +288,16 @@ app.post('/professors', jwtAuth, async (req, res) => {
         formattedProfile.slug = finalSlug;
         await client.query(updateQuery, [fullName, email, finalDelegationId || null, formattedProfile, professorId]);
       } else {
+        if (incomingPhotoUrl) {
+          formattedProfile.photoUrl = incomingPhotoUrl;
+        } else {
+          formattedProfile.photoUrl = null;
+        }
+
+        if (incomingPortraitUrl) formattedProfile.portraitUrl = incomingPortraitUrl;
+        if (incomingBiography) formattedProfile.biography = incomingBiography;
+        if (incomingShowOnlyBio !== undefined) formattedProfile.showOnlyBiography = incomingShowOnlyBio;
+
         const insertQuery = `
           INSERT INTO professors (slug, full_name, email, delegation_id, profile_data, updated_at)
           VALUES ($1, $2, $3, $4, $5, NOW())

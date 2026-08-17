@@ -352,6 +352,36 @@ const schedulesJson = JSON.stringify(schedules);
         }
       });
 
+      function isRoomMatch(targetStr, spaceStr) {
+        if (!targetStr || !spaceStr) return false;
+        
+        const clean = (str) => str.toString()
+          .toLowerCase()
+          .replace(/^(aula|laboratorio|taller|edificio)\s+/, '')
+          .replace(/\(.*\)/, '')
+          .replace(/[°ª]/g, '')
+          .trim();
+
+        const normTarget = clean(targetStr);
+        const normSpace = clean(spaceStr);
+
+        if (normTarget === normSpace) return true;
+
+        if (normTarget.includes('/')) {
+          const parts = normTarget.split('/').map(p => clean(p));
+          if (parts.some(p => p === normSpace || (p.length >= 2 && normSpace.includes(p)))) return true;
+        }
+        if (normSpace.includes('/')) {
+          const parts = normSpace.split('/').map(p => clean(p));
+          if (parts.some(p => p === normTarget || (p.length >= 2 && normTarget.includes(p)))) return true;
+        }
+
+        if (normTarget.length >= 2 && normSpace.includes(normTarget)) return true;
+        if (normSpace.length >= 2 && normTarget.includes(normSpace)) return true;
+
+        return false;
+      }
+
       // Función para renderizar detalles del panel lateral
       function displaySpaceDetails(feature) {
         if (emptyState) emptyState.style.display = "none";
@@ -406,8 +436,9 @@ const schedulesJson = JSON.stringify(schedules);
           pClassesList.innerHTML = "";
           
           const classes = window.__SCHEDULES__.filter(s => {
-            if (s.classroom_name?.toLowerCase() === spaceName.toLowerCase()) return true;
-            return localSpaces.some(r => r.name && s.classroom_name?.toLowerCase() === r.name.toLowerCase());
+            if (!s.classroom_name) return false;
+            if (isRoomMatch(s.classroom_name, spaceName)) return true;
+            return localSpaces.some(r => r.name && isRoomMatch(s.classroom_name, r.name));
           });
 
           if (classes && classes.length > 0) {
@@ -417,7 +448,7 @@ const schedulesJson = JSON.stringify(schedules);
               row.innerHTML = 
                 '<strong style="display: block; font-size: 1rem; color: var(--color-ink); margin-bottom: 4px;">' + c.subject_name + '</strong>' +
                 '<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem; color: var(--color-ink-2);">' +
-                '<span>Grupo: <strong style="color: var(--color-ink);">' + c.group_name + '</strong></span>' +
+                '<span>Grupo: <strong style="color: var(--color-ink);">' + (c.group_name || c.class_group_name || "") + '</strong></span>' +
                 '<span style="font-family: var(--font-mono);">' + c.day_of_week + ' ' + c.start_time.substring(0,5) + '-' + c.end_time.substring(0,5) + '</span>' +
                 '</div>' +
                 '<span style="display: block; font-size: 0.75rem; color: var(--color-ink-3); margin-top: 4px;">Espacio: <strong>' + (c.classroom_name || "N/A") + '</strong> | Docente: ' + (c.professor_name || "Sin asignar") + '</span>';
@@ -519,12 +550,27 @@ const schedulesJson = JSON.stringify(schedules);
            }
            
            if (highlightName) {
+             let foundLayer = null;
              geojsonLayer.eachLayer(layer => {
-               if (layer.feature.properties.name?.toLowerCase() === highlightName.toLowerCase()) {
-                 map.fitBounds(layer.getBounds(), { maxZoom: 20 });
-                 layer.fire('click');
+               if (foundLayer) return;
+               const props = layer.feature.properties || {};
+               const bName = props.name || "";
+               const spaces = props.spaces || [];
+               
+               if (isRoomMatch(highlightName, bName)) {
+                 foundLayer = layer;
+                 return;
+               }
+               if (spaces.some(sp => isRoomMatch(highlightName, sp.name))) {
+                 foundLayer = layer;
+                 return;
                }
              });
+
+             if (foundLayer) {
+               map.fitBounds(foundLayer.getBounds(), { maxZoom: 20, padding: [50, 50] });
+               foundLayer.fire('click');
+             }
            }
 
           // ── Search & Filter Logic ──
@@ -544,27 +590,34 @@ const schedulesJson = JSON.stringify(schedules);
             const matches = [];
 
             geojsonLayer.eachLayer(layer => {
-              const name = layer.feature.properties?.name;
-              if (name && name.toLowerCase().includes(normalizedQuery)) {
-                matches.push({ name, layer });
-              }
+              const buildingName = layer.feature.properties?.name || "Edificio";
+              const spaces = layer.feature.properties?.spaces || [];
+              spaces.forEach(space => {
+                if (space.name && space.name.toLowerCase().includes(normalizedQuery)) {
+                  matches.push({ 
+                    displayName: `${space.name} (${buildingName})`, 
+                    searchName: space.name,
+                    layer 
+                  });
+                }
+              });
             });
 
             if (matches.length > 0) {
-              suggestionsContainer.innerHTML = matches.map(m => 
-                `<button class="suggestion-item" style="display: block; width: 100%; text-align: left; padding: 10px 16px; background: none; border: none; border-bottom: 1px solid var(--color-rule); cursor: pointer; font-size: 0.875rem; font-family: var(--font-sans); color: var(--color-ink);" data-name="${m.name}">${m.name}</button>`
+              suggestionsContainer.innerHTML = matches.map((m, idx) => 
+                `<button class="suggestion-item" style="display: block; width: 100%; text-align: left; padding: 10px 16px; background: none; border: none; border-bottom: 1px solid var(--color-rule); cursor: pointer; font-size: 0.875rem; font-family: var(--font-sans); color: var(--color-ink);" data-idx="${idx}">${m.displayName}</button>`
               ).join('');
               suggestionsContainer.style.display = "block";
 
               // Add click listener to suggestions
               suggestionsContainer.querySelectorAll(".suggestion-item").forEach(item => {
                 item.addEventListener("click", () => {
-                  const name = item.getAttribute("data-name");
-                  const match = matches.find(m => m.name === name);
+                  const idx = parseInt(item.getAttribute("data-idx"), 10);
+                  const match = matches[idx];
                   if (match) {
                     map.fitBounds(match.layer.getBounds(), { padding: [50, 50] });
                     match.layer.fire("click");
-                    searchInput.value = name;
+                    searchInput.value = match.searchName;
                     suggestionsContainer.style.display = "none";
                   }
                 });

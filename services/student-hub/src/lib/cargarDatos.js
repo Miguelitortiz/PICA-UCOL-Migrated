@@ -115,13 +115,16 @@ export async function cargarGrupoConProfesores(g_slug) {
       careerName: career ? career.name : "Carrera Desconocida",
       academic_period: grp.academic_period,
       shift: grp.shift,
+      semester: grp.semester || null,
       tutor_id: grp.tutor_id,
-      tutor_name: tutor ? tutor.full_name : null,
+      tutor_name: tutor ? tutor.full_name : (grp.tutor_name || null),
       tutor_email: tutor ? tutor.email : null,
       tutor_slug: tutor ? tutor.slug : null,
       tutor_phone: tutor?.profile_data?.contactInfo?.phone || null,
       tutor_office: tutor?.profile_data?.contactInfo?.office || null,
       tutor_office_hours: tutor?.profile_data?.contactInfo?.officeHours || null,
+      classroom: grp.classroom || null,
+      classrooms_by_day: grp.classrooms_by_day || null,
       professors: groupProfs
     };
   } catch (err) {
@@ -166,14 +169,42 @@ export async function cargarExamenesDeGrupo(groupId) {
   }
 }
 
-export async function cargarSyllabusPorSlug(slug) {
+function normSubjectName(name) {
+  if (!name) return '';
+  return name.toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+export async function cargarSyllabusPorSlug(slug, groupId = null) {
   try {
     const allSyllabus = await fetchFromService('academic', '/syllabus');
     const ss = allSyllabus.find(s => s.slug === slug);
     if (!ss) return null;
 
     const professors = await fetchFromService('professors', '/professors');
-    const prof = professors.find(p => p.id === ss.created_by);
+    let prof = professors.find(p => p.id === ss.created_by);
+
+    if (!prof) {
+      try {
+        const allSchedules = await fetchFromService('academic', '/schedules');
+        const normSS = normSubjectName(ss.subject_name);
+        const matches = allSchedules.filter(s =>
+          normSubjectName(s.subject_name) === normSS && s.professor_id
+        );
+        if (groupId) {
+          const groupMatch = matches.find(s => s.class_group_id === groupId);
+          if (groupMatch) {
+            prof = professors.find(p => p.id === groupMatch.professor_id);
+          }
+        }
+        if (!prof && matches.length > 0) {
+          prof = professors.find(p => p.id === matches[0].professor_id);
+        }
+      } catch (_) {}
+    }
 
     return {
       ...ss,

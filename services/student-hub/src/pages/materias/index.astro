@@ -81,7 +81,7 @@ if (activeGroupSlug) {
     <div class="subjects-grid">
       {enrolledSubjects.map(s => (
         <a
-          href={s.syllabusSlug && s.syllabusSlug !== "#" ? `/materias/${s.syllabusSlug}` : "#"}
+          href={s.syllabusSlug && s.syllabusSlug !== "#" ? `/materias/${s.syllabusSlug}${activeGroupSlug ? `?group=${activeGroupSlug}` : ''}` : "#"}
           class="subject-entry"
           style="text-decoration: none;"
           aria-label={`Ver detalles de ${s.subject_name}`}

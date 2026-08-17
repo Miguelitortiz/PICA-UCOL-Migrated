@@ -23,6 +23,8 @@ CREATE TABLE class_groups (
     tutor_id INTEGER REFERENCES professors(id) ON DELETE SET NULL,
     semester INTEGER,
     group_letter VARCHAR(10),
+    classroom VARCHAR(50),          -- Aula fija (turno matutino, misma toda la semana)
+    classrooms_by_day JSONB,        -- Aulas por día {"Lunes": "A1/P3", ...} (turno vespertino)
     created_at TIMESTAMP DEFAULT NOW()
 );
 

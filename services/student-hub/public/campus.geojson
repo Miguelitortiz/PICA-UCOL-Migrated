@@ -2573,6 +2573,14 @@
           {
             "name": "Aula B4",
             "faculty": "FIME"
+          },
+          {
+            "name": "Aula B5",
+            "faculty": "FIME"
+          },
+          {
+            "name": "Aula B6",
+            "faculty": "FIME"
           }
         ]
       },

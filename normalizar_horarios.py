@@ -13,6 +13,9 @@ def normalizar_horarios(input_file, output_dir):
     df_prof = pd.read_excel(xl, sheet_name="Profesores")
     df_prof = df_prof.loc[:, ~df_prof.columns.str.contains('^Unnamed')]
     df_prof = df_prof.dropna(subset=['Nombre'])
+    # FIX: normalizar doble espacio en nombres (bug de scrapping del Excel fuente)
+    df_prof['Nombre'] = df_prof['Nombre'].astype(str).str.strip().str.replace(r'\s+', ' ', regex=True)
+    df_prof['Abreviatura'] = df_prof['Abreviatura'].astype(str).str.strip()
     df_prof = df_prof[['Nombre', 'Abreviatura']].drop_duplicates().reset_index(drop=True)
     df_prof['id_profesor'] = df_prof.index + 1
     df_prof = df_prof[['id_profesor', 'Nombre', 'Abreviatura']]
@@ -33,11 +36,32 @@ def normalizar_horarios(input_file, output_dir):
     df_asig_raw = df_asig_raw.dropna(subset=['Asignatura'])
     
     # Crear una lista de asignaturas base sin prefijo HTI
+    df_asig_raw['es_hti_raw'] = df_asig_raw['Asignatura'].astype(str).str.strip().str.startswith('HTI')
     df_asig_raw['Asignatura_Base'] = df_asig_raw['Asignatura'].astype(str).str.strip().str.replace(r'^HTI\s+', '', regex=True)
     df_asig_raw['Abreviatura_Base'] = df_asig_raw['Abreviatura'].astype(str).str.strip().str.replace(r'^HTI\s+', '', regex=True)
     
     df_asig = df_asig_raw[['Asignatura_Base', 'Abreviatura_Base']].drop_duplicates().reset_index(drop=True)
     df_asig = df_asig.rename(columns={'Asignatura_Base': 'Asignatura', 'Abreviatura_Base': 'Abreviatura'})
+    
+    # FIX: Desambiguar abreviaturas duplicadas que colisionan entre asignaturas distintas.
+    # Se detectan los casos donde la misma abreviatura apunta a nombres diferentes y se
+    # genera una abreviatura única para el duplicado agregando un sufijo numérico.
+    abrev_counts = df_asig.groupby('Abreviatura')['Asignatura'].transform('count')
+    dup_mask = abrev_counts > 1
+    if dup_mask.any():
+        print(f"  ⚠️  Desambiguando {dup_mask.sum()} filas con abreviatura duplicada...")
+        seen_abrevs = {}
+        new_abrevs = []
+        for _, row in df_asig.iterrows():
+            abrev = row['Abreviatura']
+            if abrev not in seen_abrevs:
+                seen_abrevs[abrev] = 0
+                new_abrevs.append(abrev)
+            else:
+                seen_abrevs[abrev] += 1
+                new_abrevs.append(f"{abrev}{seen_abrevs[abrev]}")
+        df_asig['Abreviatura'] = new_abrevs
+    
     df_asig['id_asignatura'] = df_asig.index + 1
     df_asig = df_asig[['id_asignatura', 'Asignatura', 'Abreviatura']]
 
@@ -57,11 +81,22 @@ def normalizar_horarios(input_file, output_dir):
     df_aulas.to_csv(os.path.join(output_dir, 'aulas.csv'), index=False, encoding='utf-8-sig')
 
     # Diccionarios para cruces rápidos
-    dict_prof = dict(zip(df_prof['Nombre'].astype(str).str.strip(), df_prof['id_profesor']))
+    # FIX: normalizar espacios al construir el dict de profesores
+    dict_prof = dict(zip(
+        df_prof['Nombre'].astype(str).str.strip().str.replace(r'\s+', ' ', regex=True),
+        df_prof['id_profesor']
+    ))
     dict_clase = dict(zip(df_clases['Nombre de la clase'].astype(str).str.strip(), df_clases['id_clase']))
     
     # Para asignaturas, construimos el diccionario apuntando al ID de la asignatura base
-    dict_asig_abrev = dict(zip(df_asig['Abreviatura'], df_asig['id_asignatura']))
+    # Usamos las abreviaturas originales del Excel (Abreviatura_Base) para el lookup,
+    # apuntando al id de la asignatura normalizada correspondiente.
+    _nombre_to_id = dict(zip(df_asig['Asignatura'], df_asig['id_asignatura']))
+    dict_asig_abrev = {
+        str(abrev): _nombre_to_id.get(str(nombre))
+        for abrev, nombre in zip(df_asig_raw['Abreviatura_Base'], df_asig_raw['Asignatura_Base'])
+        if _nombre_to_id.get(str(nombre)) is not None
+    }
     dict_asig_nombre = dict(zip(df_asig['Asignatura'], df_asig['id_asignatura']))
     
     dict_id_to_abrev = dict(zip(df_asig['id_asignatura'], df_asig['Abreviatura']))
@@ -101,13 +136,18 @@ def normalizar_horarios(input_file, output_dir):
         is_hti = 1 if sn.startswith('HTI') else 0
         base_name = sn.replace('HTI ', '').replace('HTI', '').strip()
         
+        if base_name == '' or base_name == 'IE':
+            return 77, 1
+            
         id_a = dict_asig_nombre.get(base_name) or dict_asig_abrev.get(base_name)
         if id_a is not None:
+            if id_a == 77: is_hti = 1
             return id_a, is_hti
             
         for nombre, id_a_val in dict_asig_nombre.items():
             sn_clean = base_name.rstrip('.')
             if nombre.startswith(sn_clean) or sn_clean.startswith(nombre[:20]):
+                if id_a_val == 77: is_hti = 1
                 return id_a_val, is_hti
                 
         return None, is_hti
@@ -198,7 +238,8 @@ def normalizar_horarios(input_file, output_dir):
     
     lecciones_records = []
     for idx, row in df_lecc.iterrows():
-        prof_str = str(row.get('Profesor', '')).strip()
+        # FIX: normalizar espacios en nombres de profesores leídos de la hoja Lecciones
+        prof_str = re.sub(r'\s+', ' ', str(row.get('Profesor', '')).strip())
         clase_str = str(row.get('Clase', '')).strip()
         asig_str = str(row.get('Asignatura', '')).strip()
         
@@ -211,6 +252,12 @@ def normalizar_horarios(input_file, output_dir):
         
         es_hti = 1 if asig_str.startswith('HTI') else 0
         asig_base_str = asig_str.replace('HTI ', '').replace('HTI', '').strip()
+        # FIX: cuando asig_str es exactamente 'HTI' (sin nombre de materia),
+        # asig_base_str queda vacío. Esto corresponde a la "Hora de Tutoría
+        # Institucional" sin asignatura específica → se mapea a "Hora Común".
+        if not asig_base_str:
+            asig_base_str = 'Hora Común'
+
         
         grupo = row.get('Grupo', '')
         duracion = row.get('Duración', '')

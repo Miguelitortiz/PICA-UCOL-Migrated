@@ -22,6 +22,38 @@ if (activeGroupSlug) {
     schedules = await cargarHorarioDeGrupo(activeGroup.id);
     examDates = await cargarExamenesDeGrupo(activeGroup.id);
     syllabusList = await cargarSyllabusDeCarrera(activeGroup.career_id);
+
+    if (schedules && schedules.length > 0) {
+      schedules = schedules.map(s => {
+        const dayClassroom = activeGroup.classroom || (activeGroup.classrooms_by_day ? activeGroup.classrooms_by_day[s.day_of_week] : null);
+        let effectiveRoom = null;
+
+        if (dayClassroom) {
+          if (dayClassroom.includes('/')) {
+            const parts = dayClassroom.split('/').map(p => p.trim());
+            const preRecess = parts[0] || null;
+            const postRecess = parts[1] || null;
+            effectiveRoom = (s.start_time < "15:00:00") ? preRecess : postRecess;
+          } else {
+            effectiveRoom = dayClassroom;
+          }
+        }
+
+        let room = s.classroom_name;
+        if (effectiveRoom) {
+          if (!room || room === "Aulas" || room === "Por asignar") {
+            room = effectiveRoom;
+          } else if (room === "Cómputo y Talleres") {
+            room = effectiveRoom;
+          }
+        }
+
+        return {
+          ...s,
+          classroom_name: room
+        };
+      });
+    }
   }
 }
 
@@ -126,7 +158,7 @@ daysOfWeek.forEach((day, dayIdx) => {
         if (mergedItems.length === nextMerged.length && mergedItems.length > 0) {
           let allMatch = true;
           for (let i = 0; i < mergedItems.length; i++) {
-            if (mergedItems[i].subject_name !== nextMerged[i].subject_name || mergedItems[i].professor_name !== nextMerged[i].professor_name) {
+            if (mergedItems[i].subject_name !== nextMerged[i].subject_name || mergedItems[i].professor_name !== nextMerged[i].professor_name || nextMerged[i].is_hti) {
               allMatch = false;
               break;
             }
@@ -349,6 +381,9 @@ function getDailySchedule(day: string) {
       {activeGroup && (
         <p class="page-subtitle">
           {activeGroup.name} &mdash; {activeGroup.careerName} &mdash; Turno {activeGroup.shift}
+          {activeGroup.tutor_name && (
+            <> &mdash; Tutor: {activeGroup.tutor_name}</>
+          )}
         </p>
       )}
     </div>
@@ -397,6 +432,31 @@ function getDailySchedule(day: string) {
                 <span class="field-value">{activeGroup.semester}°</span>
               </div>
             )}
+            {activeGroup.classroom && (
+              <div class="data-row">
+                <span class="field-label">Aula</span>
+                <span class="field-value" style="font-family: var(--font-mono); font-weight: 700;">{activeGroup.classroom}</span>
+              </div>
+            )}
+            {!activeGroup.classroom && activeGroup.classrooms_by_day && (() => {
+              const diasOrden = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+              const cbd = activeGroup.classrooms_by_day;
+              const entradasOrdenadas = diasOrden.filter(d => cbd[d]).map(d => [d, cbd[d]]);
+              return (
+                <div class="data-row" style="align-items: flex-start;">
+                  <span class="field-label" style="padding-top: 2px;">Aulas</span>
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    {entradasOrdenadas.map(([dia, aula]) => (
+                      <span style="font-size: 0.75rem;">
+                        <span style="color: var(--color-ink-3); font-family: var(--font-mono); font-size: 0.65rem;">{dia.substring(0,2).toUpperCase()}</span>
+                        {' '}
+                        <span style="font-family: var(--font-mono); font-weight: 700; color: var(--color-ink);">{aula}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
@@ -811,7 +871,7 @@ function getDailySchedule(day: string) {
             <div style="display: flex; gap: 16px; margin-top: 8px; align-items: flex-start;">
               <!-- Foto del docente -->
               <div style="width: 64px; height: 64px; border: 1px solid var(--color-rule-strong); overflow: hidden; flex-shrink: 0;">
-                <img id="modal-prof-img" src="" alt="Foto del docente" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.1); display: none;" />
+                <img id="modal-prof-img" src="" alt="Foto del docente" style="width: 100%; height: 100%; object-fit: cover; display: none;" />
                 <div id="modal-prof-img-placeholder" style="width: 100%; height: 100%; background: var(--color-muted); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--color-ink-3);">
                   👨‍🏫
                 </div>

@@ -167,6 +167,27 @@ async function seed() {
     const clasesRows = readCSV(path.join(dbHorariosDir, 'clases.csv'));
     console.log(`Encontrados ${clasesRows.length} clases.`);
 
+    // Pre-cargar horarios_detalle para determinar el turno real de cada grupo.
+    // El turno se basa en qué receso usa el grupo:
+    //   - Receso de 8:40  (slot 2→3, gap 08:40-09:10) → Matutino
+    //   - Receso de 15:00 (slot 9→10, gap 15:00-15:30) → Vespertino
+    // Regla: si el grupo usa slots >= 10 (15:30+) O su periodo mínimo empieza
+    // en slot 7+ (12:30+), es Vespertino; en caso contrario es Matutino.
+    const horariosParaTurno = readCSV(path.join(dbHorariosDir, 'horarios_detalle.csv'));
+    const clasesPeriodosMap = new Map(); // id_clase -> { min: number, max: number }
+    for (const h of horariosParaTurno) {
+      const idC = parseInt(h.id_clase, 10);
+      const per = parseInt(h.periodo, 10);
+      if (!idC || isNaN(per)) continue;
+      if (!clasesPeriodosMap.has(idC)) {
+        clasesPeriodosMap.set(idC, { min: per, max: per });
+      } else {
+        const cur = clasesPeriodosMap.get(idC);
+        if (per < cur.min) cur.min = per;
+        if (per > cur.max) cur.max = per;
+      }
+    }
+
     const groupMap = new Map(); // id_clase -> career_id
     
     for (const clase of clasesRows) {
@@ -184,13 +205,20 @@ async function seed() {
       
       // Determinar carrera a partir de la letra
       let career = FIME_CAREERS.find(c => c.groups.includes(letter));
-      if (!career) {
-        career = FIME_CAREERS[0];
-      }
+      if (!career) career = FIME_CAREERS[0];
       
       groupMap.set(id, career.id);
       const groupSlug = `${semester}-${letter.toLowerCase()}-${career.id}`;
-      const shift = semester <= 5 ? 'Matutino' : 'Vespertino';
+
+      // Determinar turno desde los periodos reales del horario:
+      // slot >= 10 (15:30+) o slot mínimo >= 7 (12:30+) → Vespertino
+      const periodos = clasesPeriodosMap.get(id);
+      let shift = 'Matutino';
+      if (periodos) {
+        if (periodos.max >= 10 || periodos.min >= 7) {
+          shift = 'Vespertino';
+        }
+      }
 
       await client.query(`
         INSERT INTO class_groups (id, slug, career_id, name, academic_period, shift, semester, group_letter)
@@ -201,6 +229,7 @@ async function seed() {
     // Sincronizar secuencia
     await client.query("SELECT setval('class_groups_id_seq', COALESCE((SELECT MAX(id)+1 FROM class_groups), 1), false)");
     console.log('✅ Clases insertadas con éxito.');
+
 
     // 4. Cargar Asignaturas / Syllabus
     console.log('📚 Cargando asignaturas desde asignaturas.csv...');
@@ -239,15 +268,21 @@ async function seed() {
     const leccionesRows = readCSV(path.join(dbHorariosDir, 'lecciones.csv'));
     console.log(`Encontrados ${leccionesRows.length} lecciones.`);
 
-    // Crear un mapa de combinación para resolver el profesor de un horario
-    // key: `${id_clase}-${id_asignatura}` -> id_profesor
+    // Crear un mapa de combinación para resolver TODOS los profesores de un horario.
+    // key: `${id_clase}-${id_asignatura}` -> Set<id_profesor>
+    // Necesario porque optativas y Hora Común pueden tener varios profesores
+    // simultaneamente (cada uno atiende un subgrupo diferente).
     const lessonProfessorMap = new Map();
     for (const lecc of leccionesRows) {
       const idClase = parseInt(lecc.id_clase, 10);
-      const idAsig = parseInt(lecc.id_asignatura, 10);
-      const idProf = parseInt(lecc.id_profesor, 10);
+      const idAsig  = parseInt(lecc.id_asignatura, 10);
+      const idProf  = parseInt(lecc.id_profesor, 10);
       if (idClase && idAsig && idProf) {
-        lessonProfessorMap.set(`${idClase}-${idAsig}`, idProf);
+        const key = `${idClase}-${idAsig}`;
+        if (!lessonProfessorMap.has(key)) {
+          lessonProfessorMap.set(key, new Set());
+        }
+        lessonProfessorMap.get(key).add(idProf);
       }
     }
 
@@ -257,22 +292,22 @@ async function seed() {
     console.log(`Encontrados ${horariosRows.length} registros de horarios.`);
 
     for (const hor of horariosRows) {
-      const idClase = parseInt(hor.id_clase, 10);
-      const idAsig = parseInt(hor.id_asignatura, 10);
-      const esHti = parseInt(hor.es_hti, 10) === 1;
-      const dia = hor.dia;
-      const periodo = parseInt(hor.periodo, 10);
+      const idClase  = parseInt(hor.id_clase, 10);
+      const idAsig   = parseInt(hor.id_asignatura, 10);
+      const esHti    = parseInt(hor.es_hti, 10) === 1;
+      const dia      = hor.dia;
+      const periodo  = parseInt(hor.periodo, 10);
       
       const subjectName = asignaturasMap.get(idAsig) || 'Materia Desconocida';
-      const profId = lessonProfessorMap.get(`${idClase}-${idAsig}`) || null;
+      // Obtener TODOS los profesores para este bloque (puede ser más de uno en optativas/Hora Común)
+      const profIds = lessonProfessorMap.get(`${idClase}-${idAsig}`) || new Set([null]);
       
       const timeSlot = timeSlotsMap[periodo];
       if (!timeSlot) {
         console.warn(`⚠️ Periodo desconocido: ${periodo} para horario ID ${hor.id_horario}`);
         continue;
       }
-      const startTime = timeSlot[0];
-      const endTime = timeSlot[1];
+      const [startTime, endTime] = timeSlot;
       
       const isLab = subjectName.toLowerCase().includes('taller') || 
                     subjectName.toLowerCase().includes('laboratorio') || 
@@ -280,29 +315,31 @@ async function seed() {
                     subjectName.toLowerCase().includes('computación') || 
                     subjectName.toLowerCase().includes('experimental');
 
-      // Insertar en schedules
-      await client.query(`
-        INSERT INTO schedules (class_group_id, subject_name, professor_id, classroom_name, day_of_week, start_time, end_time, is_laboratory, is_hti)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
-      `, [
-        idClase,
-        subjectName,
-        profId,
-        isLab ? 'Cómputo y Talleres' : 'Aulas',
-        dia,
-        startTime,
-        endTime,
-        isLab,
-        esHti
-      ]);
-
-      // Insertar asignación profesor-grupo
-      if (profId) {
+      // Insertar una fila en schedules por cada profesor asignado a este bloque
+      for (const profId of profIds) {
         await client.query(`
-          INSERT INTO professor_groups (professor_id, class_group_id, subject_taught)
-          VALUES ($1, $2, $3)
-          ON CONFLICT (professor_id, class_group_id, subject_taught) DO NOTHING;
-        `, [profId, idClase, subjectName]);
+          INSERT INTO schedules (class_group_id, subject_name, professor_id, classroom_name, day_of_week, start_time, end_time, is_laboratory, is_hti)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+        `, [
+          idClase,
+          subjectName,
+          profId,
+          isLab ? 'Cómputo y Talleres' : 'Aulas',
+          dia,
+          startTime,
+          endTime,
+          isLab,
+          esHti
+        ]);
+
+        // Registrar asignación profesor-grupo
+        if (profId) {
+          await client.query(`
+            INSERT INTO professor_groups (professor_id, class_group_id, subject_taught)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (professor_id, class_group_id, subject_taught) DO NOTHING;
+          `, [profId, idClase, subjectName]);
+        }
       }
     }
     console.log('✅ Horarios insertados con éxito.');
@@ -350,6 +387,11 @@ async function seed() {
     }
     console.log('✅ Usuarios del AdminHUB insertados.');
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // 10. Tutores y Aulas desde Excel ('info para horarios.xlsx')
+    // ─────────────────────────────────────────────────────────────────────────
+    await seedTutoresAulas(client);
+
     console.log('\n🎉 ¡La base de datos ha sido exitosamente reconstruida con los datos reales de db_horarios!');
 
   } catch (err) {
@@ -358,6 +400,130 @@ async function seed() {
     client.release();
     await pool.end();
   }
+}
+
+// =============================================================================
+// Paso 10: Tutores y Aulas desde CSVs
+// Lee:
+//   db_horarios/tutores_grupos.csv  → tutor_id + classroom (aula fija)
+//   db_horarios/aulas_vespertino.csv → classrooms_by_day (aulas por día)
+// =============================================================================
+
+/** Normaliza un nombre para comparación: sin acentos, minúsculas */
+function normalizarNombre(name) {
+  if (!name) return '';
+  return name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z ]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Similitud Jaccard entre tokens de dos nombres */
+function jaccardSim(a, b) {
+  const sa = new Set(a.split(' '));
+  const sb = new Set(b.split(' '));
+  const inter = [...sa].filter(t => sb.has(t)).length;
+  const union = new Set([...sa, ...sb]).size;
+  return union === 0 ? 0 : inter / union;
+}
+
+/** Retorna el profesor con nombre más parecido al del CSV */
+function matchProfesor(csvName, profesores) {
+  const norm = normalizarNombre(csvName);
+  let best = null, bestScore = 0;
+  for (const { id, full_name } of profesores) {
+    const score = jaccardSim(norm, normalizarNombre(full_name));
+    if (score > bestScore) { bestScore = score; best = { id, full_name }; }
+  }
+  return bestScore >= 0.4 ? best : null;
+}
+
+/** Normaliza clave de grupo para lookup: quita °, ª, espacios */
+function normalizarGrupo(name) {
+  return String(name).replace(/[°ª\s]/g, '').toUpperCase();
+}
+
+async function seedTutoresAulas(client) {
+  const dbDir = path.join(process.cwd(), 'db_horarios');
+  const tutoresPath   = path.join(dbDir, 'tutores_grupos.csv');
+  const vespertinoPath = path.join(dbDir, 'aulas_vespertino.csv');
+
+  if (!fs.existsSync(tutoresPath)) {
+    console.log(`⚠️  Paso tutores/aulas omitido: no se encontró "${tutoresPath}".`);
+    return;
+  }
+
+  console.log('📋 Cargando tutores y aulas desde CSVs...');
+
+  // Cargar profesores de la BD para hacer match de nombres
+  const profsRes = await client.query('SELECT id, full_name FROM professors ORDER BY full_name');
+  const profesores = profsRes.rows;
+
+  // Cargar grupos de la BD: (id_carrera|normKey) → id_grupo
+  const gruposRes = await client.query('SELECT id, name, career_id FROM class_groups');
+  const grupoLookup = new Map();
+  for (const { id, name, career_id } of gruposRes.rows) {
+    grupoLookup.set(`${career_id}|${normalizarGrupo(name)}`, id);
+  }
+
+  let actualizados = 0;
+
+  // ── tutores_grupos.csv: tutor_id + aula fija ─────────────────────────────
+  const tutoresRows = readCSV(tutoresPath);
+  for (const row of tutoresRows) {
+    const careerId = parseInt(row.id_carrera, 10);
+    const gKey     = `${careerId}|${normalizarGrupo(row.grupo)}`;
+    const groupId  = grupoLookup.get(gKey);
+    if (!groupId) {
+      console.warn(`  ⚠️  Grupo no encontrado: ${row.carrera_abbr} ${row.grupo}`);
+      continue;
+    }
+
+    const tutorMatch = row.tutor_nombre ? matchProfesor(row.tutor_nombre, profesores) : null;
+    const aula       = row.aula && row.aula !== 'N/A' ? row.aula : null;
+
+    await client.query(
+      'UPDATE class_groups SET tutor_id = $1, classroom = $2 WHERE id = $3',
+      [tutorMatch?.id ?? null, aula, groupId]
+    );
+    actualizados++;
+  }
+  console.log(`  ✓ ${actualizados} grupos actualizados con tutor y aula fija.`);
+
+  // ── aulas_vespertino.csv: classrooms_by_day ──────────────────────────────
+  if (!fs.existsSync(vespertinoPath)) {
+    console.log(`  ⚠️  No se encontró "${vespertinoPath}", se omiten aulas vespertinas.`);
+  } else {
+    const vesRows = readCSV(vespertinoPath);
+    let vActualizados = 0;
+    for (const row of vesRows) {
+      const careerId = parseInt(row.id_carrera, 10);
+      const gKey     = `${careerId}|${normalizarGrupo(row.grupo)}`;
+      const groupId  = grupoLookup.get(gKey);
+      if (!groupId) continue;
+
+      const aulasPorDia = {};
+      for (const dia of ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']) {
+        // Normalizar clave: Miercoles → Miércoles para el JSON final
+        const diaKey = dia === 'Miercoles' ? 'Miércoles' : dia;
+        if (row[dia] && row[dia].trim()) aulasPorDia[diaKey] = row[dia].trim();
+      }
+
+      if (Object.keys(aulasPorDia).length > 0) {
+        await client.query(
+          'UPDATE class_groups SET classrooms_by_day = $1 WHERE id = $2',
+          [JSON.stringify(aulasPorDia), groupId]
+        );
+        vActualizados++;
+      }
+    }
+    console.log(`  ✓ ${vActualizados} grupos actualizados con aulas vespertinas.`);
+  }
+
+  console.log('✅ Tutores y aulas asignados correctamente.');
 }
 
 seed();
