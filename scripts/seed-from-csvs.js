@@ -458,6 +458,13 @@ async function seedTutoresAulas(client) {
 
   console.log('📋 Cargando tutores y aulas desde CSVs...');
 
+  // Asegurar que las columnas tutor_id, classroom y classrooms_by_day existan en class_groups
+  await client.query(`
+    ALTER TABLE class_groups ADD COLUMN IF NOT EXISTS tutor_id INTEGER REFERENCES professors(id) ON DELETE SET NULL;
+    ALTER TABLE class_groups ADD COLUMN IF NOT EXISTS classroom VARCHAR(50);
+    ALTER TABLE class_groups ADD COLUMN IF NOT EXISTS classrooms_by_day JSONB;
+  `);
+
   // Cargar profesores de la BD para hacer match de nombres
   const profsRes = await client.query('SELECT id, full_name FROM professors ORDER BY full_name');
   const profesores = profsRes.rows;
